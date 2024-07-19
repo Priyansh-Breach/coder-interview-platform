@@ -1,0 +1,8 @@
+[
+  {
+    "title": "Two Sum",
+    "description": "Given an array of integers, return indices of the two numbers such that they add up to a specific target.",
+    "topic_tags": ["Array", "Hash Table"],
+    "solutions": "def twoSum(self, nums: List[int], target: int) -> List[int]:\n    d = {}\n    for i in range(len(nums)):\n        r = target - nums[i]\n        if r in d:\n            return [d[r], i]\n        else:\n            d[nums[i]] = i\n    return -1"
+  }
+]
