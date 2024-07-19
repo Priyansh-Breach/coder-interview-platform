@@ -1,5 +1,7 @@
+// src/middleware/authMiddleware.ts
+
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface AuthRequest extends Request {
   user?: { id: number };
@@ -10,15 +12,29 @@ export const authMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.header("Authorization")?.split(" ")[1];
+  const authHeader = req.header("Authorization");
+  if (!authHeader) {
+    return res.status(401).json({ message: "No token, authorization denied" });
+  }
 
+  const token = authHeader.split(" ")[1];
   if (!token) {
     return res.status(401).json({ message: "No token, authorization denied" });
   }
 
   try {
-    const decoded = jwt.verify(token, "your_jwt_secret") as { id: number };
-    req.user = decoded;
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error("JWT secret is not defined in environment variables");
+    }
+
+    const decoded = jwt.verify(token, secret) as JwtPayload & { id: number };
+
+    if (typeof decoded !== "object" || !decoded.id) {
+      throw new Error("Invalid token payload");
+    }
+
+    req.user = { id: decoded.id };
     next();
   } catch (error) {
     res.status(401).json({ message: "Token is not valid" });

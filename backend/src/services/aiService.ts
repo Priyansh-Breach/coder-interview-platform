@@ -1,7 +1,7 @@
 // src/services/aiService.ts
 import { HfInference } from "@huggingface/inference";
 
-const hf = new HfInference('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');
+const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
 export const generateResponse = async (
   context: string,

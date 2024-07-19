@@ -1,3 +1,5 @@
+// src/controllers/userController.ts
+
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -45,7 +47,6 @@ export const registerUser = async (
     res.status(500).json({ message: "Server error", error });
   }
 };
-
 
 interface LoginBody {
   email: string;
