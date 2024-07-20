@@ -3,7 +3,7 @@ import { HfInference } from "@huggingface/inference";
 import { promises as fs } from "fs";
 import path from "path";
 
-const hf = new HfInference("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");
+const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
 export const synthesizeSpeech = async (
   text: string,

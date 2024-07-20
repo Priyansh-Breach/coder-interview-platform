@@ -1,15 +1,17 @@
+// src/components/QuestionScreen.tsx
 import React from "react";
 
 interface QuestionScreenProps {
-    question: string;
+  question: string;
 }
 
 const QuestionScreen: React.FC<QuestionScreenProps> = ({ question }) => {
-    return (
-        <div>
-            <h1>{question}</h1>
-        </div>
-    );
+  return (
+    <div>
+      <h2>Question:</h2>
+      <p>{question}</p>
+    </div>
+  );
 };
 
 export default QuestionScreen;

@@ -4,10 +4,12 @@ import { HfInference } from "@huggingface/inference";
 const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
 export const generateResponse = async (
-  context: string,
-  userExplanation: string
+  questionContext: string,
+  userExplanation: string,
+  userCode: string,
+  language: string,
 ): Promise<string> => {
-  const prompt = `Role: Interviewer\nGiven the data about coding question, comment on the user's provided approach with respect to the provided solution.\n${context}\n\nUser Explanation: ${userExplanation}`;
+  const prompt = `Role: Interviewer\nGiven the data about coding question, comment on the user's provided approach with respect to the provided solution.\n${questionContext}`;//\nInterviewee Explanation: ${userExplanation}\nCoding Language: ${language}\nInterviewee Code: ${userCode}`;
   try {
     const response = await hf.textGeneration({
       model: 'EleutherAI/gpt-neo-2.7B',

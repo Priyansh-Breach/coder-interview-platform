@@ -8,18 +8,20 @@ import path from "path";
 
 export const handleInterview = async (req: Request, res: Response) => {
   try {
-    if (!req.file) {
-      return res.status(400).send("No file uploaded.");
-    }
+    // if (!req.file) {
+    //   return res.status(400).send("No file uploaded.");
+    // }
 
-    const audioFilePath = req.file.path;
+    // const audioFilePath = req.file.path;
+    console.log(req.body);
 
-    const userExplanation = await transcribeAudio(audioFilePath);
+    // const userExplanation = await transcribeAudio(audioFilePath);
 
-    // Load questions context from JSON file
-    const questionsContext = await fs.readFile("questions.json", "utf-8");
+    const questionsContext = req.body.question;
+    const userCode = req.body.code;
+    const language = req.body.language;
 
-    const aiResponse = await generateResponse(questionsContext, "I will sort and then check for sum of all possible 2 value combinations");
+    const aiResponse = await generateResponse(questionsContext, "I will sort and then check for sum of all possible 2 value combinations.", userCode, language);
 
     const outputDir = path.resolve("output");
     const outputFilePath = path.join(outputDir, "response.mp3");

@@ -1,35 +1,28 @@
 import React, { useEffect, useState } from "react";
-import socket from "../socket";
-import QuestionScreen from "../components/QuestionScreen";
-import CodingArea from "../components/CodingArea";
-import AIAnimation from "../components/AIAnimation";
-import MicrophoneButton from "../components/MicrophoneButton";
+import socket from "../socket"; // Import the socket instance
+import CodingArea from "../components/CodingArea"; // Ensure this import is correct
 
 const InterviewPage: React.FC = () => {
-    const [question, setQuestion] = useState("");
-    const [aiResponse, setAiResponse] = useState("");
+    const [aiResponse, setAiResponse] = useState<string>("");
 
     useEffect(() => {
-        socket.on("question", (data: string) => {
-            setQuestion(data);
-        });
-
-        socket.on("aiResponse", (data: string) => {
-            setAiResponse(data);
+        socket.on("aiResponse", (response: string) => {
+            setAiResponse(response);
         });
 
         return () => {
-            socket.off("question");
             socket.off("aiResponse");
         };
     }, []);
 
     return (
         <div>
-            <QuestionScreen question={question} />
+            <h1>Interview Page</h1>
             <CodingArea />
-            <MicrophoneButton />
-            {aiResponse && <AIAnimation />}
+            <div>
+                <h2>AI Response</h2>
+                <pre>{aiResponse}</pre>
+            </div>
         </div>
     );
 };

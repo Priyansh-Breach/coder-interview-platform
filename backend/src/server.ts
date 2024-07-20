@@ -4,7 +4,7 @@ import { AppDataSource } from "./database";
 import userRoutes from "./routes/userRoutes";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
