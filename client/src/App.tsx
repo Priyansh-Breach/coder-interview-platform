@@ -2,7 +2,8 @@
 import { ModeToggle } from "@/components/mode-toggle"
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./lib/ErrorBoundary";
-import InterviewPage from "./Pages/InterviewPage";
+import { InterviewPage } from "./Routes";
+
 
 function App() {
   return (

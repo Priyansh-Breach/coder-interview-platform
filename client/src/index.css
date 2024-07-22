@@ -69,3 +69,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+::selection {
+  background-color:#2baa40; /* Change this color to your desired highlight color */
+  color: #fff; /* Change this color to the text color you prefer */
+}
