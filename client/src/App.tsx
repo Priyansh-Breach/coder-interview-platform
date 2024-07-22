@@ -2,7 +2,7 @@
 import { ModeToggle } from "@/components/mode-toggle"
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./lib/ErrorBoundary";
-import { InterviewPage } from "./Routes";
+import { InterviewPage,LandingPage } from "./Routes";
 
 
 function App() {
@@ -11,7 +11,8 @@ function App() {
       <Router>
         <ErrorBoundary>
           <Routes>
-            <Route path="/" element={<InterviewPage />} />
+          <Route path="/" element={<LandingPage />} />
+            <Route path="/interview" element={<InterviewPage />} />
           </Routes>
         </ErrorBoundary>
       </Router>
