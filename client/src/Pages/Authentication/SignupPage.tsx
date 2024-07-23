@@ -11,7 +11,7 @@ const SignupPage: React.FC<any> = () => {
       />
 
       <div className="flex items-center justify-center min-h-screen">
-        <SignUpComponent />
+        <SignUpComponent setVerifyEmail={()=>{}} />
       </div>
     </>
   );
