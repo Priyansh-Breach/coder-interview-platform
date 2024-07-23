@@ -1,90 +1,157 @@
 // src/controllers/userController.ts
 
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { AppDataSource } from "../database";
-import { User } from "../entities/User";
+import jwt, { Secret } from "jsonwebtoken";
+import { IUser, UserModel } from "../entities/User";
+import ErrorHandler from "../Utils/Error Handler/errorHandler";
+import { cactchAsyncError } from "../middleware/catchAsyncError";
+import ejs from "ejs";
+import path from "path";
+import { sendMail } from "../Utils/Send Mail/sendMail";
 
-interface RegisterBody {
-  username: string;
+/**
+ * User Registration Interface
+ */
+interface IResgistrationBody {
+  name: string;
   email: string;
   password: string;
+  avatar?: string;
 }
 
-export const registerUser = async (
-  req: Request<{}, {}, RegisterBody>,
-  res: Response
-) => {
-  const { username, email, password } = req.body;
+/**
+ * User Registration Function
+ */
+export const userRegistration = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { name, email, password, avatar } = req.body;
+      const doesEmailExist = await UserModel.findOne({ email });
+      if (doesEmailExist) {
+        return next(
+          new ErrorHandler("User already exists with a similar email.", 400)
+        );
+      }
 
-  if (!username || !email || !password) {
-    return res
-      .status(400)
-      .json({ message: "Please provide all required fields" });
-  }
+      const RegistringUser: IResgistrationBody = {
+        name,
+        email,
+        password,
+      };
 
-  try {
-    const userRepository = AppDataSource.getRepository(User);
-    const existingUser = await userRepository.findOneBy({ email });
+      const userActivationToken = createUserActivationToken(RegistringUser);
+      const userActivationCode = userActivationToken.activationCode;
+      const data = {
+        RegistringUser: {
+          name: RegistringUser.name,
+          mailLogo: process.env.EMAIL_LOGO_ONE,
+        },
+        userActivationCode,
+      };
+      const html = await ejs.renderFile(
+        path.join(
+          __dirname,
+          "../mails/User Activation/userActivation.mail.ejs"
+        ),
+        data
+      );
 
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      try {
+        await sendMail({
+          email: RegistringUser.email,
+          subject: "Account activation.",
+          template: "User Activation/userActivation.mail.ejs",
+          data,
+        });
+        res.status(201).json({
+          success: true,
+          message: `Please check your email ${RegistringUser.name}, to activate your account!`,
+          activationToken: userActivationToken.token,
+        });
+      } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+      }
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = userRepository.create({
-      username,
-      email,
-      password: hashedPassword,
-    });
-
-    await userRepository.save(newUser);
-
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
   }
-};
+);
 
-interface LoginBody {
-  email: string;
-  password: string;
+/**
+ * User activation-token interface
+ */
+interface IUserActivationToken {
+  token: string;
+  activationCode: string;
 }
+/**
+ *  Generating Activation Token for the Registring user
+ */
+export const createUserActivationToken = (user: any): IUserActivationToken => {
+  let num = Math.random() + 1;
+  const activationCode = Math.floor(num * 100000).toString();
 
-export const loginUser = async (
-  req: Request<{}, {}, LoginBody>,
-  res: Response
-) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ message: "Please provide all required fields" });
-  }
-
-  try {
-    const userRepository = AppDataSource.getRepository(User);
-    const user = await userRepository.findOneBy({ email });
-
-    if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+  const token = jwt.sign(
+    {
+      user,
+      activationCode,
+    },
+    process.env.JWT_ACTIVATION_SECRET as Secret,
+    {
+      expiresIn: "5m",
     }
+  );
 
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    const token = jwt.sign({ id: user.id }, "your_jwt_secret", {
-      expiresIn: "1h",
-    });
-
-    res.json({ token });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
-  }
+  return { token, activationCode };
 };
+
+/**
+ * User Activation interface
+ */
+interface IActivationRequest {
+  activation_token: string;
+  activation_code: string;
+}
+/**
+ * User Activation function
+ */
+export const userActivation = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { activation_code, activation_token } =
+        req.body as IActivationRequest;
+
+      const newUser: { user: IUser; activationCode: string } = jwt.verify(
+        activation_token,
+        process.env.JWT_ACTIVATION_SECRET as string
+      ) as { user: IUser; activationCode: string };
+
+      if (newUser.activationCode !== activation_code) {
+        return next(new ErrorHandler("Invalid activation code.", 400));
+      }
+
+      const { name, email, password } = newUser.user;
+      const doesUserExist = await UserModel.findOne({ email });
+      if (doesUserExist) {
+        return next(
+          new ErrorHandler("User already exists with a similar email.", 400)
+        );
+      }
+      const user = await UserModel.create({
+        name,
+        email,
+        password,
+      });
+
+      res.status(201).json({
+        success: true,
+        message: "Your account is activated.",
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+
