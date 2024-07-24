@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../ui/use-toast";
 import { LoadingIcon } from "../ui/Icons/SelectMore";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const FadeIn = ({ children }: any) => (
   <motion.div

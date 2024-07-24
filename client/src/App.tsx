@@ -1,10 +1,17 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./lib/ErrorBoundary";
-import { InterviewPage, LandingPage, LoginPage, SignupPage } from "./Routes";
+import {
+  InterviewPage,
+  LandingPage,
+  LoginPage,
+  SignupPage,
+  NotFound404Page,
+} from "./Routes";
 import { useLoadUserQuery } from "@/redux/features/Api/apiSlice";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
-  const {} = useLoadUserQuery(undefined, {});
+  const { isLoading, data } = useLoadUserQuery(undefined, {});
 
   return (
     <>
@@ -16,7 +23,21 @@ function App() {
             <Route path="/sign-up" element={<SignupPage />} />
 
             {/**Protected Routes */}
-            <Route path="/interview" element={<InterviewPage />} />
+            <Route
+              path="/interview"
+              element={
+                <PrivateRoute
+                  route={"/login"}
+                  loading={isLoading}
+                  userRole={data?.user?.role?.toString()}
+                  allowedRoles={["user", "admin"]}
+                  path={"/interview"}
+                >
+                  <InterviewPage />
+                </PrivateRoute>
+              }
+            />
+            <Route path="*" element={<NotFound404Page />} />
           </Routes>
         </ErrorBoundary>
       </Router>

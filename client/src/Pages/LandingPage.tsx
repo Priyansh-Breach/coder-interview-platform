@@ -9,8 +9,12 @@ import {
 import { MetaData } from "@/lib/MetaData/metaData";
 import AutoTypingEditor from "@/components/AutoTypingEditor";
 import { Navbar } from "@/components/Navbar";
+import { useNavigate } from "react-router-dom";
+import { Key } from "lucide-react";
 
 export default function LandingPage() {
+  const currentYear = new Date().getFullYear();
+  const navigate = useNavigate();
   return (
     <>
       <MetaData
@@ -37,6 +41,11 @@ export default function LandingPage() {
                   </div>
                   <div className="flex flex-col gap-2 min-[400px]:flex-row">
                     <a
+                      onClick={() => {
+                        navigate("/explore", {
+                          state: { Key: "/explore" },
+                        });
+                      }}
                       href="#"
                       className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                     >
@@ -208,16 +217,9 @@ export default function LandingPage() {
         </main>
         <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
           <p className="text-xs text-muted-foreground">
-            &copy; 2024 AI Coding Interview. All rights reserved.
+            &copy; {currentYear} AI Coding Interview. All rights reserved.
           </p>
-          <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-            <a href="#" className="text-xs hover:underline underline-offset-4">
-              Privacy Policy
-            </a>
-            <a href="#" className="text-xs hover:underline underline-offset-4">
-              Terms of Service
-            </a>
-          </nav>
+          <nav className="sm:ml-auto flex gap-4 sm:gap-6"></nav>
         </footer>
       </div>
     </>

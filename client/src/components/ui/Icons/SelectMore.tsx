@@ -103,69 +103,72 @@ export function XIcon(props) {
   );
 }
 
-export const LoadingIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    className="injected-svg animate-spin"
-    data-src="https://cdn.hugeicons.com/icons/loading-03-stroke-standard.svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    role="img"
-    color="#000000"
-  >
-    <path
-      d="M12 3V6"
-      stroke="#000000"
-      stroke-width="1.5"
-      stroke-linecap="round"
-    ></path>
-    <path
-      d="M12 18V21"
-      stroke="#000000"
-      stroke-width="1.5"
-      stroke-linecap="round"
-    ></path>
-    <path
-      d="M21 12H18"
-      stroke="#000000"
-      stroke-width="1.5"
-      stroke-linecap="round"
-    ></path>
-    <path
-      d="M6 12H3"
-      stroke="#000000"
-      stroke-width="1.5"
-      stroke-linecap="round"
-    ></path>
-    <path
-      d="M18.3635 5.63672L16.2422 7.75804"
-      stroke="#000000"
-      stroke-width="1.5"
-      stroke-linecap="round"
-    ></path>
-    <path
-      d="M7.75804 16.2422L5.63672 18.3635"
-      stroke="#000000"
-      stroke-width="1.5"
-      stroke-linecap="round"
-    ></path>
-    <path
-      d="M18.3635 18.3635L16.2422 16.2422"
-      stroke="#000000"
-      stroke-width="1.5"
-      stroke-linecap="round"
-    ></path>
-    <path
-      d="M7.75804 7.75804L5.63672 5.63672"
-      stroke="#000000"
-      stroke-width="1.5"
-      stroke-linecap="round"
-    ></path>
-  </svg>
-);
+
+
+export const LoadingIcon: React.FC = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      className="animate-spin mr-2"
+      role="img"
+    >
+      <path
+        d="M12 3V6"
+        className="stroke-current text-black dark:text-white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      ></path>
+      <path
+        d="M12 18V21"
+        className="stroke-current text-black dark:text-white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      ></path>
+      <path
+        d="M21 12H18"
+        className="stroke-current text-black dark:text-white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      ></path>
+      <path
+        d="M6 12H3"
+        className="stroke-current text-black dark:text-white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      ></path>
+      <path
+        d="M18.3635 5.63672L16.2422 7.75804"
+        className="stroke-current text-black dark:text-white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      ></path>
+      <path
+        d="M7.75804 16.2422L5.63672 18.3635"
+        className="stroke-current text-black dark:text-white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      ></path>
+      <path
+        d="M18.3635 18.3635L16.2422 16.2422"
+        className="stroke-current text-black dark:text-white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      ></path>
+      <path
+        d="M7.75804 7.75804L5.63672 5.63672"
+        className="stroke-current text-black dark:text-white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      ></path>
+    </svg>
+  );
+};
+
+
 
 export const ProfileIcon = () => (
   <svg
