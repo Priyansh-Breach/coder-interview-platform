@@ -9,9 +9,23 @@ import {
 } from "./Routes";
 import { useLoadUserQuery } from "@/redux/features/Api/apiSlice";
 import PrivateRoute from "./components/PrivateRoute";
+import { initializeAppAsync, refreshTokenFunc } from "@/redux/store";
+import { useEffect } from "react";
 
 function App() {
   const { isLoading, data } = useLoadUserQuery(undefined, {});
+
+  useEffect(() => {
+    initializeAppAsync().then(() => {
+      console.log("App initialized successfully");
+    });
+
+    const refreshToken = setInterval(() => {
+      refreshTokenFunc();
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(refreshToken);
+  }, []);
 
   return (
     <>

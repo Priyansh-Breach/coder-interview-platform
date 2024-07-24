@@ -1,16 +1,58 @@
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  BadgeIcon,
-  CodeIcon,
-  ReplyIcon,
-} from "@/components/ui/Icons/SelectMore";
 import { MetaData } from "@/lib/MetaData/metaData";
 import AutoTypingEditor from "@/components/AutoTypingEditor";
 import { Navbar } from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
-import { Key } from "lucide-react";
+import { FeaturesSection } from "@/components/ui/featureSection";
+import { HoverEffect } from "@/components/ui/card-hover-effect";
+
+function CardHoverEffect() {
+  return (
+    <div className="max-w-5xl mx-auto px-8">
+      <HoverEffect items={projects} />
+    </div>
+  );
+}
+export const projects = [
+  {
+    title: "Stripe",
+    description:
+      "A technology company that builds economic infrastructure for the internet.",
+    link: "https://stripe.com",
+  },
+  {
+    title: "Netflix",
+    description:
+      "A streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.",
+    link: "https://netflix.com",
+  },
+  {
+    title: "Google",
+    description:
+      "A multinational technology company that specializes in Internet-related services and products.",
+    link: "https://google.com",
+  },
+  {
+    title: "Meta",
+    description:
+      "A technology company that focuses on building products that advance Facebook's mission of bringing the world closer together.",
+    link: "https://meta.com",
+  },
+  {
+    title: "Amazon",
+    description:
+      "A multinational technology company focusing on e-commerce, cloud computing, digital streaming, and artificial intelligence.",
+    link: "https://amazon.com",
+  },
+  {
+    title: "Microsoft",
+    description:
+      "A multinational technology company that develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services.",
+    link: "https://microsoft.com",
+  },
+];
 
 export default function LandingPage() {
   const currentYear = new Date().getFullYear();
@@ -59,12 +101,13 @@ export default function LandingPage() {
               </div>
             </div>
           </section>
-          <section className="w-full py-12 md:py-24 lg:py-32 ">
+
+          <section className="w-full py-12 md:py-24 lg:py-32">
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <div className="inline-block rounded-lg  px-3 py-1 text-sm">
-                    Key Features
+                  <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">
+                    key feartures
                   </div>
                   <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                     Elevate Your Coding Interview Prep
@@ -74,38 +117,7 @@ export default function LandingPage() {
                     practice to help you ace your next coding interview.
                   </p>
                 </div>
-              </div>
-              <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3 lg:gap-12">
-                <div className="grid gap-1">
-                  <div className="flex items-center gap-2">
-                    <CodeIcon className="h-6 w-6 text-primary" />
-                    <h3 className="text-lg font-bold">Personalized Practice</h3>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Get tailored practice questions based on your skill level
-                    and interview needs.
-                  </p>
-                </div>
-                <div className="grid gap-1">
-                  <div className="flex items-center gap-2">
-                    <ReplyIcon className="h-6 w-6 text-primary" />
-                    <h3 className="text-lg font-bold">Instant Feedback</h3>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Receive real-time feedback on your code and performance to
-                    improve quickly.
-                  </p>
-                </div>
-                <div className="grid gap-1">
-                  <div className="flex items-center gap-2">
-                    <BadgeIcon className="h-6 w-6 text-primary" />
-                    <h3 className="text-lg font-bold">Expert Guidance</h3>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Get personalized advice from experienced interviewers to
-                    refine your skills.
-                  </p>
-                </div>
+                <FeaturesSection />
               </div>
             </div>
           </section>
@@ -117,70 +129,14 @@ export default function LandingPage() {
                     Testimonials
                   </div>
                   <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                    What Our Users Say
+                    What companies need in a candidate
                   </h2>
                   <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     Hear from real people who have used our platform to land
                     their dream jobs.
                   </p>
                 </div>
-                <div className="grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-                  <Card className="flex flex-col gap-4 p-6 bg-background shadow-sm transition-shadow hover:shadow-md">
-                    <div className="flex items-center gap-4">
-                      <div>
-                        <h4 className="text-lg font-semibold">John Doe</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Software Engineer
-                        </p>
-                      </div>
-                    </div>
-                    <blockquote className="flex-1">
-                      <p className="text-muted-foreground">
-                        "The AI-powered practice questions and feedback helped
-                        me\n identify and improve my weak areas. I landed my
-                        dream\n job at a top tech company!"
-                      </p>
-                    </blockquote>
-                  </Card>
-                  <Card className="flex flex-col gap-4 p-6 bg-background shadow-sm transition-shadow hover:shadow-md">
-                    <div className="flex items-center gap-4">
-                      <div>
-                        <h4 className="text-lg font-semibold">
-                          Sarah Anderson
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          Software Developer
-                        </p>
-                      </div>
-                    </div>
-                    <blockquote className="flex-1">
-                      <p className="text-muted-foreground">
-                        "I was struggling to prepare for my coding interview\n
-                        until I found this platform. The expert guidance and\n
-                        personalized practice were invaluable."
-                      </p>
-                    </blockquote>
-                  </Card>
-                  <Card className="flex flex-col gap-4 p-6 bg-background shadow-sm transition-shadow hover:shadow-md">
-                    <div className="flex items-center gap-4">
-                      <div>
-                        <h4 className="text-lg font-semibold">
-                          Michael Reeves
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          Software Engineer
-                        </p>
-                      </div>
-                    </div>
-                    <blockquote className="flex-1">
-                      <p className="text-muted-foreground">
-                        "This platform is a game-changer for coding interview\n
-                        preparation. The instant feedback and adaptive
-                        practice\n questions helped me ace my interviews."
-                      </p>
-                    </blockquote>
-                  </Card>
-                </div>
+                <CardHoverEffect />
               </div>
             </div>
           </section>
