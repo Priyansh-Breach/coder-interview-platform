@@ -17,6 +17,10 @@ module.exports = {
       },
     },
     extend: {
+      boxShadow: {
+        "gradient-green":
+          "0 0 10px rgba(34, 193, 195, 0.5), 0 0 20px rgba(34, 193, 195, 0.3), 0 0 30px rgba(34, 193, 195, 0.2)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
