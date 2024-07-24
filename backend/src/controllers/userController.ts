@@ -9,8 +9,21 @@ import { cactchAsyncError } from "../middleware/catchAsyncError";
 import ejs from "ejs";
 import path from "path";
 import { sendMail } from "../Utils/Send Mail/sendMail";
-import { accessTokenOptions, refreshTokenOptions, sendToken } from "../Utils/Jwt/jwt";
+import {
+  accessTokenOptions,
+  refreshTokenOptions,
+  sendToken,
+} from "../Utils/Jwt/jwt";
 import { connectRedis } from "../Database/redisDb";
+import { getUserById } from "../services/userService";
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: IUser;
+    }
+  }
+}
 
 /**
  * User Registration Interface
@@ -221,7 +234,6 @@ export const userLogout = cactchAsyncError(
   }
 );
 
-
 /**
  * Update AccessToken funciton
  */
@@ -280,16 +292,16 @@ export const updateAccessToken = cactchAsyncError(
   }
 );
 
-// /**
-//  * Get User Information function
-//  */
-// export const getUserInformation = cactchAsyncError(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const userId = req.user?._id;
-//       getUserById(userId, res);
-//     } catch (error: any) {
-//       return next(new ErrorHandler(error.message, 400));
-//     }
-//   }
-// );
+/**
+ * Get User Information function
+ */
+export const getUserInformation = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId: string = req.user?._id as string;
+      getUserById(userId, res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
