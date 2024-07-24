@@ -2,14 +2,14 @@
 
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import jwt, { Secret } from "jsonwebtoken";
+import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import { IUser, UserModel } from "../entities/User";
 import ErrorHandler from "../Utils/Error Handler/errorHandler";
 import { cactchAsyncError } from "../middleware/catchAsyncError";
 import ejs from "ejs";
 import path from "path";
 import { sendMail } from "../Utils/Send Mail/sendMail";
-import { sendToken } from "../Utils/Jwt/jwt";
+import { accessTokenOptions, refreshTokenOptions, sendToken } from "../Utils/Jwt/jwt";
 import { connectRedis } from "../Database/redisDb";
 
 /**
@@ -220,3 +220,76 @@ export const userLogout = cactchAsyncError(
     }
   }
 );
+
+
+/**
+ * Update AccessToken funciton
+ */
+export const updateAccessToken = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const refresh_token = req.cookies.refresh_token as string;
+
+      const decoded = jwt.verify(
+        refresh_token,
+        process.env.REFRESH_TOKEN as string
+      ) as JwtPayload;
+
+      const message = "Could not refresh token";
+
+      if (!decoded) {
+        return next(new ErrorHandler(message, 400));
+      }
+
+      const session = await connectRedis.get(decoded.id as string);
+      if (!session) {
+        return next(new ErrorHandler("Please log in to continue.", 400));
+      }
+
+      const user = JSON.parse(session);
+      const accessToken = jwt.sign(
+        { id: user._id },
+        process.env.ACCESS_TOKEN as string,
+        {
+          expiresIn: "5m",
+        }
+      );
+
+      const refreshToken = jwt.sign(
+        { id: user._id },
+        process.env.REFRESH_TOKEN as string,
+        {
+          expiresIn: "3d",
+        }
+      );
+
+      req.user = user;
+
+      res.cookie("access_token", accessToken, accessTokenOptions);
+      res.cookie("refresh_token", refreshToken, refreshTokenOptions);
+
+      await connectRedis.set(user._id, JSON.stringify(user), "EX", 259200); //3 days
+      res.status(200).json({
+        succes: true,
+        status: "success",
+        accessToken,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// /**
+//  * Get User Information function
+//  */
+// export const getUserInformation = cactchAsyncError(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const userId = req.user?._id;
+//       getUserById(userId, res);
+//     } catch (error: any) {
+//       return next(new ErrorHandler(error.message, 400));
+//     }
+//   }
+// );
