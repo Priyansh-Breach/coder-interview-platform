@@ -1,42 +1,82 @@
-// src/middleware/authMiddleware.ts
-
+require("dotenv").config();
 import { Request, Response, NextFunction } from "express";
+import { cactchAsyncError } from "./catchAsyncError";
+import ErrorHandler from "../Utils/Error Handler/errorHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { connectRedis } from "../Database/redisDb";
+import { IUser } from "../entities/User";
 
-interface AuthRequest extends Request {
-  user?: { id: number };
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: IUser;
+    }
+  }
 }
 
-export const authMiddleware = (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  const authHeader = req.header("Authorization");
-  if (!authHeader) {
-    return res.status(401).json({ message: "No token, authorization denied" });
-  }
+/**
+ * User Authentication function
+ */
+export const isUserAuthenticated = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const access_token = req.cookies.access_token;
 
-  const token = authHeader.split(" ")[1];
-  if (!token) {
-    return res.status(401).json({ message: "No token, authorization denied" });
-  }
-
-  try {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      throw new Error("JWT secret is not defined in environment variables");
+    if (!access_token) {
+      return next(
+        new ErrorHandler(
+          "Access to this resource requires authentication. Please log in.",
+          400
+        )
+      );
     }
 
-    const decoded = jwt.verify(token, secret) as JwtPayload & { id: number };
+    let decoded: JwtPayload | null = null;
 
-    if (typeof decoded !== "object" || !decoded.id) {
-      throw new Error("Invalid token payload");
+    try {
+      decoded = jwt.verify(access_token, process.env.ACCESS_TOKEN as string) as JwtPayload;
+    } catch (err) {
+      return next(
+        new ErrorHandler(
+          "Invalid token. Please log in again.",
+          400
+        )
+      );
     }
 
-    req.user = { id: decoded.id };
+    if (!decoded) {
+      return next(
+        new ErrorHandler(
+          "Your login session has expired. Please log in again.",
+          400
+        )
+      );
+    }
+
+    const user = await connectRedis.get(decoded.id);
+
+    if (!user) {
+      return next(new ErrorHandler("Please Log in to continue.", 400));
+    }
+
+    req.user = JSON.parse(user) as IUser;
     next();
-  } catch (error) {
-    res.status(401).json({ message: "Token is not valid" });
   }
+);
+
+/**
+ * User Validation based on Roles
+ */
+export const authorisedRoles = (roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user || !roles.includes(req.user.role || "")) {
+      return next(
+        new ErrorHandler(
+          `Role: ${req.user?.role} is not allowed to access this resource.`,
+          403
+        )
+      );
+    }
+    next();
+  };
 };

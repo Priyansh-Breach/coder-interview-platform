@@ -10,6 +10,7 @@ import ejs from "ejs";
 import path from "path";
 import { sendMail } from "../Utils/Send Mail/sendMail";
 import { sendToken } from "../Utils/Jwt/jwt";
+import { connectRedis } from "../Database/redisDb";
 
 /**
  * User Registration Interface
@@ -155,7 +156,6 @@ export const userActivation = cactchAsyncError(
   }
 );
 
-
 /**
  * User Login Interface
  */
@@ -193,6 +193,28 @@ export const userLogin = cactchAsyncError(
         return next(new ErrorHandler("Invalid email or password.", 400));
       }
       sendToken(user, 200, res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+/**
+ * User Logout function
+ */
+export const userLogout = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.cookie("access_token", "", { maxAge: 1 });
+      res.cookie("refresh_token", "", { maxAge: 1 });
+
+      const userId = req.user?._id || "";
+      connectRedis.del(userId);
+
+      res.status(200).json({
+        success: true,
+        message: "Logged out.",
+      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }

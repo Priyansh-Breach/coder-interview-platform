@@ -70,7 +70,7 @@ export const authApi = apiSlice.injectEndpoints({
     }),
     userLoggedOut: builder.mutation({
       query: () => ({
-        url: "user-logout",
+        url: "users/logout",
         method: "GET",
         credentials: "include" as const,
       }),
