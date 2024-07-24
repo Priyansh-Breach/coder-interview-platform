@@ -9,6 +9,7 @@ import { cactchAsyncError } from "../middleware/catchAsyncError";
 import ejs from "ejs";
 import path from "path";
 import { sendMail } from "../Utils/Send Mail/sendMail";
+import { sendToken } from "../Utils/Jwt/jwt";
 
 /**
  * User Registration Interface
@@ -155,3 +156,45 @@ export const userActivation = cactchAsyncError(
 );
 
 
+/**
+ * User Login Interface
+ */
+interface ILoginRequest {
+  email: string;
+  password: string;
+}
+
+/**
+ * User Login function
+ */
+export const userLogin = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email, password } = req.body as ILoginRequest;
+
+      if (!email || !password) {
+        return next(
+          new ErrorHandler("Please fill in all required fields.", 400)
+        );
+      }
+
+      const user = await UserModel.findOne({ email }).select("+password");
+      if (!user) {
+        return next(
+          new ErrorHandler(
+            "User doesn't exist with the email you entered.",
+            400
+          )
+        );
+      }
+
+      const isPasswordCorrect = await user.comparePassword(password);
+      if (!isPasswordCorrect) {
+        return next(new ErrorHandler("Invalid email or password.", 400));
+      }
+      sendToken(user, 200, res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
