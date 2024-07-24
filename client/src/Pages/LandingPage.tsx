@@ -7,6 +7,7 @@ import { Navbar } from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { FeaturesSection } from "@/components/ui/featureSection";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
+import { FlipWords } from "@/components/ui/flip-words";
 
 function CardHoverEffect() {
   return (
@@ -54,6 +55,8 @@ export const projects = [
   },
 ];
 
+const words = ["interview", "confidence", "challenges", "questions","skills"];
+
 export default function LandingPage() {
   const currentYear = new Date().getFullYear();
   const navigate = useNavigate();
@@ -73,7 +76,7 @@ export default function LandingPage() {
                 <div className="flex flex-col justify-center space-y-4">
                   <div className="space-y-2">
                     <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                      Ace Your Next Coding Interview
+                      Ace Your Next Coding  <FlipWords words={words} />  <br />
                     </h1>
                     <p className="max-w-[600px] text-muted-foreground md:text-xl">
                       Prepare for your coding interview with our AI-powered
