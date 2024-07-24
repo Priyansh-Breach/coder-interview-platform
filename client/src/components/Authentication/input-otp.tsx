@@ -77,7 +77,7 @@ export function InputOtp() {
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold">Enter OTP</h1>
             <p className="text-muted-foreground">
-              Please enter the 6-digit one-time password sent to your phone.
+              Please enter the 6-digit one-time password sent to your email.
             </p>
           </div>
           <form className="space-y-4" onSubmit={verificationHandler}>
