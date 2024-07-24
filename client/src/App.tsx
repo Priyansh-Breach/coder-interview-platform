@@ -4,19 +4,21 @@ import { InterviewPage, LandingPage, LoginPage, SignupPage } from "./Routes";
 import { useLoadUserQuery } from "@/redux/features/Api/apiSlice";
 
 function App() {
-  const { isLoading, isError, data } = useLoadUserQuery(undefined, {});
+  const {} = useLoadUserQuery(undefined, {});
 
   return (
     <>
       <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/sign-up" element={<SignupPage />} />
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/sign-up" element={<SignupPage />} />
 
-          {/**Protected Routes */}
-          <Route path="/interview" element={<InterviewPage />} />
-        </Routes>
+            {/**Protected Routes */}
+            <Route path="/interview" element={<InterviewPage />} />
+          </Routes>
+        </ErrorBoundary>
       </Router>
     </>
   );

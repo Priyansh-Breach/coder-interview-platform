@@ -11,6 +11,17 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../ui/use-toast";
 import { LoadingIcon } from "../ui/Icons/SelectMore";
+import { motion, AnimatePresence } from "framer-motion";
+
+const FadeIn = ({ children }: any) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+    {children}
+  </motion.div>
+);
 
 export function InputOtp() {
   const [value, setValue] = React.useState("");
@@ -60,41 +71,43 @@ export function InputOtp() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-background">
-      <div className="max-w-md w-full space-y-4 px-4">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Enter OTP</h1>
-          <p className="text-muted-foreground">
-            Please enter the 6-digit one-time password sent to your phone.
-          </p>
-        </div>
-        <form className="space-y-4" onSubmit={verificationHandler}>
-          <div className="flex items-center justify-center gap-2">
-            <InputOTP maxLength={6} onChange={(value) => setValue(value)}>
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-              </InputOTPGroup>
-              <InputOTPSeparator />
-              <InputOTPGroup>
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-                <InputOTPSlot index={5} />
-              </InputOTPGroup>
-            </InputOTP>
+    <FadeIn>
+      <div className="flex flex-col items-center justify-center h-screen bg-background">
+        <div className="max-w-md w-full space-y-4 px-4">
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold">Enter OTP</h1>
+            <p className="text-muted-foreground">
+              Please enter the 6-digit one-time password sent to your phone.
+            </p>
           </div>
-          <Button type="submit" className="w-full">
-            {isLoading ? (
-              <>
-                <LoadingIcon />
-              </>
-            ) : (
-              <>({"Verify OTP"})</>
-            )}
-          </Button>
-        </form>
+          <form className="space-y-4" onSubmit={verificationHandler}>
+            <div className="flex items-center justify-center gap-2">
+              <InputOTP maxLength={6} onChange={(value) => setValue(value)}>
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                </InputOTPGroup>
+                <InputOTPSeparator />
+                <InputOTPGroup>
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
+            <Button type="submit" className="w-full">
+              {isLoading ? (
+                <>
+                  <LoadingIcon />
+                </>
+              ) : (
+                <>({"Verify OTP"})</>
+              )}
+            </Button>
+          </form>
+        </div>
       </div>
-    </div>
+    </FadeIn>
   );
 }
