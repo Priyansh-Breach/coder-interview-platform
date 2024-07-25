@@ -16,12 +16,23 @@ function App() {
   const { isLoading, data } = useLoadUserQuery(undefined, {});
 
   useEffect(() => {
-    initializeAppAsync().then(() => {
+    const initializeAppAsyncs = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      initializeAppAsync();
       console.log("App initialized successfully");
+    };
+
+    const refreshTokenFuncs = () => {
+      refreshTokenFunc();
+      console.log("Token refreshed");
+    };
+
+    initializeAppAsyncs().then(() => {
+      console.log("Initialization complete, starting token refresh interval");
     });
 
     const refreshToken = setInterval(() => {
-      refreshTokenFunc();
+      refreshTokenFuncs();
     }, 5 * 60 * 1000);
 
     return () => clearInterval(refreshToken);
