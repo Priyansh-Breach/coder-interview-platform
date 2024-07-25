@@ -17,15 +17,15 @@ import MonacoEditor from "@/components/CodeEditor";
 const InterviewPage: React.FC = () => {
     const [aiResponse, setAiResponse] = useState<string>("");
 
-    useEffect(() => {
-        socket.on("aiResponse", (response: string) => {
-            setAiResponse(response);
-        });
+    // useEffect(() => {
+    //     socket.on("aiResponse", (response: string) => {
+    //         setAiResponse(response);
+    //     });
 
-        return () => {
-            socket.off("aiResponse");
-        };
-    }, []);
+    //     return () => {
+    //         socket.off("aiResponse");
+    //     };
+    // }, []);
 
     return (
         <div>
