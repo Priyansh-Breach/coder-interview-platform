@@ -1,14 +1,16 @@
 import { cn } from "@/lib/utils";
 import {
-  IconAdjustmentsBolt,
   IconCloud,
   IconCurrencyDollar,
   IconEaseInOut,
-  IconHeart,
-  IconHelp,
-  IconRouteAltLeft,
   IconTerminal2,
 } from "@tabler/icons-react";
+import {
+  Brain,
+  MonitorCheckIcon,
+  NotebookTabsIcon,
+  UserRoundPenIcon,
+} from "lucide-react";
 
 export function FeaturesSection() {
   const features = [
@@ -19,43 +21,46 @@ export function FeaturesSection() {
       icon: <IconTerminal2 />,
     },
     {
-      title: "Ease of use",
+      title: "Real-time Coding Interviews",
       description:
-        "It's as easy as using an Apple, and as expensive as buying one.",
+        "Simulated coding interviews with a live code editor and output console.",
       icon: <IconEaseInOut />,
     },
     {
-      title: "Pricing like no other",
+      title: "Mock Interviews",
       description:
-        "Our prices are best in the market. No cap, no lock, no credit card required.",
+        "Full-length mock interviews with varying levels of difficulty.",
       icon: <IconCurrencyDollar />,
     },
     {
       title: "100% Uptime guarantee",
-      description: "We just cannot be taken down by anyone.",
+      description:
+        "We are available a 100% of the time. Atleast our AI Agents are.",
       icon: <IconCloud />,
     },
     {
-      title: "Multi-tenant Architecture",
-      description: "You can simply share passwords instead of buying new seats",
-      icon: <IconRouteAltLeft />,
-    },
-    {
-      title: "24/7 Customer Support",
+      title: "Solution Optimization",
       description:
-        "We are available a 100% of the time. Atleast our AI Agents are.",
-      icon: <IconHelp />,
+        "AI-driven suggestions to improve code efficiency and readability.",
+      icon: <Brain />,
     },
     {
-      title: "Money back guarantee",
+      title: "Progress Tracking",
       description:
-        "If you donot like EveryAI, we will convince you to like us.",
-      icon: <IconAdjustmentsBolt />,
+        "Dashboard for users to monitor their performance over time.",
+      icon: <MonitorCheckIcon />,
     },
     {
-      title: "And everything else",
-      description: "I just ran out of copy ideas. Accept my sincere apologies",
-      icon: <IconHeart />,
+      title: "Detailed Explanations",
+      description:
+        "Step-by-step breakdowns of solutions and alternative approaches.",
+      icon: <NotebookTabsIcon />,
+    },
+    {
+      title: "Behavioral Interview Prep",
+      description:
+        "Practice sessions for explaining problem-solving approaches and thought processes.",
+      icon: <UserRoundPenIcon />,
     },
   ];
   return (

@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MetaData } from "@/lib/MetaData/metaData";
@@ -12,11 +11,11 @@ import { FlipWords } from "@/components/ui/flip-words";
 function CardHoverEffect() {
   return (
     <div className="max-w-5xl mx-auto px-8">
-      <HoverEffect items={projects} />
+      <HoverEffect items={companies} />
     </div>
   );
 }
-export const projects = [
+export const companies = [
   {
     title: "Stripe",
     description:
@@ -55,7 +54,7 @@ export const projects = [
   },
 ];
 
-const words = ["interview", "confidence", "challenges", "questions","skills"];
+const words = ["interview", "confidence", "challenge", "question", "skill"];
 
 export default function LandingPage() {
   const currentYear = new Date().getFullYear();
@@ -75,8 +74,14 @@ export default function LandingPage() {
               <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
                 <div className="flex flex-col justify-center space-y-4">
                   <div className="space-y-2">
-                    <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                      Ace Your Next Coding  <FlipWords words={words} />  <br />
+                    <h1 className="text-3xl mt-[5rem]  font-bold  sm:text-5xl xl:text-6xl/none">
+                      <div className=" flex  ">
+                        <div className="text-4xl font-bold ">
+                          {" "}
+                          Ace Your Next Coding <FlipWords words={words} />{" "}
+                          <br />
+                        </div>
+                      </div>
                     </h1>
                     <p className="max-w-[600px] text-muted-foreground md:text-xl">
                       Prepare for your coding interview with our AI-powered
