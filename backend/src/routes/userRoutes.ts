@@ -7,6 +7,7 @@ import {
   userLogout,
   updateAccessToken,
   getUserInformation,
+  giveFeedback,
 } from "../controllers/userController";
 import { isUserAuthenticated } from "../middleware/authMiddleware";
 
@@ -15,6 +16,7 @@ const router = Router();
 router.post("/register", userRegistration);
 router.post("/user-activation", userActivation);
 router.post("/login", userLogin);
+router.post("/feedback", giveFeedback);
 
 /**Protected Routes */
 router.get("/logout", isUserAuthenticated, userLogout);

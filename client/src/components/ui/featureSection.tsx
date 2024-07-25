@@ -10,6 +10,7 @@ import {
   MonitorCheckIcon,
   NotebookTabsIcon,
   UserRoundPenIcon,
+  BrainCircuitIcon
 } from "lucide-react";
 
 export function FeaturesSection() {
@@ -30,7 +31,7 @@ export function FeaturesSection() {
       title: "Mock Interviews",
       description:
         "Full-length mock interviews with varying levels of difficulty.",
-      icon: <IconCurrencyDollar />,
+      icon: <Brain />,
     },
     {
       title: "100% Uptime guarantee",
@@ -42,7 +43,7 @@ export function FeaturesSection() {
       title: "Solution Optimization",
       description:
         "AI-driven suggestions to improve code efficiency and readability.",
-      icon: <Brain />,
+      icon: <BrainCircuitIcon />,
     },
     {
       title: "Progress Tracking",

@@ -16,6 +16,7 @@ import {
 } from "../Utils/Jwt/jwt";
 import { connectRedis } from "../Database/redisDb";
 import { getUserById } from "../services/userService";
+import { FeedbackModel, IFeedback } from "../entities/feedback";
 
 declare global {
   namespace Express {
@@ -302,6 +303,49 @@ export const getUserInformation = cactchAsyncError(
       getUserById(userId, res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+/**
+ * Feedback  Interface
+ */
+interface IFeedbackinterface {
+  userId?: string;
+  feedbackText: string;
+  rating: number;
+}
+
+/**
+ * Feedback Function
+ */
+export const giveFeedback = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { feedbackText, rating, userId } = req.body as IFeedbackinterface;
+
+      if (!feedbackText || !rating) {
+        return next(new ErrorHandler("Fill all the fields.", 400));
+      }
+
+      const feedback = await FeedbackModel.create({
+        feedbackText,
+        rating,
+        userId: userId || "Anonymous",
+      });
+
+      if (!feedback) {
+        return next(
+          new ErrorHandler("Feedback is not uploaded. Try again!", 400)
+        );
+      }
+
+      res.status(201).json({
+        succes: true,
+        message: "Feedback sent. Thank you :)",
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
     }
   }
 );

@@ -54,7 +54,7 @@ export const companies = [
   },
 ];
 
-const words = ["interview", "confidence", "challenge", "question", "skill"];
+const words = ["interview", "challenge", "question", "skill"];
 
 export default function LandingPage() {
   const currentYear = new Date().getFullYear();

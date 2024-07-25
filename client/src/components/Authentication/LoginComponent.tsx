@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,7 +36,7 @@ export const LoginComponent: React.FC<any> = () => {
   async function onSubmit(values: z.infer<typeof LoginFormSchema>) {
     const email: string = values.email;
     const password: string = values.password;
-    console.log(email, password);
+
     await login({ email, password });
   }
 
