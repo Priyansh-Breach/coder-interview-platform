@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
+import { getLocalStorageValue } from '@/lib/Utils/getLocalStorage';
 
 const longCodeSample = `
 function generateCode() {
@@ -55,6 +56,15 @@ const AutoTypingEditor: React.FC = () => {
         return () => clearInterval(timer);
     }, [cursorPos]);
 
+    const [theme, setTheme] = useState<string | null>("dark");
+
+    useEffect(() => {
+      const storedTheme = getLocalStorageValue('vite-ui-theme');
+      if (storedTheme) {
+        setTheme(storedTheme);
+      }
+    }, []);
+
     return (
         <div className="w-full h-full w-full rounded-lg shadow-lg overflow-hidden  ">
             <Editor
@@ -63,7 +73,7 @@ const AutoTypingEditor: React.FC = () => {
                 height="100%"
                 language="javascript"
                 value={code}
-                theme="vs-dark"
+                theme={`vs-${theme}`}
                 options={{ readOnly: true }} // Make the editor read-only to prevent user edits
             />
         </div>

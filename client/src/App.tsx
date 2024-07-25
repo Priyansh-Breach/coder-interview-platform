@@ -56,7 +56,7 @@ function App() {
                   loading={isLoading}
                   userRole={data?.user?.role?.toString()}
                   allowedRoles={["user", "admin"]}
-                  path={"/interview"}
+                  path={"/interview/:params"}
                 >
                   <InterviewPage />
                 </PrivateRoute>

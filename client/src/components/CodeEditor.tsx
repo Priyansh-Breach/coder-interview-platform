@@ -42,8 +42,8 @@ const MonacoEditor: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col w-full h-full rounded-lg shadow-lg overflow-hidden">
-            <div className="flex justify-between items-center border bg-card">
+        <div className="flex flex-col w-full h-full rounded-lg border shadow-lg overflow-hidden">
+            <div className="flex justify-between items-center  bg-card">
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
