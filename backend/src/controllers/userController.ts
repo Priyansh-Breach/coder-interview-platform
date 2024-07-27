@@ -280,7 +280,7 @@ export const updateAccessToken = cactchAsyncError(
 
       res.cookie("access_token", accessToken, accessTokenOptions);
       res.cookie("refresh_token", refreshToken, refreshTokenOptions);
-
+    
       await connectRedis.set(user._id, JSON.stringify(user), "EX", 259200); //3 days
       res.status(200).json({
         succes: true,
