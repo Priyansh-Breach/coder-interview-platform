@@ -1,0 +1,28 @@
+
+> backend@1.0.0 dev
+> ts-node-dev src/server.ts
+
+[INFO] 07:41:50 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.5.3)
+Connected to Redis
+Server is running on port 3000
+MongoDB Connected ac-qvkx58r-shard-00-00.wljaknh.mongodb.net
+
+> backend@1.0.0 dev
+> ts-node-dev src/server.ts
+
+[INFO] 07:51:56 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.5.3)
+Connected to Redis
+Server is running on port 3000
+MongoDB Connected ac-qvkx58r-shard-00-00.wljaknh.mongodb.net
+[INFO] 10:50:29 Restarting: /home/priyanshjhalora/coder-interview-platform/backend/src/app.ts has been modified
+Connected to Redis
+Server is running on port 3000
+MongoDB Connected ac-qvkx58r-shard-00-00.wljaknh.mongodb.net
+
+> backend@1.0.0 dev
+> ts-node-dev src/server.ts
+
+[INFO] 10:51:10 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.5.3)
+Connected to Redis
+Server is running on port 3000
+MongoDB Connected ac-qvkx58r-shard-00-01.wljaknh.mongodb.net

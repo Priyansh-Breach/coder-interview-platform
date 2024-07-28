@@ -1,0 +1,42 @@
+
+> client@0.0.0 dev
+> vite
+
+Failed to resolve dependency: @radix-ui/react-icons, present in 'optimizeDeps.include'
+Failed to resolve dependency: @radix-ui/react-menubar, present in 'optimizeDeps.include'
+Failed to resolve dependency: @mui/icons-material/WhatsApp, present in 'optimizeDeps.include'
+Failed to resolve dependency: @mui/x-data-grid, present in 'optimizeDeps.include'
+Failed to resolve dependency: @radix-ui_react-tabs, present in 'optimizeDeps.include'
+Failed to resolve dependency: @radix-ui_react-alert-dialog, present in 'optimizeDeps.include'
+
+  VITE v5.3.4  ready in 350 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+
+> client@0.0.0 dev
+> vite
+
+Failed to resolve dependency: @radix-ui/react-icons, present in 'optimizeDeps.include'
+Failed to resolve dependency: @radix-ui/react-menubar, present in 'optimizeDeps.include'
+Failed to resolve dependency: @mui/icons-material/WhatsApp, present in 'optimizeDeps.include'
+Failed to resolve dependency: @mui/x-data-grid, present in 'optimizeDeps.include'
+Failed to resolve dependency: @radix-ui_react-tabs, present in 'optimizeDeps.include'
+Failed to resolve dependency: @radix-ui_react-alert-dialog, present in 'optimizeDeps.include'
+
+  VITE v5.3.4  ready in 351 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+Killed
+
+> client@0.0.0 dev
+> vite --host
+
+
+  VITE v5.3.4  ready in 319 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://10.128.0.4:5173/
+10:46:41 AM [vite] .env changed, restarting server...
+10:46:41 AM [vite] server restarted.

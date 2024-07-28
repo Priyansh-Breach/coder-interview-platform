@@ -23,7 +23,7 @@ export const app = express();
  */
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://dronacharya.co"],
+    origin: ["http://localhost:5173", "https://dronacharya.co", "http://34.134.72.92:5173"],
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -34,9 +34,9 @@ const upload = multer({ dest: "uploads/" });
 app.use(express.json());
 app.use(cookieParser());
 
-app.post("/api//interview", upload.single("audio"), handleInterview);
+app.post("/api/interview", upload.single("audio"), handleInterview);
 app.use("/api/users", userRoutes);
-app.use("/api//code", codeRoutes);
+app.use("/api/code", codeRoutes);
 
 
 /**Route not found */
