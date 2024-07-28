@@ -2,7 +2,8 @@
 // src/services/aiService.ts
 import axios from 'axios';
 
-const HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/unsloth/Meta-Llama-3.1-8B";
+const HUGGINGFACE_API_URL =
+  "https://api-inference.huggingface.co/models/unsloth/Meta-Llama-3.1-8B-bnb-4bit";
 const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY;
 
 export const generateResponse = async (
