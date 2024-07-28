@@ -34,7 +34,7 @@ const upload = multer({ dest: "uploads/" });
 app.use(express.json());
 app.use(cookieParser());
 
-app.post("/api/interview", upload.single("audio"), handleInterview);
+app.post("/api/interview",  handleInterview);
 app.use("/api/users", userRoutes);
 app.use("/api/code", codeRoutes);
 

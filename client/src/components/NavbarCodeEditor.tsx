@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { ClockIcon, CodeIcon, BrainCircuitIcon } from "lucide-react";
 import { ProfileComponent } from "./ProfileComponent";
 import DuolingoButton from "./ui/Animata/duolingo";
+import { useGiveInterviewMutation } from "@/redux/features/Interview/interview";
 
 export default function NavbarCodeEditor() {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const intervalRef = useRef<number | null>(null);
+  const [interview, {  }] =
+    useGiveInterviewMutation();
 
   const formatTime = (time: number): string => {
     const minutes = String(Math.floor(time / 60000)).padStart(2, "0");
@@ -40,6 +43,15 @@ export default function NavbarCodeEditor() {
     // Add your code submission logic here
   };
 
+  async function askAiSubmit(values) {
+    const question: string = "";
+    const language: string = "";
+    const code: string = "";
+    const userExplaination: string = "";
+    console.log("Pressed")
+    await interview({ question, language, code, userExplaination });
+  }
+
   useEffect(() => {
     return () => {
       if (intervalRef.current !== null) {
@@ -64,9 +76,8 @@ export default function NavbarCodeEditor() {
           <ClockIcon className="w-5 h-5" />
           <span>{formatTime(elapsedTime)}</span>
         </div>
-        <DuolingoButton title={"Ask ai"}/>
-          
-        <Button  onClick={handleSubmit} variant={"ghost"}>
+        <button onClick={askAiSubmit}>ask ai</button>
+        <Button onClick={handleSubmit} variant={"ghost"}>
           Submit
         </Button>
       </div>
