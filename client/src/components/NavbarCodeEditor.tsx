@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ClockIcon, CodeIcon, BrainCircuitIcon } from "lucide-react";
 import { ProfileComponent } from "./ProfileComponent";
+import DuolingoButton from "./ui/Animata/duolingo";
 
 export default function NavbarCodeEditor() {
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -63,10 +64,8 @@ export default function NavbarCodeEditor() {
           <ClockIcon className="w-5 h-5" />
           <span>{formatTime(elapsedTime)}</span>
         </div>
-        <Button variant={"default"} className="flex flex-row gap-2 font-semibold">
-          <BrainCircuitIcon className="h-4 w-4" />
-          Ask Ai
-        </Button>
+        <DuolingoButton title={"Ask ai"}/>
+          
         <Button  onClick={handleSubmit} variant={"ghost"}>
           Submit
         </Button>
