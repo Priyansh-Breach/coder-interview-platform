@@ -1,6 +1,7 @@
 import { Package2 } from "lucide-react";
 import { FeedbackForm } from "./Feedback";
 import { ProfileComponent } from "./ProfileComponent";
+import { BrainCircuit } from "lucide-react";
 
 export function Navbar() {
   return (
@@ -11,7 +12,7 @@ export function Navbar() {
             href="#"
             className="flex items-center gap-2 text-lg font-semibold md:text-base"
           >
-            <Package2 className="h-6 w-6" />
+            <BrainCircuit className="h-6 w-6" />
           </a>
           <FeedbackForm />
         </nav>

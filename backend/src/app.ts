@@ -5,7 +5,6 @@ import express, { NextFunction, Response, Request } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import multer from "multer";
-import { handleInterview } from "./controllers/interviewController";
 
 import ErrorMiddleware from "./middleware/errorHandler";
 import { transcribeAudio } from "./services/speechToTextService";
@@ -16,6 +15,7 @@ import path from "path";
 import userRoutes from "./routes/userRoutes";
 import codeRoutes from "./routes/codeRoutes";
 import interviewRoutes from "./routes/interviewRoutes";
+import explorePageRoutes from "./routes/explorePageRoutes";
 
 export const app = express();
 
@@ -42,6 +42,7 @@ app.use(cookieParser());
 app.use("/api", interviewRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/code", codeRoutes);
+app.use("/api/explore", explorePageRoutes);
 
 /**Route not found */
 app.use("*", (req: Request, res: Response, next: NextFunction) => {

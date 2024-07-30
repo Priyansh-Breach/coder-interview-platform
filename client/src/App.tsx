@@ -6,6 +6,7 @@ import {
   LoginPage,
   SignupPage,
   NotFound404Page,
+  ExplorePage,
 } from "./Routes";
 import { useLoadUserQuery } from "@/redux/features/Api/apiSlice";
 import PrivateRoute from "./components/PrivateRoute";
@@ -34,10 +35,10 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/sign-up" element={<SignupPage />} />
-
+            <Route path="/explore" element={<ExplorePage/>} />
             {/**Protected Routes */}
             <Route
-              path="/interview"
+              path="/interview/:params"
               element={
                 <PrivateRoute
                   route={"/login"}
