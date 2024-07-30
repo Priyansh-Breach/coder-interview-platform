@@ -35,7 +35,6 @@ const InterviewPage: React.FC = () => {
       />
       <div>
         <NavbarCodeEditor />
-        
       </div>
       <ResizablePanelGroup
         direction="horizontal"
@@ -43,13 +42,13 @@ const InterviewPage: React.FC = () => {
       >
         <ResizablePanel defaultSize={50}>
           <div className="flex h-full items-center justify-center p-6">
-            <QuestionScreen question={"Questions will appear here."} />
+            <QuestionScreen />
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50}>
           <div className="flex h-full items-center justify-center p-4">
-            <MonacoEditor />
+            <MonacoEditor  />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

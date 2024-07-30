@@ -15,6 +15,7 @@ import path from "path";
 
 import userRoutes from "./routes/userRoutes";
 import codeRoutes from "./routes/codeRoutes";
+import interviewRoutes from "./routes/interviewRoutes";
 
 export const app = express();
 
@@ -23,7 +24,11 @@ export const app = express();
  */
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://dronacharya.co", "http://34.134.72.92:5173"],
+    origin: [
+      "http://localhost:5173",
+      "https://dronacharya.co",
+      "http://34.134.72.92:5173",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -34,10 +39,9 @@ const upload = multer({ dest: "uploads/" });
 app.use(express.json());
 app.use(cookieParser());
 
-app.post("/api/interview",  handleInterview);
+app.use("/api", interviewRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/code", codeRoutes);
-
 
 /**Route not found */
 app.use("*", (req: Request, res: Response, next: NextFunction) => {

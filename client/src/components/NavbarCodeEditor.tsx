@@ -1,15 +1,20 @@
+// src/components/NavbarCodeEditor.tsx
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ClockIcon, CodeIcon, BrainCircuitIcon } from "lucide-react";
+import { ClockIcon, CodeIcon } from "lucide-react";
 import { ProfileComponent } from "./ProfileComponent";
 import DuolingoButton from "./ui/Animata/duolingo";
+import { useAppSelector } from "@/redux/store";
 import { useGiveInterviewMutation } from "@/redux/features/Interview/interview";
 
 export default function NavbarCodeEditor() {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const intervalRef = useRef<number | null>(null);
-  const [interview, {  }] =
+  const code = useAppSelector((state: any) => state.editor.code);
+  const language = useAppSelector((state: any) => state.editor.language);
+
+  const [interview, { isLoading, isSuccess, isError, error, data }] =
     useGiveInterviewMutation();
 
   const formatTime = (time: number): string => {
@@ -43,13 +48,17 @@ export default function NavbarCodeEditor() {
     // Add your code submission logic here
   };
 
-  async function askAiSubmit(values) {
-    const question: string = "";
-    const language: string = "";
-    const code: string = "";
-    const userExplaination: string = "";
-    console.log("Pressed")
-    await interview({ question, language, code, userExplaination });
+  async function askAiSubmit() {
+    const question = "";
+    const userExplanation = "";
+    console.log("Pressed");
+    console.log("Code:", code);
+    console.log("Language:", language);
+    if (code === "") {
+      console.log("Please provide code"); //Toast
+      return;
+    }
+    await interview({ question, language, code, userExplanation });
   }
 
   useEffect(() => {
@@ -76,7 +85,11 @@ export default function NavbarCodeEditor() {
           <ClockIcon className="w-5 h-5" />
           <span>{formatTime(elapsedTime)}</span>
         </div>
-        <button onClick={askAiSubmit}>ask ai</button>
+        <DuolingoButton
+          isLoading={isLoading}
+          title={"Ask ai"}
+          handleSubmit={askAiSubmit}
+        />
         <Button onClick={handleSubmit} variant={"ghost"}>
           Submit
         </Button>

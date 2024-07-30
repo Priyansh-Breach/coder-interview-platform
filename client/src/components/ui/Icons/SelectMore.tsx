@@ -113,7 +113,7 @@ export const LoadingIcon: React.FC = () => {
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      className="animate-spin mr-2"
+      className="animate-spin"
       role="img"
     >
       <path

@@ -1,16 +1,26 @@
+// src/redux/store.ts
 import { configureStore } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { apiSlice } from "./features/Api/apiSlice";
 import authReducer, { setLoading } from "./features/Auth/authSlice";
+import editorReducer from "./features/Interview/editorSlice";
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
     auth: authReducer,
+    editor: editorReducer,
   },
   devTools: false,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
 });
+
+
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
+export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export const refreshTokenFunc = async () => {
   try {
@@ -44,4 +54,3 @@ export const initializeApp = async () => {
 export const initializeAppAsync = () => {
   return initializeApp();
 };
-
