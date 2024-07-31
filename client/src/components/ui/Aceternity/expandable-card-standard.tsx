@@ -21,7 +21,7 @@ const getBadgeColor = (difficulty: any) => {
   }
 };
 
-const Badge = ({ difficulty }: any) => (
+export const Badge = ({ difficulty }: any) => (
   <span
     className={`px-2 py-1 rounded-full text-sm font-semibold tracking-[0.05em] ${getBadgeColor(
       difficulty
@@ -31,7 +31,6 @@ const Badge = ({ difficulty }: any) => (
   </span>
 );
 
-export default Badge;
 
 export function ExpandableCardStandard({ data }: Card) {
   const [active, setActive] = useState<(any)[number] | boolean | null>(

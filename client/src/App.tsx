@@ -38,14 +38,14 @@ function App() {
             <Route path="/explore" element={<ExplorePage/>} />
             {/**Protected Routes */}
             <Route
-              path="/interview/:params"
+              path="/interview/:id"
               element={
                 <PrivateRoute
                   route={"/login"}
                   loading={isLoading}
                   userRole={data?.user?.role?.toString()}
                   allowedRoles={["user", "admin"]}
-                  path={"/interview/:params"}
+                  path={"/interview/:id"}
                 >
                   <InterviewPage />
                 </PrivateRoute>

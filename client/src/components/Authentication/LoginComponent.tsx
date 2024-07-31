@@ -45,7 +45,7 @@ export const LoginComponent: React.FC<any> = () => {
       toast({
         title: `Login success`,
       });
-      navigate("/");
+      navigate("/explore");
     }
 
     if (error) {
