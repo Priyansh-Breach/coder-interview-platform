@@ -4,8 +4,8 @@ import { apiSlice } from "../Api/apiSlice";
 export const explorePageContent = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     searchContent: builder.query({
-      query: (search: string) => ({
-        url: `explore/search?search=${encodeURIComponent(search)}`,
+      query: ({ search, page }: { search: string; page: number }) => ({
+        url: `explore/search?search=${encodeURIComponent(search)}&page=${page}`,
         method: "GET",
         credentials: "include" as const,
       }),

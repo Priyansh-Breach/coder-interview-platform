@@ -1,12 +1,22 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 import { SearchIcon, TrendingUpIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useSearchContentQuery } from "@/redux/features/Explore/explore";
 import { ExpandableCardStandard } from "@/components/ui/Aceternity/expandable-card-standard";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import NotFound from "@/components/notFound";
+import { MetaData } from "@/lib/MetaData/metaData";
 
 const placeholders = [
   "Array",
@@ -24,19 +34,21 @@ const placeholders = [
 
 export default function ExplorePage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [trendingQuestions, setTrendingQuestions] = useState<any[]>([]);
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [trendingQuestions, setTrendingQuestions] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(
+    parseInt(searchParams.get("page") || "1")
+  );
+  const [currentSet, setCurrentSet] = useState<number>(0);
+
+  const navigate = useNavigate();
   const searchQuery = searchParams.get("search") || "";
-  const pageNumber = searchParams.get("page") || "";
 
   const {
     data: searchedData,
     isLoading: searchLoading,
     isError: searchError,
-  } = useSearchContentQuery(searchQuery, {
-    skip: !searchQuery,
-  });
+  } = useSearchContentQuery({ search: searchQuery, page: currentPage });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(e.target.value);
@@ -44,21 +56,86 @@ export default function ExplorePage() {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    navigate(`/explore?search=${encodeURIComponent(searchTerm)}`);
+    navigate(`/explore?search=${encodeURIComponent(searchTerm)}&page=1`);
   };
 
-  useEffect(() => {
-    const fetchTrendingQuestions = async () => {
-      // Fetch trending questions if there is no search term
-      if (!searchQuery) {
-      }
-    };
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      const newPage = currentPage - 1;
+      setCurrentPage(newPage);
+      navigate(
+        `/explore?search=${encodeURIComponent(searchQuery)}&page=${newPage}`
+      );
+    }
+  };
 
-    fetchTrendingQuestions();
-  }, [searchQuery]);
+  const handleNextPage = () => {
+    if (currentPage < (searchedData?.totalPages || 1)) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      navigate(
+        `/explore?search=${encodeURIComponent(searchQuery)}&page=${newPage}`
+      );
+    }
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+    navigate(`/explore?search=${encodeURIComponent(searchQuery)}&page=${page}`);
+  };
+
+  const handlePreviousSet = () => {
+    if (currentSet > 0) {
+      const newSet = currentSet - 1;
+      setCurrentSet(newSet);
+      setCurrentPage(newSet * 5 + 1);
+      navigate(
+        `/explore?search=${encodeURIComponent(searchQuery)}&page=${
+          newSet * 5 + 1
+        }`
+      );
+    }
+  };
+
+  const handleNextSet = () => {
+    if ((currentSet + 1) * 5 < (searchedData?.totalPages || 0)) {
+      const newSet = currentSet + 1;
+      setCurrentSet(newSet);
+      setCurrentPage(newSet * 5 + 1);
+      navigate(
+        `/explore?search=${encodeURIComponent(searchQuery)}&page=${
+          newSet * 5 + 1
+        }`
+      );
+    }
+  };
+
+  const renderPaginationItems = () => {
+    if (!searchedData?.totalPages) return null;
+
+    const start = currentSet * 5;
+    const end = Math.min(start + 5, searchedData.totalPages);
+
+    return Array.from({ length: end - start }, (_, index) => (
+      <PaginationItem key={index + start}>
+        <PaginationLink onClick={() => handlePageClick(index + start + 1)}>
+          {index + start + 1}
+        </PaginationLink>
+      </PaginationItem>
+    ));
+  };
 
   return (
     <>
+      <MetaData
+        title={
+          searchTerm
+            ? `${searchTerm} - coder interview`
+            : `Explore - coder interview`
+        }
+        description="Join our innovative platform where you can give interviews and solve coding problems simultaneously. Enhance your skills with real-time coding challenges and comprehensive interview practice. Prepare for your dream job with our AI-powered educational resources and expert guidance."
+        keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources"
+      />
       <Navbar />
       <div className="flex min-h-screen w-full mt-14">
         <main className="flex-1 border-r bg-background p-6 sm:p-8 md:p-10">
@@ -73,30 +150,31 @@ export default function ExplorePage() {
               />
             </div>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {/* {searchQuery && searchedData?.map((result: any) => (
-              <a
-                key={result.id}
-                href="#"
-                className="group flex flex-col rounded-md border bg-background p-4 transition-colors hover:bg-muted"
-              >
-                <div className="mb-2 text-lg font-medium">{result.title}</div>
-                <div className="text-sm text-muted-foreground">
-                  {result.description}
-                </div>
-                <div className="mt-auto flex items-center justify-between">
-                  <Badge variant="outline" className="text-xs">
-                    {result.difficulty}
-                  </Badge>
-                  <div className="text-xs text-muted-foreground">
-                    <TrendingUpIcon className="mr-1 inline h-4 w-4" />
-                    {result.popularity}
-                  </div>
-                </div>
-              </a>
-            ))} */}
-          </div>
-          <ExpandableCardStandard data={searchedData} />
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"></div>
+          <ExpandableCardStandard data={searchedData?.results} />
+          {searchedData?.results?.length < 1 && <NotFound />}
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious onClick={handlePreviousPage} />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink onClick={handlePreviousSet}>
+                  <PaginationEllipsis />
+                </PaginationLink>
+              </PaginationItem>
+              {renderPaginationItems()}
+              {searchedData?.totalPages}
+              <PaginationItem>
+                <PaginationLink onClick={handleNextSet}>
+                  <PaginationEllipsis />
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext onClick={handleNextPage} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </main>
         <aside className="w-64 border-l bg-background p-6 sm:p-8 md:p-10">
           <div className="mb-6">

@@ -42,7 +42,7 @@ export const ProfileComponent = () => {
             Login
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem onClick={() => navigate("#")}>
+        <DropdownMenuItem onClick={() => navigate("/explore")}>
           <ExploreIcon />
           Explore
         </DropdownMenuItem>

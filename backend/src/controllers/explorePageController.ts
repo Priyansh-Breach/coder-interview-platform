@@ -20,24 +20,37 @@ interface IQuestion {
 export const SearchQuestion = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { search } = req.query as ParsedQs;
+      const { search, page = "1", limit = "50" } = req.query as ParsedQs;
+      console.log(search, page);
 
-      if (typeof search === "string") {
+      const pageNum = parseInt(page as string, 10);
+      const limitNum = parseInt(limit as string, 10);
+      const startIndex = (pageNum - 1) * limitNum;
+      const endIndex = pageNum * limitNum;
+
+      let filteredResults: IQuestion[] = [];
+
+      if (typeof search === "string" && search.trim() !== "") {
         const searchTerm = search.toLowerCase();
-
-        const filteredResults = (QuestionData as IQuestion[]).filter(
+        filteredResults = (QuestionData as IQuestion[]).filter(
           (question) =>
             question.content.toLowerCase().includes(searchTerm) ||
             question.title.toLowerCase().includes(searchTerm)
         );
-
-        res.status(200).json(filteredResults);
       } else {
-        return next(new ErrorHandler("Invalid query parameter", 400));
+        filteredResults = QuestionData as IQuestion[];
       }
+
+      const paginatedResults = filteredResults.slice(startIndex, endIndex);
+
+      res.status(200).json({
+        results: paginatedResults,
+        currentPage: pageNum,
+        totalPages: Math.ceil(filteredResults.length / limitNum),
+        totalResults: filteredResults.length,
+      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
 );
-

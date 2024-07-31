@@ -23,7 +23,7 @@ const getBadgeColor = (difficulty: any) => {
 
 const Badge = ({ difficulty }: any) => (
   <span
-    className={`px-2 py-1 rounded-full text-sm font-semibold ${getBadgeColor(
+    className={`px-2 py-1 rounded-full text-sm font-semibold tracking-[0.05em] ${getBadgeColor(
       difficulty
     )}`}
   >
@@ -157,7 +157,7 @@ export function ExpandableCardStandard({ data }: Card) {
             layoutId={`card-${card.title}-${id}`}
             key={`card-${card.title}-${id}`}
             onClick={() => setActive(card)}
-            className="p-4 m-2 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
+            className={` ${index%2==0?"bg-neutral-50 dark:bg-neutral-900":""} p-4 m-2 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer`}
           >
             <div className="flex gap-4 flex-col md:flex-row ">
               <motion.div layoutId={`image-${card.title}-${id}`}>
