@@ -12,6 +12,7 @@ interface ISearch {
 interface IQuestion {
   content: string;
   title: string;
+  difficulty?: string;
 }
 
 /**
@@ -21,34 +22,33 @@ export const SearchQuestion = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { search, page = "1", limit = "50" } = req.query as ParsedQs;
-      console.log(search, page);
+    
 
-      const pageNum = parseInt(page as string, 10);
-      const limitNum = parseInt(limit as string, 10);
-      const startIndex = (pageNum - 1) * limitNum;
-      const endIndex = pageNum * limitNum;
-
-      let filteredResults: IQuestion[] = [];
-
-      if (typeof search === "string" && search.trim() !== "") {
+      if (typeof search === "string") {
         const searchTerm = search.toLowerCase();
-        filteredResults = (QuestionData as IQuestion[]).filter(
+        const pageNum = parseInt(page as string, 10);
+        const limitNum = parseInt(limit as string, 10);
+        const startIndex = (pageNum - 1) * limitNum;
+        const endIndex = pageNum * limitNum;
+
+        const filteredResults = (QuestionData as IQuestion[]).filter(
           (question) =>
             question.content.toLowerCase().includes(searchTerm) ||
-            question.title.toLowerCase().includes(searchTerm)
+            question.title.toLowerCase().includes(searchTerm) ||
+            (question.difficulty && question.difficulty.toLowerCase().includes(searchTerm))
         );
+
+        const paginatedResults = filteredResults.slice(startIndex, endIndex);
+
+        res.status(200).json({
+          results: paginatedResults,
+          currentPage: pageNum,
+          totalPages: Math.ceil(filteredResults.length / limitNum),
+          totalResults: filteredResults.length,
+        });
       } else {
-        filteredResults = QuestionData as IQuestion[];
+        return next(new ErrorHandler("Invalid query parameter", 400));
       }
-
-      const paginatedResults = filteredResults.slice(startIndex, endIndex);
-
-      res.status(200).json({
-        results: paginatedResults,
-        currentPage: pageNum,
-        totalPages: Math.ceil(filteredResults.length / limitNum),
-        totalResults: filteredResults.length,
-      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }

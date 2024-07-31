@@ -19,6 +19,9 @@ import NotFound from "@/components/notFound";
 import { MetaData } from "@/lib/MetaData/metaData";
 
 const placeholders = [
+  "Easy",
+  "Hard",
+  "Medium",
   "Array",
   "LinkedList",
   "Stacks",
