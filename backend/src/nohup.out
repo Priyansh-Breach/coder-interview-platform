@@ -1,0 +1,130 @@
+
+> backend@1.0.0 dev
+> ts-node-dev src/server.ts
+
+[INFO] 13:30:43 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.5.4)
+Compilation error in /home/priyanshjhalora/coder-interview-platform/backend/src/app.ts
+[ERROR] 13:30:47 ⨯ Unable to compile TypeScript:
+src/app.ts(1,2): error TS1351: An identifier or keyword cannot immediately follow a numeric literal.
+
+[INFO] 13:36:26 Restarting: /home/priyanshjhalora/coder-interview-platform/backend/src/app.ts has been modified
+Compilation error in /home/priyanshjhalora/coder-interview-platform/backend/src/app.ts
+[ERROR] 13:36:33 ⨯ Unable to compile TypeScript:
+src/app.ts(1,2): error TS1351: An identifier or keyword cannot immediately follow a numeric literal.
+
+[INFO] 13:40:34 Restarting: /home/priyanshjhalora/coder-interview-platform/backend/src/app.ts has been modified
+
+> backend@1.0.0 dev
+> ts-node-dev src/server.ts
+
+[INFO] 13:40:45 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.5.4)
+Connected to Redis
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1811:16)
+    at listenInCluster (node:net:1859:12)
+    at Server.listen (node:net:1947:7)
+    at Function.listen (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/home/priyanshjhalora/coder-interview-platform/backend/src/server.ts:10:20)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._compile (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/source-map-support/source-map-support.js:568:25)
+    at Module.m._compile (/tmp/ts-node-dev-hook-24157899103182245.js:69:33)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at require.extensions..jsx.require.extensions..js (/tmp/ts-node-dev-hook-24157899103182245.js:114:20)
+[ERROR] 13:40:47 Error: listen EADDRINUSE: address already in use :::3000
+Connected to Redis
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1811:16)
+    at listenInCluster (node:net:1859:12)
+    at Server.listen (node:net:1947:7)
+    at Function.listen (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/home/priyanshjhalora/coder-interview-platform/backend/src/server.ts:10:20)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._compile (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/source-map-support/source-map-support.js:568:25)
+    at Module.m._compile (/tmp/ts-node-dev-hook-43762987584613233.js:69:33)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at require.extensions..jsx.require.extensions..js (/tmp/ts-node-dev-hook-43762987584613233.js:114:20)
+[ERROR] 13:40:54 Error: listen EADDRINUSE: address already in use :::3000
+[INFO] 13:55:13 Restarting: /home/priyanshjhalora/coder-interview-platform/backend/src/services/aiService.ts has been modified
+[INFO] 13:55:13 Restarting: /home/priyanshjhalora/coder-interview-platform/backend/src/services/aiService.ts has been modified
+Connected to Redis
+Connected to Redis
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1811:16)
+    at listenInCluster (node:net:1859:12)
+    at Server.listen (node:net:1947:7)
+    at Function.listen (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/home/priyanshjhalora/coder-interview-platform/backend/src/server.ts:10:20)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._compile (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/source-map-support/source-map-support.js:568:25)
+    at Module.m._compile (/tmp/ts-node-dev-hook-43762987584613233.js:69:33)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at require.extensions..jsx.require.extensions..js (/tmp/ts-node-dev-hook-43762987584613233.js:114:20)
+[ERROR] 13:55:15 Error: listen EADDRINUSE: address already in use :::3000
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1811:16)
+    at listenInCluster (node:net:1859:12)
+    at Server.listen (node:net:1947:7)
+    at Function.listen (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/home/priyanshjhalora/coder-interview-platform/backend/src/server.ts:10:20)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._compile (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/source-map-support/source-map-support.js:568:25)
+    at Module.m._compile (/tmp/ts-node-dev-hook-24157899103182245.js:69:33)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at require.extensions..jsx.require.extensions..js (/tmp/ts-node-dev-hook-24157899103182245.js:114:20)
+[ERROR] 13:55:15 Error: listen EADDRINUSE: address already in use :::3000
+[INFO] 14:05:30 Restarting: /home/priyanshjhalora/coder-interview-platform/backend/src/services/aiService.ts has been modified
+[INFO] 14:05:30 Restarting: /home/priyanshjhalora/coder-interview-platform/backend/src/services/aiService.ts has been modified
+Connected to Redis
+Connected to Redis
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1811:16)
+    at listenInCluster (node:net:1859:12)
+    at Server.listen (node:net:1947:7)
+    at Function.listen (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/home/priyanshjhalora/coder-interview-platform/backend/src/server.ts:10:20)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._compile (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/source-map-support/source-map-support.js:568:25)
+    at Module.m._compile (/tmp/ts-node-dev-hook-24157899103182245.js:69:33)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at require.extensions..jsx.require.extensions..js (/tmp/ts-node-dev-hook-24157899103182245.js:114:20)
+[ERROR] 14:05:31 Error: listen EADDRINUSE: address already in use :::3000
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1811:16)
+    at listenInCluster (node:net:1859:12)
+    at Server.listen (node:net:1947:7)
+    at Function.listen (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/home/priyanshjhalora/coder-interview-platform/backend/src/server.ts:10:20)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._compile (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/source-map-support/source-map-support.js:568:25)
+    at Module.m._compile (/tmp/ts-node-dev-hook-43762987584613233.js:69:33)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at require.extensions..jsx.require.extensions..js (/tmp/ts-node-dev-hook-43762987584613233.js:114:20)
+[ERROR] 14:05:31 Error: listen EADDRINUSE: address already in use :::3000
+[INFO] 14:15:37 Restarting: /home/priyanshjhalora/coder-interview-platform/backend/src/services/aiService.ts has been modified
+[INFO] 14:15:37 Restarting: /home/priyanshjhalora/coder-interview-platform/backend/src/services/aiService.ts has been modified
+Connected to Redis
+Connected to Redis
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1811:16)
+    at listenInCluster (node:net:1859:12)
+    at Server.listen (node:net:1947:7)
+    at Function.listen (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/home/priyanshjhalora/coder-interview-platform/backend/src/server.ts:10:20)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._compile (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/source-map-support/source-map-support.js:568:25)
+    at Module.m._compile (/tmp/ts-node-dev-hook-24157899103182245.js:69:33)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at require.extensions..jsx.require.extensions..js (/tmp/ts-node-dev-hook-24157899103182245.js:114:20)
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1811:16)
+    at listenInCluster (node:net:1859:12)
+    at Server.listen (node:net:1947:7)
+    at Function.listen (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/home/priyanshjhalora/coder-interview-platform/backend/src/server.ts:10:20)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._compile (/home/priyanshjhalora/coder-interview-platform/backend/node_modules/source-map-support/source-map-support.js:568:25)
+    at Module.m._compile (/tmp/ts-node-dev-hook-43762987584613233.js:69:33)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at require.extensions..jsx.require.extensions..js (/tmp/ts-node-dev-hook-43762987584613233.js:114:20)
+[ERROR] 14:15:38 Error: listen EADDRINUSE: address already in use :::3000
+[ERROR] 14:15:38 Error: listen EADDRINUSE: address already in use :::3000

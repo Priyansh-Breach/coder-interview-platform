@@ -1,9 +1,7 @@
 // src/services/aiService.ts
 import axios from "axios";
-import { stringify } from "querystring";
 
-const LLM_API_URL =
-  "https://api-inference.huggingface.co/models/unsloth/Meta-Llama-3.1-8B-bnb-4bit";
+const LLM_API_URL = "http://127.0.0.1:11434/api/generate";
 
 export const generateResponse = async (
   question: string,
@@ -11,17 +9,29 @@ export const generateResponse = async (
   userExplanation: string,
   language: string
 ): Promise<string> => {
-  const prompt = `Role: Interviewer\nGiven the data about coding question, comment on the user's provided approach with respect to the provided solution.\n${question}`;
+  // Construct the prompt with the provided inputs
+  const prompt = `Role: Interviewer\nGiven the data about the coding question, comment on the user's provided approach, code, and explanation. The question is "${question}", the code is "${code}", the explanation is "${userExplanation}", and the language is "${language}".`;
+
+  // Define the request body
+  const requestBody = {
+    model: "llama3",
+    prompt: prompt,
+    stream: false
+  };
+
   try {
-    console.log(question, code, userExplanation, language);
-    const response = await axios.post(
-      LLM_API_URL,
-      prompt
-    );
-    console.log(response.data);
+    console.log("Sending request with:", requestBody);
+
+    // Make the POST request to the LLM API
+    const response = await axios.post(LLM_API_URL, requestBody);
+
+    console.log("Response received:", response.data);
+
+    // Return the generated response
     return response.data;
   } catch (error) {
     console.error("Error generating response:", error);
     throw error;
   }
 };
+
