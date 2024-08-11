@@ -28,6 +28,7 @@ app.use(
       "http://localhost:5173",
       "https://dronacharya.co",
       "http://34.134.72.92:5173",
+      "*",
     ],
     methods: ["GET", "POST"],
     credentials: true,
