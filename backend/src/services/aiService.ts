@@ -14,7 +14,7 @@ export const generateResponse = async (
 
   // Define the request body
   const requestBody = {
-    model: "llama3",
+    model: "llama3.1",
     prompt: prompt,
     stream: false
   };
@@ -25,10 +25,10 @@ export const generateResponse = async (
     // Make the POST request to the LLM API
     const response = await axios.post(LLM_API_URL, requestBody);
 
-    console.log("Response received:", response.data);
+    console.log("Response received:", response.data.response);
 
     // Return the generated response
-    return response.data;
+    return response.data.response;
   } catch (error) {
     console.error("Error generating response:", error);
     throw error;
