@@ -7,6 +7,7 @@ import {
   SignupPage,
   NotFound404Page,
   ExplorePage,
+  InterviewQuestionContextPage,
 } from "./Routes";
 import { useLoadUserQuery } from "@/redux/features/Api/apiSlice";
 import PrivateRoute from "./components/PrivateRoute";
@@ -35,7 +36,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/sign-up" element={<SignupPage />} />
-            <Route path="/explore" element={<ExplorePage/>} />
+            <Route path="/explore" element={<ExplorePage />} />
             {/**Protected Routes */}
             <Route
               path="/interview/:id"
@@ -48,6 +49,20 @@ function App() {
                   path={"/interview/:id"}
                 >
                   <InterviewPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/interview/question-context/:id"
+              element={
+                <PrivateRoute
+                  route={"/login"}
+                  loading={isLoading}
+                  userRole={data?.user?.role?.toString()}
+                  allowedRoles={["user", "admin"]}
+                  path={"/interview/question-context/:id"}
+                >
+                  <InterviewQuestionContextPage />
                 </PrivateRoute>
               }
             />

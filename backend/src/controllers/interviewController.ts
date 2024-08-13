@@ -26,12 +26,12 @@ export const handleAiResponse = cactchAsyncError(
         req.body as IInterview;
       // const userExplanation = await transcribeAudio(audioFilePath);
 
-      const aiResponse = await generateResponse(
-        question,
-        code,
-        userExplaination,
-        language
-      );
+      // const aiResponse = await generateResponse(
+      //   question,
+      //   code,
+      //   userExplaination,
+      //   language
+      // );
 
       const outputDir = path.resolve("output");
       const outputFilePath = path.join(outputDir, "response.mp3");
@@ -40,10 +40,10 @@ export const handleAiResponse = cactchAsyncError(
       // await fs.mkdir(outputDir, { recursive: true });
 
       // await synthesizeSpeech(aiResponse, outputFilePath);
-      console.log(aiResponse);
+    
       // res.sendFile(outputFilePath);
       res.status(201).json({
-        message: aiResponse,
+        message: "aiResponse",
       });
     } catch (error) {
       console.error("Error handling interview:", error);

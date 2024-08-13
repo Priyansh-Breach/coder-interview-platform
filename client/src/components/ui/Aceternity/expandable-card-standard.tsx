@@ -119,11 +119,11 @@ export function ExpandableCardStandard({ data }: Card) {
 
                   <motion.a
                     layoutId={`button-${active.title}-${id}`}
-                    href={`/interview/${active.id}`}
+                    href={`/interview/question-context/${active.id}`}
                     target="_blank"
                   >
                     <DuolingoButton
-                      title="Solve"
+                      title="Interview this"
                       handleSubmit={() => {}}
                       isLoading={false}
                     />

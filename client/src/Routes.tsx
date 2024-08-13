@@ -4,6 +4,7 @@ import LoginPage from "./Pages/Authentication/LoginPage";
 import SignupPage from "./Pages/Authentication/SignupPage";
 import NotFound404Page from "./Pages/N404";
 import ExplorePage from "./Pages/ExplorePage";
+import InterviewQuestionContextPage from "./Pages/interviewQuestionContextPage";
 
 export {
   InterviewPage,
@@ -12,4 +13,5 @@ export {
   SignupPage,
   NotFound404Page,
   ExplorePage,
+  InterviewQuestionContextPage,
 };

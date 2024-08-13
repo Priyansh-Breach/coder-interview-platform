@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { FeaturesSection } from "@/components/ui/featureSection";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { FlipWords } from "@/components/ui/flip-words";
+import DuolingoButton from "@/components/ui/Animata/duolingo";
 
 function CardHoverEffect() {
   return (
@@ -96,9 +97,13 @@ export default function LandingPage() {
                           state: { Key: "/explore" },
                         });
                       }}
-                      className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                      
                     >
-                      Get Started
+                      <DuolingoButton
+                        title="Get Started"
+                        handleSubmit={() => {}}
+                        isLoading={false}
+                      />
                     </a>
                   </div>
                 </div>
