@@ -69,14 +69,18 @@ export const validateInterviewTokenMiddleware = (
   const token = req.cookies["interviewToken"];
 
   if (!token) {
-    console.log("No token provided");
-    return res.status(403).json({ message: "No token provided" });
+    return res
+      .status(403)
+      .json({ message: "No token provided, Restart the interview process." });
   }
 
   jwt.verify(token, INTERVIEW_JWT_SECRET, (err: any, decoded: any) => {
     if (err) {
-      console.log("Invalid or expired token");
-      return res.status(403).json({ message: "Invalid or expired token" });
+      return res
+        .status(403)
+        .json({
+          message: "Invalid or expired token, Restart the interview process.",
+        });
     }
     req.user = decoded;
     next();
