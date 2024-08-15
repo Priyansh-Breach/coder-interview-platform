@@ -11,18 +11,18 @@ import {
 
 const router = Router();
 
-router.get(
-  "/getQuestion/:id",
-  isUserAuthenticated,
-  validateInterviewTokenMiddleware,
-  getQuestionData
-);
-
 router.post(
   "/interview",
   isUserAuthenticated,
   generateInterviewTokenMiddleware,
   handleAiResponse
+);
+
+router.get(
+  "/getQuestion/:id",
+  isUserAuthenticated,
+  validateInterviewTokenMiddleware,
+  getQuestionData
 );
 
 export default router;
