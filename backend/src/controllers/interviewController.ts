@@ -9,6 +9,13 @@ import QuestionData from "../Database/Questions/leetcode-solutions.json";
 import ErrorHandler from "../Utils/Error Handler/errorHandler";
 import { generateQuestionContext } from "../services/aiService";
 
+interface IQuestion {
+  id: string;
+  content: string;
+  title: string;
+  difficulty?: string;
+}
+
 interface IQuestionContext {
   questionId: string;
 }
@@ -21,7 +28,7 @@ export const handleAiQuestionContext = cactchAsyncError(
     try {
       const { questionId } = req.body as IQuestionContext;
 
-      const questionData = (QuestionData as any).find(
+      const questionData = (QuestionData as IQuestion[]).find(
         (question: any) => question.id === questionId
       );
 
@@ -29,7 +36,8 @@ export const handleAiQuestionContext = cactchAsyncError(
         return next(new ErrorHandler("Question not found", 404));
       }
 
-      const questionContext = await generateQuestionContext(questionData, "", "", "")
+      const questionContext = await generateQuestionContext(questionData.content, "", "", "")
+
       res.status(200).json({
         message: questionContext,
       });
@@ -87,12 +95,6 @@ interface IQuestionId {
   id: string;
 }
 
-interface IQuestion {
-  id: string;
-  content: string;
-  title: string;
-  difficulty?: string;
-}
 /**
  * Return the question based on Params id
  */
