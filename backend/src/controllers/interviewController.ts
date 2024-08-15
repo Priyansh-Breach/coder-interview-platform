@@ -1,6 +1,5 @@
 // src/controllers/interviewController.ts
 import { cactchAsyncError } from "../middleware/catchAsyncError";
-import { generateResponse } from "../services/aiService";
 import { transcribeAudio } from "../services/speechToTextService";
 import { synthesizeSpeech } from "../services/textToSpeechService";
 import { NextFunction, Request, Response } from "express";
@@ -8,6 +7,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import QuestionData from "../Database/Questions/leetcode-solutions.json";
 import ErrorHandler from "../Utils/Error Handler/errorHandler";
+import { generateQuestionContext } from "../services/aiService";
 
 interface IQuestionContext {
   questionId: string;
@@ -21,9 +21,19 @@ export const handleAiQuestionContext = cactchAsyncError(
     try {
       const { questionId } = req.body as IQuestionContext;
 
+      const questionData = (QuestionData as any).find(
+        (question: any) => question.id === questionId
+      );
+
+      if (!questionData) {
+        return next(new ErrorHandler("Question not found", 404));
+      }
+
+      const questionContext = await generateQuestionContext(questionData, "", "", "")
       res.status(200).json({
-        message: questionId,
+        message: questionContext,
       });
+
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }

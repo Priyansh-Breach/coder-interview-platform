@@ -3,19 +3,19 @@ import axios from "axios";
 
 const LLM_API_URL = "http://127.0.0.1:11434/api/generate";
 
-export const generateResponse = async (
+export const generateQuestionContext = async (
   question: string,
   code: string,
   userExplanation: string,
   language: string
 ): Promise<string> => {
   // Construct the prompt with the provided inputs
-  const prompt = `Role: Interviewer\nGiven the data about the coding question, comment on the user's provided approach, code, and explanation. The question is "${question}", the code is "${code}", the explanation is "${userExplanation}", and the language is "${language}".`;
+  const prompt = `${question}`;
 
   // Define the request body
   const requestBody = {
-    model: "llama3.1",
-    prompt: prompt,
+    model: "temp",
+    prompt: `{ "question": ${prompt}}`,
     stream: false
   };
 

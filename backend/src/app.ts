@@ -8,7 +8,7 @@ import multer from "multer";
 
 import ErrorMiddleware from "./middleware/errorHandler";
 import { transcribeAudio } from "./services/speechToTextService";
-import { generateResponse } from "./services/aiService";
+import { generateQuestionContext } from "./services/aiService";
 import { promises as fs } from "fs";
 import path from "path";
 
