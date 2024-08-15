@@ -5,7 +5,7 @@ import { ClockIcon, CodeIcon } from "lucide-react";
 import { ProfileComponent } from "./ProfileComponent";
 import DuolingoButton from "./ui/Animata/duolingo";
 import { useAppSelector } from "@/redux/store";
-import { useGiveInterviewMutation } from "@/redux/features/Interview/interview";
+// import { useGiveInterviewMutation } from "@/redux/features/Interview/interview";
 
 export default function NavbarCodeEditor() {
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -14,8 +14,8 @@ export default function NavbarCodeEditor() {
   const code = useAppSelector((state: any) => state.editor.code);
   const language = useAppSelector((state: any) => state.editor.language);
 
-  const [interview, { isLoading, isSuccess, isError, error, data }] =
-    useGiveInterviewMutation();
+  // const [interview, { isLoading, isSuccess, isError, error, data }] =
+  //   useGiveInterviewMutation();
 
   const formatTime = (time: number): string => {
     const minutes = String(Math.floor(time / 60000)).padStart(2, "0");
@@ -58,7 +58,7 @@ export default function NavbarCodeEditor() {
       console.log("Please provide code"); //Toast
       return;
     }
-    await interview({ question, language, code, userExplanation });
+    // await interview({ question, language, code, userExplanation });
   }
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export default function NavbarCodeEditor() {
           <span>{formatTime(elapsedTime)}</span>
         </div>
         <DuolingoButton
-          isLoading={isLoading}
+          isLoading={false}
           title={"Ask ai"}
           handleSubmit={askAiSubmit}
         />

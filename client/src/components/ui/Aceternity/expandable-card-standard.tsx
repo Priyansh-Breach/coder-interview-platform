@@ -3,6 +3,9 @@ import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import DuolingoButton from "../Animata/duolingo";
+import { useStartInterviewMutation } from "@/redux/features/Interview/interview";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Card {
   data: any;
@@ -31,13 +34,13 @@ export const Badge = ({ difficulty }: any) => (
   </span>
 );
 
-
 export function ExpandableCardStandard({ data }: Card) {
-  const [active, setActive] = useState<(any)[number] | boolean | null>(
-    null
-  );
+  const [active, setActive] = useState<any[number] | boolean | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
+  const navigate = useNavigate();
+  const [startInterview, {}] = useStartInterviewMutation();
+  const { toast } = useToast();
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -57,6 +60,18 @@ export function ExpandableCardStandard({ data }: Card) {
   }, [active]);
 
   useOutsideClick(ref, () => setActive(null));
+
+  const handleSubmit = async () => {
+    try {
+      await startInterview({}).unwrap();
+      navigate(`/interview/question-context/${active.id}`);
+    } catch (err: any) {
+      toast({
+        title: "Failed to start interview",
+        description: `${err?.data?.message}`,
+      });
+    }
+  };
 
   return (
     <>
@@ -119,7 +134,8 @@ export function ExpandableCardStandard({ data }: Card) {
 
                   <motion.a
                     layoutId={`button-${active.title}-${id}`}
-                    href={`/interview/question-context/${active.id}`}
+                    onClick={handleSubmit}
+                    // href={`/interview/question-context/${active.id}`}
                     target="_blank"
                   >
                     <DuolingoButton
@@ -156,7 +172,9 @@ export function ExpandableCardStandard({ data }: Card) {
             layoutId={`card-${card.title}-${id}`}
             key={`card-${card.title}-${id}`}
             onClick={() => setActive(card)}
-            className={` ${index%2==0?"bg-neutral-50 dark:bg-neutral-900":""} p-4 m-2 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer`}
+            className={` ${
+              index % 2 == 0 ? "bg-neutral-50 dark:bg-neutral-900" : ""
+            } p-4 m-2 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer`}
           >
             <div className="flex gap-4 flex-col md:flex-row ">
               <motion.div layoutId={`image-${card.title}-${id}`}>

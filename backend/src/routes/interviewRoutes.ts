@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   handleAiResponse,
   getQuestionData,
+  handleAiQuestionContext,
 } from "../controllers/interviewController";
 import { isUserAuthenticated } from "../middleware/authMiddleware";
 import {
@@ -12,10 +13,19 @@ import {
 const router = Router();
 
 router.post(
-  "/interview",
+  "/start-Interview",
   isUserAuthenticated,
   generateInterviewTokenMiddleware,
-  handleAiResponse
+  (req, res) => {
+    res.json({ token: "Interview Activated" });
+  }
+);
+
+router.post(
+  "/question-context",
+  isUserAuthenticated,
+  validateInterviewTokenMiddleware,
+  handleAiQuestionContext
 );
 
 router.get(

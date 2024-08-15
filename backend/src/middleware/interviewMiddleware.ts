@@ -56,7 +56,7 @@ export const generateInterviewTokenMiddleware = async (
   await connectRedis.set(redisKey, interviewToken, "EX", 45 * 60);
 
   req.interviewToken = interviewToken;
-
+  res.status(200);
   next();
 };
 

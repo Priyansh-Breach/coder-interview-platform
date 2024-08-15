@@ -40,7 +40,7 @@ const upload = multer({ dest: "uploads/" });
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api", interviewRoutes);
+app.use("/api/interview", interviewRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/code", codeRoutes);
 app.use("/api/explore", explorePageRoutes);

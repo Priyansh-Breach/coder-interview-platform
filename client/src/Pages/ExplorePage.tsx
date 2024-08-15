@@ -43,7 +43,7 @@ export default function ExplorePage() {
     parseInt(searchParams.get("page") || "1")
   );
   const [currentSet, setCurrentSet] = useState<number>(0);
-
+ 
   const navigate = useNavigate();
   const searchQuery = searchParams.get("search") || "";
 

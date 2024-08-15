@@ -9,6 +9,27 @@ import path from "path";
 import QuestionData from "../Database/Questions/leetcode-solutions.json";
 import ErrorHandler from "../Utils/Error Handler/errorHandler";
 
+interface IQuestionContext {
+  questionId: string;
+}
+/**
+ * Ai Response based on question it gives question context
+ */
+
+export const handleAiQuestionContext = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { questionId } = req.body as IQuestionContext;
+
+      res.status(200).json({
+        message: questionId,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }
+);
+
 interface IInterview {
   question: string;
   code: string;
@@ -21,7 +42,6 @@ interface IInterview {
 export const handleAiResponse = cactchAsyncError(
   async (req: Request, res: Response) => {
     try {
-      console.log(req.body);
       const { question, code, language, userExplaination } =
         req.body as IInterview;
       // const userExplanation = await transcribeAudio(audioFilePath);
@@ -40,7 +60,7 @@ export const handleAiResponse = cactchAsyncError(
       // await fs.mkdir(outputDir, { recursive: true });
 
       // await synthesizeSpeech(aiResponse, outputFilePath);
-    
+
       // res.sendFile(outputFilePath);
       res.status(201).json({
         message: "aiResponse",
