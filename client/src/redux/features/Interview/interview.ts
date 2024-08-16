@@ -17,15 +17,15 @@ export const interviewApi = apiSlice.injectEndpoints({
     //   }),
     // }),
     startInterview: builder.mutation({
-      query: () => ({
-        url: "interview/start-Interview",
+      query: ({ id }) => ({
+        url: `interview/start-Interview/${id}`,
         method: "POST",
         credentials: "include" as const,
       }),
     }),
     questionContext: builder.mutation({
       query: ({ questionId }) => ({
-        url: "interview/question-context",
+        url: `interview/question-context/${questionId}`,
         method: "POST",
         body: {
           questionId,

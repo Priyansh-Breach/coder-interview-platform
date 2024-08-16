@@ -13,7 +13,7 @@ import {
 const router = Router();
 
 router.post(
-  "/start-Interview",
+  "/start-Interview/:id",
   isUserAuthenticated,
   generateInterviewTokenMiddleware,
   (req, res) => {
@@ -22,7 +22,7 @@ router.post(
 );
 
 router.post(
-  "/question-context",
+  "/question-context/:id",
   isUserAuthenticated,
   validateInterviewTokenMiddleware,
   handleAiQuestionContext

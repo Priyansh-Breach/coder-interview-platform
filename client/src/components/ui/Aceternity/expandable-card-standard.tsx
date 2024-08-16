@@ -59,10 +59,10 @@ export function ExpandableCardStandard({ data }: Card) {
   }, [active]);
 
   useOutsideClick(ref, () => setActive(null));
-
+  console.log(active?.id);
   const handleSubmit = async () => {
     try {
-      await startInterview({}).unwrap();
+      await startInterview({ id: active?.id }).unwrap();
     } catch (err: any) {
       toast({
         title: "Failed to start interview",

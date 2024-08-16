@@ -17,42 +17,56 @@ declare global {
   }
 }
 
+
 export const generateInterviewTokenMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const { user } = req;
+  const { id } = req.params;
 
-  if (!user || !user._id) {
-    return res.status(400).json({ message: "User not authenticated" });
+  if (!user || !user._id || !id) {
+    return res
+      .status(400)
+      .json({ message: "User or question ID not provided" });
   }
 
-  const redisKey = `${user._id}InterviewToken`;
+  
+  const keys = await connectRedis.keys(`${user._id}InterviewToken*`);
 
-  const existingToken = await connectRedis.get(redisKey);
+  if (keys.length > 0) {
+    const existingToken = await connectRedis.get(keys[0]); 
 
-  if (existingToken) {
-    try {
-      const decoded = jwt.verify(
-        existingToken,
-        INTERVIEW_JWT_SECRET
-      ) as jwt.JwtPayload;
+    if (existingToken) {
+      try {
+        const decoded = jwt.verify(
+          existingToken,
+          INTERVIEW_JWT_SECRET
+        ) as jwt.JwtPayload;
 
-      if (decoded && Date.now() / 1000 < decoded.exp!) {
-        return res.status(403).json({
-          message:
-            "You already have an active interview session. Please either leave the interview or complete that session, or you can create a new interview after it reaches its time limit.",
-        });
+        if (decoded && Date.now() / 1000 < decoded.exp!) {
+          return res.status(403).json({
+            message:
+              "You already have an active interview session. Please either leave the interview or complete the session before starting a new one.",
+          });
+        }
+      } catch (err) {
+    
+        await connectRedis.del(keys[0]);
       }
-    } catch (err) {
-      await connectRedis.del(redisKey);
     }
   }
 
-  const interviewToken = jwt.sign({ userId: user._id }, INTERVIEW_JWT_SECRET, {
-    expiresIn: "45m",
-  });
+  const redisKey = `${user._id}InterviewToken${id}`;
+
+  const interviewToken = jwt.sign(
+    { userId: user._id, id }, 
+    INTERVIEW_JWT_SECRET,
+    {
+      expiresIn: "45m",
+    }
+  );
 
   await connectRedis.set(redisKey, interviewToken, "EX", 45 * 60);
 
@@ -61,33 +75,37 @@ export const generateInterviewTokenMiddleware = async (
   next();
 };
 
+
 export const validateInterviewTokenMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const { user } = req;
+  const { id } = req.params;
 
-  if (!user || !user._id) {
-    return res.status(400).json({ message: "User not authenticated" });
+  if (!user || !user._id || !id) {
+    return res
+      .status(400)
+      .json({ message: "User or question ID not provided" });
   }
 
-  const redisKey = `${user._id}InterviewToken`;
+  const redisKey = `${user._id}InterviewToken${id}`;
 
   const token = await connectRedis.get(redisKey);
 
   if (!token) {
     return res.status(403).json({
       message:
-        "No active interview session found. Please restart the interview process.",
+        "No active interview session found for this question. Please restart the interview process.",
     });
   }
 
   jwt.verify(token, INTERVIEW_JWT_SECRET, (err: any, decoded: any) => {
-    if (err) {
+    if (err || decoded.id !== id) {
       return res.status(403).json({
         message:
-          "Invalid or expired token. Please restart the interview process.",
+          "Invalid or expired token for this question. Please restart the interview process.",
       });
     }
 
