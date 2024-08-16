@@ -28,7 +28,7 @@ export const generateInterviewTokenMiddleware = async (
     return res.status(400).json({ message: "User not authenticated" });
   }
 
-  const redisKey = `${user._id}token`;
+  const redisKey = `${user._id}InterviewToken`;
 
   const existingToken = await connectRedis.get(redisKey);
 
@@ -40,9 +40,10 @@ export const generateInterviewTokenMiddleware = async (
       ) as jwt.JwtPayload;
 
       if (decoded && Date.now() / 1000 < decoded.exp!) {
-        return res
-          .status(403)
-          .json({ message: "You already have an active interview session." });
+        return res.status(403).json({
+          message:
+            "You already have an active interview session. Please either leave the interview or complete that session, or you can create a new interview after it reaches its time limit.",
+        });
       }
     } catch (err) {
       await connectRedis.del(redisKey);
@@ -71,7 +72,7 @@ export const validateInterviewTokenMiddleware = async (
     return res.status(400).json({ message: "User not authenticated" });
   }
 
-  const redisKey = `${user._id}token`;
+  const redisKey = `${user._id}InterviewToken`;
 
   const token = await connectRedis.get(redisKey);
 

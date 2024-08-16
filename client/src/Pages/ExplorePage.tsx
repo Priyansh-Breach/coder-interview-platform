@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/pagination";
 import NotFound from "@/components/notFound";
 import { MetaData } from "@/lib/MetaData/metaData";
+import { ExpandableCardGrid } from "@/components/ui/Aceternity/expandable-card-grid";
 
 const placeholders = [
   "Easy",
@@ -43,7 +44,7 @@ export default function ExplorePage() {
     parseInt(searchParams.get("page") || "1")
   );
   const [currentSet, setCurrentSet] = useState<number>(0);
- 
+
   const navigate = useNavigate();
   const searchQuery = searchParams.get("search") || "";
 
@@ -140,7 +141,7 @@ export default function ExplorePage() {
         keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources"
       />
       <Navbar />
-      <div className="flex min-h-screen w-full mt-14">
+      <div className="flex flex-col-reverse  min-h-screen w-full mt-14">
         <main className="flex-1 border-r bg-background p-6 sm:p-8 md:p-10">
           <div className="mb-6 flex items-center justify-between">
             <h1 className="text-2xl font-bold">Questions</h1>
@@ -179,25 +180,14 @@ export default function ExplorePage() {
             </PaginationContent>
           </Pagination>
         </main>
-        <aside className="w-64 border-l bg-background p-6 sm:p-8 md:p-10">
+        <aside className="w-full border-b bg-background p-6 sm:p-8 md:p-10">
           <div className="mb-6">
-            <h2 className="text-lg font-bold">Trending Questions</h2>
+            <h2 className="text-2xl font-bold">Your Interviews</h2>
             <div className="mt-4 space-y-4">
-              {trendingQuestions.map((question: any) => (
-                <a
-                  key={question.id}
-                  href="#"
-                  className="group flex items-center justify-between rounded-md bg-muted p-3 transition-colors hover:bg-accent"
-                >
-                  <div className="text-sm font-medium">{question.title}</div>
-                  <div className="text-xs text-muted-foreground">
-                    <TrendingUpIcon className="mr-1 inline h-4 w-4" />
-                    {question.popularity}
-                  </div>
-                </a>
-              ))}
+              <ExpandableCardGrid />
             </div>
           </div>
+          
         </aside>
       </div>
     </>
