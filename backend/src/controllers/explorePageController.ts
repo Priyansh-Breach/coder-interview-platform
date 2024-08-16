@@ -22,7 +22,6 @@ export const SearchQuestion = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { search, page = "1", limit = "50" } = req.query as ParsedQs;
-    
 
       if (typeof search === "string") {
         const searchTerm = search.toLowerCase();
@@ -31,6 +30,7 @@ export const SearchQuestion = cactchAsyncError(
         const startIndex = (pageNum - 1) * limitNum;
         const endIndex = pageNum * limitNum;
 
+       
         const filteredResults = (QuestionData as IQuestion[]).filter(
           (question) =>
             question.content.toLowerCase().includes(searchTerm) ||
@@ -38,10 +38,18 @@ export const SearchQuestion = cactchAsyncError(
             (question.difficulty && question.difficulty.toLowerCase().includes(searchTerm))
         );
 
+        
         const paginatedResults = filteredResults.slice(startIndex, endIndex);
 
+        const mappedResults = paginatedResults.map((question:any) => ({
+          id: question?.id,
+          title: question?.title,
+          difficulty: question?.difficulty,
+          content: question?.content,
+        }));
+
         res.status(200).json({
-          results: paginatedResults,
+          results: mappedResults,
           currentPage: pageNum,
           totalPages: Math.ceil(filteredResults.length / limitNum),
           totalResults: filteredResults.length,
@@ -54,3 +62,4 @@ export const SearchQuestion = cactchAsyncError(
     }
   }
 );
+
