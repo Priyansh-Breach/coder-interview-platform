@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import DuolingoButton from "../Animata/duolingo";
 import { useStartInterviewMutation } from "@/redux/features/Interview/interview";
-import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { Navigate } from "react-router-dom";
 
 interface Card {
   data: any;
@@ -38,8 +38,7 @@ export function ExpandableCardStandard({ data }: Card) {
   const [active, setActive] = useState<any[number] | boolean | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
-  const navigate = useNavigate();
-  const [startInterview, {}] = useStartInterviewMutation();
+  const [startInterview, { isSuccess }] = useStartInterviewMutation();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -64,7 +63,6 @@ export function ExpandableCardStandard({ data }: Card) {
   const handleSubmit = async () => {
     try {
       await startInterview({}).unwrap();
-      navigate(`/interview/question-context/${active.id}`);
     } catch (err: any) {
       toast({
         title: "Failed to start interview",
@@ -131,7 +129,12 @@ export function ExpandableCardStandard({ data }: Card) {
                       {active.title}
                     </motion.h3>
                   </div>
-
+                  {isSuccess && (
+                    <Navigate
+                      to={`/interview/question-context/${active.id}`}
+                      replace={true}
+                    />
+                  )}
                   <motion.a
                     layoutId={`button-${active.title}-${id}`}
                     onClick={handleSubmit}

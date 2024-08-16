@@ -1,32 +1,36 @@
+// PrivateRoute.tsx
+
 import React, { ReactNode } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useLoadUserQuery } from "@/redux/features/Api/apiSlice";
 
 interface PrivateRouteProps {
   allowedRoles: string[];
-  userRole: string;
+  userRole: string | null | undefined;
   children: ReactNode;
-  path: any;
-  loading: any;
-  route: any;
+  loading: boolean;
+  route: string;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({
   allowedRoles,
-  userRole,
   children,
-  path,
-  loading,
   route,
 }) => {
-  if (loading) {
-    return;
+  const { isLoading, data } = useLoadUserQuery(undefined, {});
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  if (!userRole || !allowedRoles.includes(userRole)) {
-    return <Navigate to={route || "/"} replace />;
+  if (!data?.user?.role) {
+    return <Navigate to={route || "/login"} replace />;
   }
 
-  // User has the required role, render the Route component
+  if (!allowedRoles.includes(data?.user?.role)) {
+    return <Navigate to={route || "/login"} replace />;
+  }
+
   return <>{children}</>;
 };
 
