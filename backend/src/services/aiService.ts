@@ -1,16 +1,33 @@
-// src/services/aiService.ts
 import axios from "axios";
-import { stringify } from "querystring";
 
 const LLM_API_URL = "http://127.0.0.1:11434/api/generate";
+
+// Utility function to handle streaming data
+const handleStream = (
+  stream: ReadableStream,
+  callback: (data: string) => void
+) => {
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+
+  const read = () => {
+    reader.read().then(({ done, value }) => {
+      if (done) {
+        return;
+      }
+      callback(decoder.decode(value, { stream: true }));
+      read();
+    });
+  };
+
+  read();
+};
 
 export const generateQuestionContext = async (
   question: string
 ): Promise<string> => {
-  // Construct the prompt with the provided inputs
   const prompt = `${question}`;
 
-  // Define the request body
   const requestBody = {
     model: "temp",
     prompt: `{ "question": ${prompt}}`,
@@ -19,13 +36,23 @@ export const generateQuestionContext = async (
   try {
     console.log("Sending request with:", requestBody);
 
-    // Make the POST request to the LLM API
-    const response = await axios.post(LLM_API_URL, requestBody);
+    const response = await axios.post(LLM_API_URL, requestBody, {
+      responseType: "stream", // Set the response type to stream
+    });
 
-    console.log("Response received:", response.data.response);
+    let fullResponse = "";
 
-    // Return the generated response
-    return response.data.response;
+    handleStream(response.data, (chunk) => {
+      fullResponse += chunk;
+      console.log("Received chunk:", chunk);
+    });
+
+    return new Promise((resolve) => {
+      response.data.on("end", () => {
+        console.log("Full response received:", fullResponse);
+        resolve(fullResponse);
+      });
+    });
   } catch (error) {
     console.error("Error generating response:", error);
     throw error;
@@ -38,15 +65,13 @@ export const generateResponse = async (
   userCurrentApproach: string,
   userCode: any
 ): Promise<string> => {
-  // Construct the prompt with the provided inputs
-  const prompt = stringify({
+  const prompt = JSON.stringify({
     question: question,
     conversation_log: conversationLog,
     user_current_approach: userCurrentApproach,
     user_code: userCode,
   });
 
-  // Define the request body
   const requestBody = {
     model: "temp2",
     prompt: prompt,
@@ -55,13 +80,23 @@ export const generateResponse = async (
   try {
     console.log("Sending request with:", requestBody);
 
-    // Make the POST request to the LLM API
-    const response = await axios.post(LLM_API_URL, requestBody);
+    const response = await axios.post(LLM_API_URL, requestBody, {
+      responseType: "stream",
+    });
 
-    console.log("Response received:", response.data.response);
+    let fullResponse = "";
 
-    // Return the generated response
-    return response.data.response;
+    handleStream(response.data, (chunk) => {
+      fullResponse += chunk;
+      console.log("Received chunk:", chunk);
+    });
+
+    return new Promise((resolve) => {
+      response.data.on("end", () => {
+        console.log("Full response received:", fullResponse);
+        resolve(fullResponse);
+      });
+    });
   } catch (error) {
     console.error("Error generating response:", error);
     throw error;
