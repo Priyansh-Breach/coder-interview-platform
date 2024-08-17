@@ -27,7 +27,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 
 const testFormSchema = z.object({
-  userCurrentApproach: z.string().min(10).max(250),
+  userCurrentApproach: z.string(),
   userCode: z.string().min(2).max(50)
 })
 
@@ -54,6 +54,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   async function onSubmit(values: z.infer<typeof testFormSchema>) {
     try {
       await testAiResponse({ userCurrentApproach: values?.userCurrentApproach, userCode: values?.userCode, questionId: id })
+      console.log(testData)
     } catch (error: any) {
       console.log(testError)
     }
