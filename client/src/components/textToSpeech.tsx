@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { Volume2Icon } from "lucide-react";
+import React, { useState, useEffect } from "react";
 
 interface ITTS {
-  text: string
+  text: string;
 }
 
 const TextToSpeech: React.FC<ITTS> = ({ text }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
+  const [selectedVoice, setSelectedVoice] =
+    useState<SpeechSynthesisVoice | null>(null);
   const [rate, setRate] = useState(1.2); // Default rate is 1
 
   useEffect(() => {
-    if (!('speechSynthesis' in window)) {
-      alert('Text-to-Speech is not supported in this browser.');
+    if (!("speechSynthesis" in window)) {
+      alert("Text-to-Speech is not supported in this browser.");
       return;
     }
 
@@ -20,7 +22,9 @@ const TextToSpeech: React.FC<ITTS> = ({ text }) => {
       const voiceList = window.speechSynthesis.getVoices();
       setVoices(voiceList);
 
-      const voice = voices.find(v => v.name === "Microsoft Ravi - English (India)") || voiceList[0];
+      const voice =
+        voices.find((v) => v.name === "Microsoft Ravi - English (India)") ||
+        voiceList[0];
       setSelectedVoice(voice);
     };
 
@@ -37,7 +41,7 @@ const TextToSpeech: React.FC<ITTS> = ({ text }) => {
   const handleSpeak = () => {
     console.log(text);
     if (!selectedVoice) {
-      alert('No voice selected.');
+      alert("No voice selected.");
       return;
     }
 
@@ -57,9 +61,15 @@ const TextToSpeech: React.FC<ITTS> = ({ text }) => {
   };
 
   return (
-    <div>
-      <button onClick={handleSpeak} disabled={isSpeaking}>
-        {isSpeaking ? 'Speaking...' : 'Speak'}
+    <div >
+      <button className="border cursor-pointer  w-fit p-2 rounded  mx-2 " onClick={handleSpeak} disabled={isSpeaking}>
+        {isSpeaking ? (
+          "Speaking..."
+        ) : (
+          <>
+            <Volume2Icon className="h-4 w-4" />
+          </>
+        )}
       </button>
     </div>
   );

@@ -11,7 +11,6 @@ import {
 import { useQuestionContextMutation } from "@/redux/features/Interview/interview";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTestairesponseMutation } from "@/redux/features/Interview/interview";
-import { Volume2Icon } from "lucide-react"
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useAppSelector } from "@/redux/store";
 
@@ -25,10 +24,8 @@ const intervieweeStatements = [
   "Should I prioritize time or space?",
   "I'll handle the edge cases now.",
   "I'll use depth-first search here.",
-  "Want a quick dry run of the code?"
+  "Want a quick dry run of the code?",
 ];
-
-
 
 const InterviewQuestionContextPage: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -37,8 +34,15 @@ const InterviewQuestionContextPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [questionContext, { isLoading, isSuccess, isError, error, data }] =
     useQuestionContextMutation();
-  const [testAiResponse, { isLoading: testLoading, isSuccess: testSuccess, error: testError, data: testData }] =
-    useTestairesponseMutation();
+  const [
+    testAiResponse,
+    {
+      isLoading: testLoading,
+      isSuccess: testSuccess,
+      error: testError,
+      data: testData,
+    },
+  ] = useTestairesponseMutation();
   const code = useAppSelector((state: any) => state.editor.code);
   const language = useAppSelector((state: any) => state.editor.language);
 
@@ -49,13 +53,17 @@ const InterviewQuestionContextPage: React.FC = () => {
   async function onSubmit(e: any) {
     e.preventDefault();
     try {
-      await testAiResponse({ userCurrentApproach: userCurrentApproach, userCode: code, questionId: id, language: language })
-      console.log(testData)
+      await testAiResponse({
+        userCurrentApproach: userCurrentApproach,
+        userCode: code,
+        questionId: id,
+        language: language,
+      });
+      console.log(testData);
     } catch (error: any) {
-      console.log(testError)
+      console.log(testError);
     }
   }
-
 
   useEffect(() => {
     if (id) {
@@ -66,13 +74,11 @@ const InterviewQuestionContextPage: React.FC = () => {
     }
   }, [id, questionContext, navigate]);
 
-
   return (
     <div className="min-h-screen flex flex-col w-full items-center ">
-      <Card className="border rounded-lg w-full text-start self-center">
-        <div className="border cursor-pointer  w-fit p-2 rounded mt-2 mx-2" >
-          {/* <Volume2Icon className="h-4 w-4" /> */}
-          <TextToSpeech text={data?.message}/>
+      <Card className="border rounded-lg max-w-3xl mx-auto mt-5 w-full text-start self-center">
+        <div>
+          <TextToSpeech text={data?.message || error?.data?.message} />
         </div>
         <CardHeader>
           <CardTitle>
@@ -86,18 +92,14 @@ const InterviewQuestionContextPage: React.FC = () => {
           ) : isError ? (
             <p> {error?.data?.message}</p>
           ) : (
-            <p>
-              {data?.message || "Null"
-              }
-            </p>
+            <p>{data?.message || "Null"}</p>
           )}
         </CardContent>
         <CardFooter>
           <CardDescription>&copy; {currentYear} coderinterview</CardDescription>
         </CardFooter>
       </Card>
-      <div className="bottom-0 fixed left-0 w-full z-[900] ">
-
+      <div className="bottom-6 fixed left-0 w-full z-[900] ">
         <PlaceholdersAndVanishInput
           placeholders={intervieweeStatements}
           onChange={handleChange}
