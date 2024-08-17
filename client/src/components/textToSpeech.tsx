@@ -4,7 +4,7 @@ interface ITTS {
   text: string
 }
 
-const TextToSpeech: React.FC<ITTS> = ({text}) => {
+const TextToSpeech: React.FC<ITTS> = ({ text }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
@@ -19,7 +19,8 @@ const TextToSpeech: React.FC<ITTS> = ({text}) => {
     const updateVoices = () => {
       const voiceList = window.speechSynthesis.getVoices();
       setVoices(voiceList);
-      const voice = voices.find(v => v.name === "Microsoft Ravi - English (India)") || voices[0];
+
+      const voice = voices.find(v => v.name === "Microsoft Ravi - English (India)") || voiceList[0];
       setSelectedVoice(voice);
     };
 
@@ -32,10 +33,6 @@ const TextToSpeech: React.FC<ITTS> = ({text}) => {
       window.speechSynthesis.onvoiceschanged = null;
     };
   }, []);
-
-  const handleRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRate(parseFloat(event.target.value));
-  };
 
   const handleSpeak = () => {
     console.log(text);
