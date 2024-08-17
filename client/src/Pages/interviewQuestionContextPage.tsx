@@ -72,7 +72,7 @@ const InterviewQuestionContextPage: React.FC = () => {
       <Card className="border rounded-lg w-full text-start self-center">
         <div className="border cursor-pointer  w-fit p-2 rounded mt-2 mx-2" >
           {/* <Volume2Icon className="h-4 w-4" /> */}
-          <TextToSpeech text={"I think, the most efficient approach here is to use a hash map for constant-time lookups."}/>
+          <TextToSpeech text={data?.message}/>
         </div>
         <CardHeader>
           <CardTitle>

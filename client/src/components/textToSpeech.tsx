@@ -7,7 +7,7 @@ interface ITTS {
 const TextToSpeech: React.FC<ITTS> = ({text}) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>("Microsoft Ravi - English(India)");
+  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [rate, setRate] = useState(1.2); // Default rate is 1
 
   useEffect(() => {
