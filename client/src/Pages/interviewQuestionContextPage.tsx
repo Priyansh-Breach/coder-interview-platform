@@ -28,7 +28,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 const testFormSchema = z.object({
   userCurrentApproach: z.string(),
-  userCode: z.string().min(2).max(50)
+  userCode: z.string()
 })
 
 
