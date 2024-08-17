@@ -17,14 +17,18 @@ import { setQuestionData } from "@/redux/features/Interview/editorSlice";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SolutionScreen } from "@/components/solutionScreen";
 import { InterviewQuestionContextPage } from "@/Routes";
-import { ScrollArea } from "@/components/ui/scroll-area"
-
-
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Brain, CodeXml, EyeOff } from "lucide-react";
+import { TableOfContents } from "@/components/ui/Icons/SelectMore";
 const InterviewPage: React.FC = () => {
   const [aiResponse, setAiResponse] = useState<string>("");
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
-
+  const [showPanel1, setShowPanel1] = useState<boolean>(true);
+  const [showPanel2, setShowPanel2] = useState<boolean>(true);
+  const [showPanel3, setShowPanel3] = useState<boolean>(true);
+  // Calculate the number of visible panels
+  const visiblePanels = [showPanel1, showPanel2].filter(Boolean).length;
   const {
     data: question,
     isError,
@@ -66,51 +70,112 @@ const InterviewPage: React.FC = () => {
       <div>
         <NavbarCodeEditor />
       </div>
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="min-h-screen max-w-screen rounded-lg border"
-      >
-        <ResizablePanel defaultSize={50}>
-          <ResizablePanelGroup
-            direction="vertical"
-          >
-            <ResizablePanel defaultSize={50} className="h-full w-full overflow-auto" >
-              <ScrollArea className="h-screen w-full rounded-md border">
+      <div className="flex h-screen w-screen">
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="w-full h-full rounded-lg border"
+        >
+          <ResizablePanel defaultSize={50} className="relative">
+            <ResizablePanelGroup direction="vertical" className="h-full">
+              {showPanel1 && (
+                <ResizablePanel
+                  defaultSize={visiblePanels === 1 ? 100 : 50}
+                  className="relative"
+                >
+                  {visiblePanels > 1 && (
+                    <button
+                      onClick={() => setShowPanel1(false)}
+                      className="absolute top-1 left-1 z-10 p-2 rounded"
+                    >
+                      <EyeOff className="h-4 w-4" />
+                    </button>
+                  )}
+                  <ScrollArea className="h-full w-full rounded-md border">
+                    <div className="flex items-center justify-center p-6">
+                      <Tabs defaultValue="question" className="w-full">
+                        <TabsList>
+                          <TabsTrigger value="question">Question</TabsTrigger>
+                          <TabsTrigger value="solution">Solution</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="question">
+                          <QuestionScreen />
+                        </TabsContent>
+                        <TabsContent value="solution">
+                          <SolutionScreen />
+                        </TabsContent>
+                      </Tabs>
+                    </div>
+                  </ScrollArea>
+                </ResizablePanel>
+              )}
+              {showPanel1 && showPanel2 && <ResizableHandle withHandle />}
+              {showPanel2 && (
+                <ResizablePanel
+                  defaultSize={visiblePanels === 1 ? 100 : 50}
+                  className="relative"
+                >
+                  {visiblePanels > 1 && (
+                    <button
+                      onClick={() => setShowPanel2(false)}
+                      className="absolute top-2 left-1 z-10    p-2 rounded"
+                    >
+                      <EyeOff className="h-4 w-4" />
+                    </button>
+                  )}
+                  <ScrollArea className="h-full w-full rounded-md border">
+                    <div className="flex w-full p-2 pt-8">
+                      <InterviewQuestionContextPage />
+                    </div>
+                  </ScrollArea>
+                </ResizablePanel>
+              )}
+            </ResizablePanelGroup>
+          </ResizablePanel>
 
-                <div className="flex items-center justify-center p-6">
-                  <Tabs defaultValue="question" className="w-full">
-                    <TabsList>
-                      <TabsTrigger value="question">Question</TabsTrigger>
-                      <TabsTrigger value="solution">Solution</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="question">
-                      <QuestionScreen />
-                    </TabsContent>
-                    <TabsContent value="solution">
-                      <SolutionScreen />
-                    </TabsContent>
-                  </Tabs>
-                </div>
-              </ScrollArea>
-            </ResizablePanel>
+          {(showPanel1 || showPanel2) && showPanel3 && (
             <ResizableHandle withHandle />
+          )}
 
-            <ResizablePanel defaultSize={50}>
-              <ScrollArea className="h-screen w-full rounded-md border">
-                <div className="flex w-full p-2">
-                  <InterviewQuestionContextPage />
-                </div>
-              </ScrollArea>
+          {showPanel3 && (
+            <ResizablePanel defaultSize={50} className="relative">
+              <button
+                onClick={() => setShowPanel3(false)}
+                className="absolute top-5 right-5 z-10  p-2 rounded"
+              >
+                <EyeOff className="h-4 w-4" />
+              </button>
+              <div className="flex h-full items-center justify-center p-4">
+                <MonacoEditor />
+              </div>
             </ResizablePanel>
-          </ResizablePanelGroup>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={50}>
-          <div className="flex h-full items-center justify-center p-4">
-            <MonacoEditor />
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+          )}
+        </ResizablePanelGroup>
+
+        {!showPanel1 && (
+          <button
+            onClick={() => setShowPanel1(true)}
+            className="absolute bottom-2 left-5 z-[1000] p-2 rounded-full bg-green-500"
+          >
+            <TableOfContents />
+          </button>
+        )}
+        {!showPanel2 && (
+          <button
+            onClick={() => setShowPanel2(true)}
+            className="absolute bottom-2 left-5 z-[1000]  p-2 rounded-full bg-green-500"
+          >
+            <Brain />
+          </button>
+        )}
+        {!showPanel3 && (
+          <button
+            onClick={() => setShowPanel3(true)}
+            className="absolute bottom-2 left-16 z-[1000] p-2 rounded-full bg-green-500"
+          >
+            <CodeXml />
+          </button>
+        )}
+      </div>
     </div>
   );
 };
