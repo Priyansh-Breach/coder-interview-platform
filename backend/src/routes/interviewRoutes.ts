@@ -35,4 +35,11 @@ router.get(
   getQuestionData
 );
 
+router.post(
+  "/test-airesponse/:id",
+  isUserAuthenticated,
+  validateInterviewTokenMiddleware,
+  handleAiResponse
+);
+
 export default router;

@@ -7,7 +7,11 @@ import { promises as fs } from "fs";
 import path from "path";
 import QuestionData from "../Database/Questions/leetcode-solutions.json";
 import ErrorHandler from "../Utils/Error Handler/errorHandler";
-import { generateQuestionContext } from "../services/aiService";
+import {
+  generateQuestionContext,
+  generateResponse,
+} from "../services/aiService";
+import { stringify } from "querystring";
 
 interface IQuestion {
   id: string;
@@ -36,12 +40,13 @@ export const handleAiQuestionContext = cactchAsyncError(
         return next(new ErrorHandler("Question not found", 404));
       }
 
-      const questionContext = await generateQuestionContext(questionData.content, "", "", "")
+      const questionContext = await generateQuestionContext(
+        questionData.content
+      );
 
       res.status(200).json({
         message: questionContext,
       });
-
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -49,39 +54,50 @@ export const handleAiQuestionContext = cactchAsyncError(
 );
 
 interface IInterview {
-  question: string;
-  code: string;
+  questionId: string;
   language: string;
-  userExplaination: string;
+  userCurrentApproach: string;
+  userCode: string;
 }
+
+interface IConversation {
+  user: string;
+  ai: string | null;
+}
+
 /**
  * Ai Response based on user input
  */
 export const handleAiResponse = cactchAsyncError(
   async (req: Request, res: Response) => {
+    console.log(req.body);
     try {
-      const { question, code, language, userExplaination } =
+      const { userCurrentApproach, questionId, userCode } =
         req.body as IInterview;
-      // const userExplanation = await transcribeAudio(audioFilePath);
+      const questionData = (QuestionData as IQuestion[]).find(
+        (question) => question.id === questionId
+      );
 
-      // const aiResponse = await generateResponse(
-      //   question,
-      //   code,
-      //   userExplaination,
-      //   language
-      // );
+      const conversationArray = [] as IConversation[];
 
-      const outputDir = path.resolve("output");
-      const outputFilePath = path.join(outputDir, "response.mp3");
+      if (userCurrentApproach) {
+        const aiResponse = await generateResponse(
+          questionData,
+          conversationArray,
+          userCurrentApproach,
+          userCode
+        );
 
-      // Ensure the output directory exists
-      // await fs.mkdir(outputDir, { recursive: true });
+        conversationArray.push({
+          user: userCurrentApproach,
+          ai: aiResponse,
+        });
+      }
 
-      // await synthesizeSpeech(aiResponse, outputFilePath);
-
-      // res.sendFile(outputFilePath);
       res.status(201).json({
+        questionData: questionData,
         message: "aiResponse",
+        conversation: conversationArray,
       });
     } catch (error) {
       console.error("Error handling interview:", error);

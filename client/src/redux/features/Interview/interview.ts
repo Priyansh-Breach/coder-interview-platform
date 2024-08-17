@@ -3,19 +3,18 @@ import { apiSlice } from "../Api/apiSlice";
 /** Route regarding the feedback */
 export const interviewApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // giveInterview: builder.mutation({
-    //   query: ({ question, language, code, userExplaination }) => ({
-    //     url: "/interview/question-context",
-    //     method: "POST",
-    //     body: {
-    //       question,
-    //       language,
-    //       code,
-    //       userExplaination,
-    //     },
-    //     credentials: "include" as const,
-    //   }),
-    // }),
+    testairesponse: builder.mutation({
+      query: ({ userCurrentApproach, questionId, userCode }) => ({
+        url: `interview/test-airesponse/${questionId}`,
+        method: "POST",
+        body: {
+          userCurrentApproach,
+          questionId,
+          userCode,
+        },
+        credentials: "include" as const,
+      }),
+    }),
     startInterview: builder.mutation({
       query: ({ id }) => ({
         url: `interview/start-Interview/${id}`,
@@ -47,4 +46,5 @@ export const {
   useQuestionContextMutation,
   useGetQuestionQuery,
   useStartInterviewMutation,
+  useTestairesponseMutation,
 } = interviewApi;
