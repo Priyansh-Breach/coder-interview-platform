@@ -4,12 +4,14 @@ interface Props {
   title: string;
   handleSubmit: (value: any) => void;
   isLoading: boolean;
+  Icon?: any;
 }
 
 export default function DuolingoButton({
   title,
   handleSubmit,
   isLoading,
+  Icon,
 }: Props) {
   return (
     <button
@@ -17,7 +19,7 @@ export default function DuolingoButton({
       role="button"
       onClick={handleSubmit}
     >
-      {isLoading ? <div className="flex items-center justify-center" >{<LoadingIcon />}</div> : <>{title}</>}
+      {isLoading ? <div className="flex items-center justify-center" >{<LoadingIcon />}</div> : <>{title} </>}
 
       <span className="absolute inset-0 -z-10 rounded-lg border-b-4 border-solid border-transparent bg-green-500" />
     </button>

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-const TextToSpeech: React.FC = () => {
-  const [text, setText] = useState('');
+interface ITTS {
+  text: string
+}
+
+const TextToSpeech: React.FC<ITTS> = ({text}) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
-  const [rate, setRate] = useState(0.1); // Default rate is 1
+  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>("Microsoft Ravi - English(India)");
+  const [rate, setRate] = useState(1.2); // Default rate is 1
 
   useEffect(() => {
     if (!('speechSynthesis' in window)) {
@@ -16,9 +19,8 @@ const TextToSpeech: React.FC = () => {
     const updateVoices = () => {
       const voiceList = window.speechSynthesis.getVoices();
       setVoices(voiceList);
-      if (voiceList.length > 0) {
-        setSelectedVoice(voiceList[0]); // Default to the first available voice
-      }
+      const voice = voices.find(v => v.name === "Microsoft Ravi - English (India)") || voices[0];
+      setSelectedVoice(voice);
     };
 
     // Populate voices list
@@ -31,20 +33,12 @@ const TextToSpeech: React.FC = () => {
     };
   }, []);
 
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setText(event.target.value);
-  };
-
-  const handleVoiceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const voice = voices.find(v => v.name === event.target.value) || null;
-    setSelectedVoice(voice);
-  };
-
   const handleRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRate(parseFloat(event.target.value));
   };
 
   const handleSpeak = () => {
+    console.log(text);
     if (!selectedVoice) {
       alert('No voice selected.');
       return;
@@ -67,40 +61,6 @@ const TextToSpeech: React.FC = () => {
 
   return (
     <div>
-      <textarea
-        value={text}
-        onChange={handleChange}
-        rows={5}
-        cols={40}
-        placeholder="Enter text here..."
-      />
-      <div>
-        <label htmlFor="voice-select">Select Voice:</label>
-        <select
-          id="voice-select"
-          onChange={handleVoiceChange}
-          value={selectedVoice?.name || ''}
-        >
-          {voices.map((voice) => (
-            <option key={voice.name} value={voice.name}>
-              {voice.name} ({voice.lang})
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label htmlFor="rate">Speech Rate:</label>
-        <input
-          id="rate"
-          type="range"
-          min="0.1"
-          max="2"
-          step="0.1"
-          value={rate}
-          onChange={handleRateChange}
-        />
-        <span>{rate.toFixed(1)}</span> {/* Display the current rate */}
-      </div>
       <button onClick={handleSpeak} disabled={isSpeaking}>
         {isSpeaking ? 'Speaking...' : 'Speak'}
       </button>

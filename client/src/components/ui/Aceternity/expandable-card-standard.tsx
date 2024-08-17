@@ -131,7 +131,7 @@ export function ExpandableCardStandard({ data }: Card) {
                   </div>
                   {isSuccess && (
                     <Navigate
-                      to={`/interview/question-context/${active.id}`}
+                      to={`/interview/${active.id}`}
                       replace={true}
                     />
                   )}
@@ -143,7 +143,7 @@ export function ExpandableCardStandard({ data }: Card) {
                   >
                     <DuolingoButton
                       title="Interview this"
-                      handleSubmit={() => {}}
+                      handleSubmit={() => { }}
                       isLoading={false}
                     />
                   </motion.a>
@@ -175,9 +175,8 @@ export function ExpandableCardStandard({ data }: Card) {
             layoutId={`card-${card.title}-${id}`}
             key={`card-${card.title}-${id}`}
             onClick={() => setActive(card)}
-            className={` ${
-              index % 2 == 0 ? "bg-neutral-50 dark:bg-neutral-900" : ""
-            } p-4 m-2 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer`}
+            className={` ${index % 2 == 0 ? "bg-neutral-50 dark:bg-neutral-900" : ""
+              } p-4 m-2 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer`}
           >
             <div className="flex gap-4 flex-col md:flex-row ">
               <motion.div layoutId={`image-${card.title}-${id}`}>

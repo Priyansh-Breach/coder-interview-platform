@@ -16,6 +16,9 @@ import { useDispatch } from "react-redux";
 import { setQuestionData } from "@/redux/features/Interview/editorSlice";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SolutionScreen } from "@/components/solutionScreen";
+import { InterviewQuestionContextPage } from "@/Routes";
+import { ScrollArea } from "@/components/ui/scroll-area"
+
 
 const InterviewPage: React.FC = () => {
   const [aiResponse, setAiResponse] = useState<string>("");
@@ -68,20 +71,38 @@ const InterviewPage: React.FC = () => {
         className="min-h-screen max-w-screen rounded-lg border"
       >
         <ResizablePanel defaultSize={50}>
-          <div className="flex items-center justify-center p-6">
-            <Tabs defaultValue="question" className="w-full">
-              <TabsList>
-                <TabsTrigger value="question">Question</TabsTrigger>
-                <TabsTrigger value="solution">Solution</TabsTrigger>
-              </TabsList>
-              <TabsContent value="question">
-                <QuestionScreen />
-              </TabsContent>
-              <TabsContent value="solution">
-                <SolutionScreen />
-              </TabsContent>
-            </Tabs>
-          </div>
+          <ResizablePanelGroup
+            direction="vertical"
+          >
+            <ResizablePanel defaultSize={50} className="h-full w-full overflow-auto" >
+              <ScrollArea className="h-screen w-full rounded-md border">
+
+                <div className="flex items-center justify-center p-6">
+                  <Tabs defaultValue="question" className="w-full">
+                    <TabsList>
+                      <TabsTrigger value="question">Question</TabsTrigger>
+                      <TabsTrigger value="solution">Solution</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="question">
+                      <QuestionScreen />
+                    </TabsContent>
+                    <TabsContent value="solution">
+                      <SolutionScreen />
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </ScrollArea>
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+
+            <ResizablePanel defaultSize={50}>
+              <ScrollArea className="h-screen w-full rounded-md border">
+                <div className="flex w-full p-2">
+                  <InterviewQuestionContextPage />
+                </div>
+              </ScrollArea>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50}>

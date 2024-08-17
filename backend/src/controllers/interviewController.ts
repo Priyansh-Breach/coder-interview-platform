@@ -22,6 +22,7 @@ interface IQuestion {
 
 interface IQuestionContext {
   questionId: string;
+  userQuery: any;
 }
 /**
  * Ai Response based on question it gives question context
@@ -70,22 +71,21 @@ interface IConversation {
  */
 export const handleAiResponse = cactchAsyncError(
   async (req: Request, res: Response) => {
-    console.log(req.body);
     try {
-      const { userCurrentApproach, questionId, userCode } =
+      const { userCurrentApproach, questionId, userCode, language } =
         req.body as IInterview;
       const questionData = (QuestionData as IQuestion[]).find(
         (question) => question.id === questionId
       );
 
       const conversationArray = [] as IConversation[];
-
+      const userCodeandLanguage = `${userCode} is in language ${language}`;
       if (userCurrentApproach) {
         const aiResponse = await generateResponse(
           questionData,
           conversationArray,
           userCurrentApproach,
-          userCode
+          userCodeandLanguage
         );
 
         conversationArray.push({

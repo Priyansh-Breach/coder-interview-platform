@@ -4,13 +4,14 @@ import { apiSlice } from "../Api/apiSlice";
 export const interviewApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     testairesponse: builder.mutation({
-      query: ({ userCurrentApproach, questionId, userCode }) => ({
+      query: ({ userCurrentApproach, questionId, userCode, language }) => ({
         url: `interview/test-airesponse/${questionId}`,
         method: "POST",
         body: {
           userCurrentApproach,
           questionId,
           userCode,
+          language,
         },
         credentials: "include" as const,
       }),

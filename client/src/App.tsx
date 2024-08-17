@@ -7,7 +7,6 @@ import {
   SignupPage,
   NotFound404Page,
   ExplorePage,
-  InterviewQuestionContextPage,
 } from "./Routes";
 import PrivateRoute from "./components/PrivateRoute";
 import { initializeAppAsync, refreshTokenFunc } from "@/redux/store";
@@ -34,7 +33,7 @@ function App() {
     return () => clearInterval(refreshToken);
   }, []);
 
-  
+
 
   return (
     <>
@@ -58,18 +57,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route
-              path="/interview/question-context/:id"
-              element={
-                <PrivateRoute
-                  route={"/login"}
-                  allowedRoles={["user", "admin"]}
-                  path={"/interview/question-context/:id"}
-                >
-                  <InterviewQuestionContextPage />
-                </PrivateRoute>
-              }
-            />
+
             <Route path="*" element={<NotFound404Page />} />
           </Routes>
         </ErrorBoundary>

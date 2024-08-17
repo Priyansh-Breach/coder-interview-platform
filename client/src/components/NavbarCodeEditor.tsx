@@ -85,11 +85,7 @@ export default function NavbarCodeEditor() {
           <ClockIcon className="w-5 h-5" />
           <span>{formatTime(elapsedTime)}</span>
         </div>
-        <DuolingoButton
-          isLoading={false}
-          title={"Ask ai"}
-          handleSubmit={askAiSubmit}
-        />
+       
         <Button onClick={handleSubmit} variant={"ghost"}>
           Submit
         </Button>

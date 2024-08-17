@@ -14,7 +14,6 @@ export const generateQuestionContext = async (
   const requestBody = {
     model: "temp",
     prompt: `{ "question": ${prompt}}`,
-    stream: false,
   };
 
   try {
@@ -35,25 +34,22 @@ export const generateQuestionContext = async (
 
 export const generateResponse = async (
   question: any,
-  conversationLog: any, 
+  conversationLog: any,
   userCurrentApproach: string,
   userCode: any
 ): Promise<string> => {
   // Construct the prompt with the provided inputs
-  const prompt = stringify(
-    {
-      "question": question,
-      "conversation_log": conversationLog,
-      "user_current_approach": userCurrentApproach,
-      "user_code": userCode
-    }
-  )
+  const prompt = stringify({
+    question: question,
+    conversation_log: conversationLog,
+    user_current_approach: userCurrentApproach,
+    user_code: userCode,
+  });
 
   // Define the request body
   const requestBody = {
     model: "temp2",
     prompt: prompt,
-    stream: false,
   };
 
   try {

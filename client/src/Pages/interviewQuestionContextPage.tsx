@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import TextToSpeech from "@/components/textToSpeech";
 import {
   Card,
   CardContent,
@@ -7,59 +8,55 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import DuolingoButton from "@/components/ui/Animata/duolingo";
 import { useQuestionContextMutation } from "@/redux/features/Interview/interview";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTestairesponseMutation } from "@/redux/features/Interview/interview";
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Textarea } from "@/components/ui/textarea"
+import { Volume2Icon } from "lucide-react"
+import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
+import { useAppSelector } from "@/redux/store";
 
-const testFormSchema = z.object({
-  userCurrentApproach: z.string(),
-  userCode: z.string()
-})
+const intervieweeStatements = [
+  "I'll use a hash map for quick lookups.",
+  "Is the input array sorted?",
+  "I'll try a two-pointer approach.",
+  "I'll start with the base case.",
+  "Can I explain my approach first?",
+  "Dynamic programming might work here.",
+  "Should I prioritize time or space?",
+  "I'll handle the edge cases now.",
+  "I'll use depth-first search here.",
+  "Want a quick dry run of the code?"
+];
 
 
 
 const InterviewQuestionContextPage: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const navigate = useNavigate();
+  const [userCurrentApproach, setUserCurrentApproach] = useState("");
   const { id } = useParams<{ id: string }>();
   const [questionContext, { isLoading, isSuccess, isError, error, data }] =
     useQuestionContextMutation();
   const [testAiResponse, { isLoading: testLoading, isSuccess: testSuccess, error: testError, data: testData }] =
     useTestairesponseMutation();
+  const code = useAppSelector((state: any) => state.editor.code);
+  const language = useAppSelector((state: any) => state.editor.language);
 
-  const form = useForm<z.infer<typeof testFormSchema>>({
-    resolver: zodResolver(testFormSchema),
-    defaultValues: {
-      userCurrentApproach: "",
-      userCode: ""
-    },
-  })
-
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setUserCurrentApproach(e.target.value);
+  };
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof testFormSchema>) {
+  async function onSubmit(e: any) {
+    e.preventDefault();
     try {
-      await testAiResponse({ userCurrentApproach: values?.userCurrentApproach, userCode: values?.userCode, questionId: id })
+      await testAiResponse({ userCurrentApproach: userCurrentApproach, userCode: code, questionId: id, language: language })
       console.log(testData)
     } catch (error: any) {
       console.log(testError)
     }
-    console.log(values)
   }
+
+
   useEffect(() => {
     if (id) {
       questionContext({ questionId: id });
@@ -68,9 +65,15 @@ const InterviewQuestionContextPage: React.FC = () => {
       navigate("/not-found");
     }
   }, [id, questionContext, navigate]);
+
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      <Card className="border rounded-lg max-w-xl text-start">
+    <div className="min-h-screen flex flex-col w-full items-center ">
+      <Card className="border rounded-lg w-full text-start self-center">
+        <div className="border cursor-pointer  w-fit p-2 rounded mt-2 mx-2" >
+          {/* <Volume2Icon className="h-4 w-4" /> */}
+          <TextToSpeech text={"I think, the most efficient approach here is to use a hash map for constant-time lookups."}/>
+        </div>
         <CardHeader>
           <CardTitle>
             <p>Let's understand what the question says.</p>
@@ -84,8 +87,8 @@ const InterviewQuestionContextPage: React.FC = () => {
             <p> {error?.data?.message}</p>
           ) : (
             <p>
-              {data?.message ||
-                "This is an open-source AI chatbot app template built with Next.js, the Vercel AI SDK, and Vercel KV. It uses React Server Components to combine text with generative UI as output of the LLM. The UI state is synced through the SDK so the model is aware of your interactions as they happen."}
+              {data?.message || "Null"
+              }
             </p>
           )}
         </CardContent>
@@ -93,57 +96,14 @@ const InterviewQuestionContextPage: React.FC = () => {
           <CardDescription>&copy; {currentYear} coderinterview</CardDescription>
         </CardFooter>
       </Card>
+      <div className="bottom-0 fixed left-0 w-full z-[900] ">
 
-      <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <a className="border-none cursor-pointer w-full  py-3 px-4 rounded-lg">
-          <DuolingoButton
-            title="understood"
-            handleSubmit={() => { }}
-            isLoading={isLoading}
-          />
-        </a>
-        <a className="border-none cursor-pointer w-full py-3 px-4 rounded-lg">
-          <DuolingoButton
-            title="Explain again"
-            handleSubmit={() => { }}
-            isLoading={isLoading}
-          />
-        </a>
+        <PlaceholdersAndVanishInput
+          placeholders={intervieweeStatements}
+          onChange={handleChange}
+          onSubmit={onSubmit}
+        />
       </div>
-
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full p-6 space-y-8">
-          <FormField
-            control={form.control}
-            name="userCurrentApproach"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>User Explaination</FormLabel>
-                <FormControl>
-                  <Textarea className="w-full" placeholder="shadcn" {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="userCode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>User ConverSation</FormLabel>
-                <FormControl>
-                  <Textarea className="w-full" placeholder="shadcn" {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
     </div>
   );
 };
