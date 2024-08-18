@@ -46,11 +46,9 @@ export const generateQuestionContext = async (
       handleStream(
         response.data as unknown as Readable,
         (chunk) => {
-          fullResponse += chunk;
-          console.log("Received chunk:", chunk);
+          fullResponse += JSON.parse(chunk).response;
         },
         () => {
-          console.log("Full response received:", fullResponse);
           resolve(fullResponse);
         }
       );
@@ -93,10 +91,8 @@ export const generateResponse = async (
         response.data as unknown as Readable,
         (chunk) => {
           fullResponse += chunk;
-          console.log("Received chunk:", chunk);
         },
         () => {
-          console.log("Full response received:", fullResponse);
           resolve(fullResponse);
         }
       );
