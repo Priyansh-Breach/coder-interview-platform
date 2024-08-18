@@ -26,9 +26,9 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "http://10.128.0.4:5173",
+      "http://10.128.0.5:5173",
       "https://dronacharya.co",
-      "http://34.134.72.92:5173",
+      "http://34.27.45.184:5173",
     ],
     methods: ["GET", "POST"],
     credentials: true,
