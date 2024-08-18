@@ -35,11 +35,17 @@ const InterviewQuestionContextPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [questionContext, { isLoading, isSuccess, isError, error, data }] =
     useQuestionContextMutation();
-  const [testAiResponse, { isLoading: testLoading, isSuccess: testSuccess, error: testError, data: testData }] =
-    useTestairesponseMutation();
+  const [
+    testAiResponse,
+    {
+      isLoading: testLoading,
+      isSuccess: testSuccess,
+      error: testError,
+      data: testData,
+    },
+  ] = useTestairesponseMutation();
   const code = useAppSelector((state: any) => state.editor.code);
   const language = useAppSelector((state: any) => state.editor.language);
-  const [streamedResponse, setStreamedResponse] = useState("");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
@@ -47,30 +53,13 @@ const InterviewQuestionContextPage: React.FC = () => {
 
   async function onSubmit(e: any) {
     e.preventDefault();
-    setStreamedResponse(""); // Reset the response
     try {
-      const response = await testAiResponse({
+      await testAiResponse({
         userCurrentApproach: userCurrentApproach,
         userCode: code,
         questionId: id,
         language: language,
       });
-
-      if (response?.data) {
-        const reader = response.data.getReader();
-        const decoder = new TextDecoder();
-
-        reader.read().then(function processText({ done, value }) {
-          if (done) {
-            console.log("Stream complete");
-            return;
-          }
-
-          const chunk = decoder.decode(value, { stream: true });
-          setStreamedResponse((prev) => prev + chunk);
-          return reader.read().then(processText);
-        });
-      }
     } catch (error: any) {
       console.log(testError);
     }
