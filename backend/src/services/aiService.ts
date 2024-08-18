@@ -29,7 +29,7 @@ export const generateQuestionContext = async (
   const prompt = `${question}`;
 
   const requestBody = {
-    model: "temp",
+    model: "phase_1",
     prompt: `{ "question": ${prompt}}`,
   };
 
@@ -73,7 +73,7 @@ export const generateResponse = async (
   });
 
   const requestBody = {
-    model: "temp2",
+    model: "phase_2",
     prompt: prompt,
   };
 
