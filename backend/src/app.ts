@@ -5,23 +5,30 @@ import express, { NextFunction, Response, Request } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import multer from "multer";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 import ErrorMiddleware from "./middleware/errorHandler";
-import { transcribeAudio } from "./services/speechToTextService";
-import { generateQuestionContext } from "./services/aiService";
-import { promises as fs } from "fs";
-import path from "path";
-
 import userRoutes from "./routes/userRoutes";
 import codeRoutes from "./routes/codeRoutes";
 import interviewRoutes from "./routes/interviewRoutes";
 import explorePageRoutes from "./routes/explorePageRoutes";
 
 export const app = express();
+const server = createServer(app); // Create HTTP server
+const io = new Server(server, {
+  cors: {
+    origin: [
+      "http://localhost:5173",
+      "http://10.128.0.5:5173",
+      "https://dronacharya.co",
+      "http://34.27.45.184:5173",
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
-/**
- * Cross origin resource sharing
- */
 app.use(
   cors({
     origin: [
@@ -36,7 +43,6 @@ app.use(
 );
 
 const upload = multer({ dest: "uploads/" });
-
 app.use(express.json());
 app.use(cookieParser());
 
@@ -45,55 +51,31 @@ app.use("/api/users", userRoutes);
 app.use("/api/code", codeRoutes);
 app.use("/api/explore", explorePageRoutes);
 
-/**Route not found */
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
-  const error = new Error(`Route ${req} originUrl not found`) as any;
+  const error = new Error(`Route ${req.originalUrl} not found`) as any;
   error.statusCode = 404;
   next(error);
 });
-
-// io.on("connection", (socket) => {
-//   console.log("a user connected");
-
-//   socket.on(
-//     "audioData",
-//     async (audioBuffer, questionContext, userCode, language) => {
-//       try {
-//         const userExplanation = ""; //await transcribeAudio(audioBuffer);
-
-//         const aiResponse = await generateResponse(
-//           questionContext,
-//           userExplanation,
-//           userCode,
-//           language
-//         );
-
-//         console.log("ai", aiResponse);
-
-//         const outputDir = path.resolve("output");
-//         const outputFilePath = path.join(outputDir, "response.mp3");
-
-//         // Ensure the output directory exists
-//         await fs.mkdir(outputDir, { recursive: true });
-
-//         // await synthesizeSpeech(aiResponse, outputFilePath);
-
-//         // Send the response back to the client
-//         socket.emit("aiResponse", aiResponse);
-//         socket.emit("audioResponse", { filePath: outputFilePath });
-//       } catch (error) {
-//         console.error("Error handling audio data:", error);
-//         socket.emit("error", "Internal Server Error");
-//       }
-//     }
-//   );
-
-//   socket.on("disconnect", () => {
-//     console.log("user disconnected");
-//   });
-// });
-
-/**
- * Error Handler
- */
 app.use(ErrorMiddleware);
+
+// Initialize Socket.io
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${socket.id}`);
+  });
+
+  // Example of handling a custom event
+  socket.on("exampleEvent", (data) => {
+    console.log("Received data:", data);
+    socket.emit("responseEvent", {
+      message: "This is a response from the server",
+    });
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
