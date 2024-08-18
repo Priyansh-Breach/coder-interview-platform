@@ -2,30 +2,14 @@
 > client@0.0.0 dev
 > vite --host
 
+Failed to resolve dependency: @radix-ui_react-tabs, present in 'optimizeDeps.include'
+Failed to resolve dependency: @radix-ui_react-alert-dialog, present in 'optimizeDeps.include'
 
-  VITE v5.3.4  ready in 320 ms
-
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: http://10.128.0.4:5173/
-11:42:24 AM [vite] .env changed, restarting server...
-11:42:24 AM [vite] server restarted.
-
-> client@0.0.0 dev
-> vite --host
-
-
-  VITE v5.3.4  ready in 369 ms
+  VITE v5.3.4  ready in 316 ms
 
   ➜  Local:   http://localhost:5173/
-  ➜  Network: http://10.128.0.4:5173/
-1:49:48 PM [vite] .env changed, restarting server...
-1:49:48 PM [vite] server restarted.
-
-> client@0.0.0 dev
-> vite --host
-
-
-  VITE v5.3.4  ready in 333 ms
-
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: http://10.128.0.4:5173/
+  ➜  Network: http://10.128.0.5:5173/
+(node:10883) Warning: An error event has already been emitted on the socket. Please use the destroy method on the socket while handling a 'clientError' event.
+(Use `node --trace-warnings ...` to show where the warning was created)
+6:45:13 AM [vite] .env changed, restarting server...
+6:45:13 AM [vite] server restarted.
