@@ -1,26 +1,26 @@
 import axios from "axios";
+import { Readable } from "stream";
 
 const LLM_API_URL = "http://127.0.0.1:11434/api/generate";
 
-// Utility function to handle streaming data
+// Utility function to handle Node.js streams
 const handleStream = (
-  stream: ReadableStream,
-  callback: (data: string) => void
+  stream: Readable,
+  callback: (data: string) => void,
+  onEnd: () => void
 ) => {
-  const reader = stream.getReader();
-  const decoder = new TextDecoder();
+  stream.on("data", (chunk) => {
+    const text = chunk.toString(); // Convert Buffer to string
+    callback(text);
+  });
 
-  const read = () => {
-    reader.read().then(({ done, value }) => {
-      if (done) {
-        return;
-      }
-      callback(decoder.decode(value, { stream: true }));
-      read();
-    });
-  };
+  stream.on("end", () => {
+    onEnd();
+  });
 
-  read();
+  stream.on("error", (error) => {
+    console.error("Stream error:", error);
+  });
 };
 
 export const generateQuestionContext = async (
@@ -42,16 +42,18 @@ export const generateQuestionContext = async (
 
     let fullResponse = "";
 
-    handleStream(response.data, (chunk) => {
-      fullResponse += chunk;
-      console.log("Received chunk:", chunk);
-    });
-
     return new Promise((resolve) => {
-      response.data.on("end", () => {
-        console.log("Full response received:", fullResponse);
-        resolve(fullResponse);
-      });
+      handleStream(
+        response.data as unknown as Readable,
+        (chunk) => {
+          fullResponse += chunk;
+          console.log("Received chunk:", chunk);
+        },
+        () => {
+          console.log("Full response received:", fullResponse);
+          resolve(fullResponse);
+        }
+      );
     });
   } catch (error) {
     console.error("Error generating response:", error);
@@ -86,16 +88,18 @@ export const generateResponse = async (
 
     let fullResponse = "";
 
-    handleStream(response.data, (chunk) => {
-      fullResponse += chunk;
-      console.log("Received chunk:", chunk);
-    });
-
     return new Promise((resolve) => {
-      response.data.on("end", () => {
-        console.log("Full response received:", fullResponse);
-        resolve(fullResponse);
-      });
+      handleStream(
+        response.data as unknown as Readable,
+        (chunk) => {
+          fullResponse += chunk;
+          console.log("Received chunk:", chunk);
+        },
+        () => {
+          console.log("Full response received:", fullResponse);
+          resolve(fullResponse);
+        }
+      );
     });
   } catch (error) {
     console.error("Error generating response:", error);

@@ -11,6 +11,7 @@ import {
 import { useQuestionContextMutation } from "@/redux/features/Interview/interview";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTestairesponseMutation } from "@/redux/features/Interview/interview";
+import { Volume2Icon } from "lucide-react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useAppSelector } from "@/redux/store";
 
@@ -34,32 +35,42 @@ const InterviewQuestionContextPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [questionContext, { isLoading, isSuccess, isError, error, data }] =
     useQuestionContextMutation();
-  const [
-    testAiResponse,
-    {
-      isLoading: testLoading,
-      isSuccess: testSuccess,
-      error: testError,
-      data: testData,
-    },
-  ] = useTestairesponseMutation();
+  const [testAiResponse, { isLoading: testLoading, isSuccess: testSuccess, error: testError, data: testData }] =
+    useTestairesponseMutation();
   const code = useAppSelector((state: any) => state.editor.code);
   const language = useAppSelector((state: any) => state.editor.language);
+  const [streamedResponse, setStreamedResponse] = useState("");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
   };
-  // 2. Define a submit handler.
+
   async function onSubmit(e: any) {
     e.preventDefault();
+    setStreamedResponse(""); // Reset the response
     try {
-      await testAiResponse({
+      const response = await testAiResponse({
         userCurrentApproach: userCurrentApproach,
         userCode: code,
         questionId: id,
         language: language,
       });
-      console.log(testData);
+
+      if (response?.data) {
+        const reader = response.data.getReader();
+        const decoder = new TextDecoder();
+
+        reader.read().then(function processText({ done, value }) {
+          if (done) {
+            console.log("Stream complete");
+            return;
+          }
+
+          const chunk = decoder.decode(value, { stream: true });
+          setStreamedResponse((prev) => prev + chunk);
+          return reader.read().then(processText);
+        });
+      }
     } catch (error: any) {
       console.log(testError);
     }
@@ -75,31 +86,30 @@ const InterviewQuestionContextPage: React.FC = () => {
   }, [id, questionContext, navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col w-full items-center ">
-      <Card className="border rounded-lg max-w-3xl mx-auto mt-5 w-full text-start self-center">
-        <div>
-          <TextToSpeech text={data?.message || error?.data?.message} />
+    <div className="min-h-screen flex flex-col w-full items-center">
+      <Card className="border rounded-lg w-full text-start self-center">
+        <div className="border cursor-pointer  w-fit p-2 rounded mt-2 mx-2">
+          <TextToSpeech text={data?.message || streamedResponse} />
         </div>
         <CardHeader>
           <CardTitle>
             <p>Let's understand what the question says.</p>
           </CardTitle>
         </CardHeader>
-
         <CardContent>
           {isLoading ? (
             <p>Loading question context...</p>
           ) : isError ? (
-            <p> {error?.data?.message}</p>
+            <p>{error?.data?.message}</p>
           ) : (
-            <p>{data?.message || "Null"}</p>
+            <p>{data?.message || streamedResponse || "Null"}</p>
           )}
         </CardContent>
         <CardFooter>
           <CardDescription>&copy; {currentYear} coderinterview</CardDescription>
         </CardFooter>
       </Card>
-      <div className="bottom-6 fixed left-0 w-full z-[900] ">
+      <div className="bottom-0 fixed left-0 w-full z-[900] ">
         <PlaceholdersAndVanishInput
           placeholders={intervieweeStatements}
           onChange={handleChange}
