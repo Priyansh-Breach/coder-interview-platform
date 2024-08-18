@@ -78,7 +78,7 @@ const InterviewQuestionContextPage: React.FC = () => {
     <div className="min-h-screen flex flex-col w-full items-center">
       <Card className="border rounded-lg w-full text-start self-center">
         <div className="border cursor-pointer  w-fit p-2 rounded mt-2 mx-2">
-          <TextToSpeech text={data?.message || streamedResponse} />
+          <TextToSpeech text={data?.message || error?.data?.message} />
         </div>
         <CardHeader>
           <CardTitle>
@@ -91,7 +91,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           ) : isError ? (
             <p>{error?.data?.message}</p>
           ) : (
-            <p>{data?.message || streamedResponse || "Null"}</p>
+            <p>{data?.message  || "Null"}</p>
           )}
         </CardContent>
         <CardFooter>
