@@ -1,6 +1,10 @@
 import axios from "axios";
 import { Readable } from "stream";
 import { IQuestion } from "../controllers/interviewController";
+// streamUtils.ts
+import { promises as fs } from 'fs';
+import path from 'path';
+
 // Set your LLM API URL
 const LLM_API_URL = "http://127.0.0.1:11434/api/generate";
 
@@ -92,5 +96,49 @@ export const generateResponse = async (
   } catch (error) {
     console.error("Error generating response:", error);
     socket.emit("error", "Failed to generate response"); // Emit error message to client
+  }
+};
+
+
+// Define the path to your JSON file
+const filePath = path.resolve(__dirname, '../Database/Questions/leetcode-solutions.json');
+
+// Function to simulate streaming data
+export const simulateStream = async (interval: number, socket: any) => {
+  try {
+    // Read the JSON file
+    const data = await fs.readFile(filePath, 'utf-8');
+    const questions = JSON.parse(data);
+
+    let index = 0;
+
+    // Function to send a chunk of data
+    const sendChunk = () => {
+      if (index < questions.length) {
+        const question = questions[index];
+        console.log(`Streaming data: ${JSON.stringify(question)}`);
+        socket.emit("responseStream", question); // Emit the chunk to the frontend
+        index++;
+      } else {
+        console.log('All data streamed.');
+        socket.emit("responseComplete"); // Signal that streaming is complete
+        clearInterval(streamingInterval);
+      }
+    };
+
+    // Set up an interval to simulate streaming
+    const streamingInterval = setInterval(sendChunk, interval);
+
+    // Optionally, return a promise that resolves when all data is streamed
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        if (index >= questions.length) {
+          resolve();
+        }
+      }, interval * questions.length + 1000); // Allow some time for the last chunk to be sent
+    });
+
+  } catch (error) {
+    console.error('Error reading or parsing the file:', error);
   }
 };

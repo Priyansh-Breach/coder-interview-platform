@@ -19,7 +19,6 @@ export const socketMiddleware: Middleware = (storeAPI) => {
   });
 
   socket.on("responseStream", (chunk: string) => {
-    console.log(chunk);
     storeAPI.dispatch(appendResponse(chunk));
   });
 

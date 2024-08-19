@@ -30,21 +30,6 @@ interface IQuestionContext {
   userQuery: any;
 }
 
-const simulateStream = (socket: any, data: any[]) => {
-  let index = 0;
-
-  const interval = setInterval(() => {
-    if (index < data.length) {
-      const question = data[index];
-      socket.emit("stream-data", question);
-      index++;
-    } else {
-      clearInterval(interval);
-      socket.emit("stream-end", "All data streamed.");
-    }
-  }, 1000); // Adjust the interval as needed
-};
-
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
@@ -95,5 +80,3 @@ server.listen(PORT, () => {
   // MongoDB connection function
   connectMongoDB();
 });
-
-

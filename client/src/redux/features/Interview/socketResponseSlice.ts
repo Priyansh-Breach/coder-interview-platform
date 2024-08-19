@@ -14,10 +14,7 @@ const aiResponseSlice = createSlice({
   reducers: {
     // Append only the 'response' field from the payload
     appendResponse(state, action) {
-      console.log(action.payload,"Slice")
-      if (action.payload && typeof action.payload.response === "string") {
-        state.response += action.payload.response;
-      }
+      state.response += action.payload.response;
     },
     setError(state, action) {
       state.error = action.payload;
@@ -32,7 +29,8 @@ const aiResponseSlice = createSlice({
 });
 
 // Export the actions
-export const { appendResponse, setError, setStreaming, resetResponse } = aiResponseSlice.actions;
+export const { appendResponse, setError, setStreaming, resetResponse } =
+  aiResponseSlice.actions;
 
 // Export the reducer
 export default aiResponseSlice.reducer;

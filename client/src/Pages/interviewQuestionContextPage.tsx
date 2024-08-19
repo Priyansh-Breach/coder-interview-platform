@@ -16,7 +16,7 @@ import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placehold
 import { useAppSelector } from "@/redux/store";
 import { socket } from "../socket";
 import { useDispatch } from "react-redux";
-
+import { useSelector } from "react-redux";
 
 const intervieweeStatements = [
   "I'll use a hash map for quick lookups.",
@@ -51,8 +51,9 @@ const InterviewQuestionContextPage: React.FC = () => {
   ] = useTestairesponseMutation();
   const code = useAppSelector((state: any) => state.editor.code);
   const language = useAppSelector((state: any) => state.editor.language);
-  let response = useAppSelector((state: any) => state.aiResponse.response);
-  console.log(response, "response");
+  const response = useSelector((state: any) => state.aiResponse.response);
+
+  console.log(response, "response Page");
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
   };
