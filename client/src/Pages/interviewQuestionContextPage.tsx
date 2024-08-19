@@ -52,9 +52,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   const code = useAppSelector((state: any) => state.editor.code);
   const language = useAppSelector((state: any) => state.editor.language);
   const response = useSelector((state: any) => state.aiResponse.response);
-  if (response) {
-    JSON.parse(response);
-  }
+  
   console.log(response, "response Page");
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
@@ -123,7 +121,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           ) : isError ? (
             <p>{error?.data?.message}</p>
           ) : (
-            <p>{response.response || "Null"}</p>
+            <p>{response?.response || "Null"}</p>
           )}
         </CardContent>
         <CardFooter>
