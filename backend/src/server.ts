@@ -12,7 +12,7 @@ import {
 import QuestionData from "./Database/Questions/leetcode-solutions.json";
 
 const server = http.createServer(app);
-const io = new Server(server);
+export const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
 
@@ -96,4 +96,4 @@ server.listen(PORT, () => {
   connectMongoDB();
 });
 
-export { io };
+
