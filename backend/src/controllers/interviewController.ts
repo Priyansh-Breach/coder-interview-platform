@@ -12,8 +12,9 @@ import {
   generateResponse,
 } from "../services/aiService";
 import { stringify } from "querystring";
+import { io } from "../server";
 
-interface IQuestion {
+export interface IQuestion {
   id: string;
   content: string;
   title: string;
@@ -32,7 +33,6 @@ export const handleAiQuestionContext = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { questionId } = req.body as IQuestionContext;
-
       const questionData = (QuestionData as IQuestion[]).find(
         (question: any) => question.id === questionId
       );
@@ -40,13 +40,16 @@ export const handleAiQuestionContext = cactchAsyncError(
       if (!questionData) {
         return next(new ErrorHandler("Question not found", 404));
       }
+      const questionContent =
+        "Hello Thiis is question content from interview controller";
 
-      const questionContext = await generateQuestionContext(
-        questionData.content
-      );
+      io.emit("startQuestionContextGeneration", { questionContent });
+      // const questionContext = await generateQuestionContext(
+      //   questionData.content
+      // );
 
       res.status(200).json({
-        message: questionContext,
+        message: "Response generation started",
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
@@ -80,19 +83,19 @@ export const handleAiResponse = cactchAsyncError(
 
       const conversationArray = [] as IConversation[];
       const userCodeandLanguage = `${userCode} is in language ${language}`;
-      if (userCurrentApproach) {
-        const aiResponse = await generateResponse(
-          questionData,
-          conversationArray,
-          userCurrentApproach,
-          userCodeandLanguage
-        );
+      // if (userCurrentApproach) {
+      //   const aiResponse = await generateResponse(
+      //     questionData,
+      //     conversationArray,
+      //     userCurrentApproach,
+      //     userCodeandLanguage
+      //   );
 
-        conversationArray.push({
-          user: userCurrentApproach,
-          ai: aiResponse,
-        });
-      }
+      //   conversationArray.push({
+      //     user: userCurrentApproach,
+      //     ai: aiResponse,
+      //   });
+      // }
 
       res.status(201).json({
         questionData: questionData,

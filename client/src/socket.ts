@@ -1,14 +1,8 @@
-// frontend/src/socket.ts
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+const SOCKET_URL = import.meta.env.VITE_SERVER_URL_SOCKET_IO;
 
-socket.on("connect", () => {
-  console.log("Connected to WebSocket server");
+export const socket = io(SOCKET_URL, {
+  transports: ["websocket"],
+  reconnection: true,
 });
-
-socket.on("disconnect", () => {
-  console.log("Disconnected from WebSocket server");
-});
-
-export default socket;

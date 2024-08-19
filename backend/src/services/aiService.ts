@@ -1,17 +1,18 @@
 import axios from "axios";
 import { Readable } from "stream";
-
+import { IQuestion } from "../controllers/interviewController";
+// Set your LLM API URL
 const LLM_API_URL = "http://127.0.0.1:11434/api/generate";
 
 // Utility function to handle Node.js streams
 const handleStream = (
   stream: Readable,
-  callback: (data: string) => void,
+  onData: (data: string) => void,
   onEnd: () => void
 ) => {
   stream.on("data", (chunk) => {
     const text = chunk.toString(); // Convert Buffer to string
-    callback(text);
+    onData(text);
   });
 
   stream.on("end", () => {
@@ -24,38 +25,32 @@ const handleStream = (
 };
 
 export const generateQuestionContext = async (
-  question: string
-): Promise<string> => {
+  question: IQuestion | undefined,
+  socket: any
+) => {
   const prompt = `${question}`;
-
   const requestBody = {
     model: "phase_1",
     prompt: `{ "question": ${prompt}}`,
   };
 
   try {
-    console.log("Sending request with:", requestBody);
 
     const response = await axios.post(LLM_API_URL, requestBody, {
       responseType: "stream", // Set the response type to stream
     });
 
-    let fullResponse = "";
-
-    return new Promise((resolve) => {
-      handleStream(
-        response.data as unknown as Readable,
-        (chunk) => {
-          fullResponse += JSON.parse(chunk).response;
-        },
-        () => {
-          resolve(fullResponse);
-        }
-      );
-    });
+    handleStream(
+      response.data as unknown as Readable,
+      (chunk) => {
+        socket.emit("responseStream", chunk); 
+      },
+      () => {
+        socket.emit("responseComplete"); 
+      }
+    );
   } catch (error) {
-    console.error("Error generating response:", error);
-    throw error;
+    socket.emit("error", "Failed to generate question context"); 
   }
 };
 
@@ -63,8 +58,9 @@ export const generateResponse = async (
   question: any,
   conversationLog: any,
   userCurrentApproach: string,
-  userCode: any
-): Promise<string> => {
+  userCode: any,
+  socket: any // Add socket parameter for emitting data
+) => {
   const prompt = JSON.stringify({
     question: question,
     conversation_log: conversationLog,
@@ -84,21 +80,17 @@ export const generateResponse = async (
       responseType: "stream",
     });
 
-    let fullResponse = "";
-
-    return new Promise((resolve) => {
-      handleStream(
-        response.data as unknown as Readable,
-        (chunk) => {
-          fullResponse += chunk;
-        },
-        () => {
-          resolve(fullResponse);
-        }
-      );
-    });
+    handleStream(
+      response.data as unknown as Readable,
+      (chunk) => {
+        socket.emit("responseStream", chunk); 
+      },
+      () => {
+        socket.emit("responseComplete"); 
+      }
+    );
   } catch (error) {
     console.error("Error generating response:", error);
-    throw error;
+    socket.emit("error", "Failed to generate response"); // Emit error message to client
   }
 };

@@ -14,6 +14,14 @@ import { useTestairesponseMutation } from "@/redux/features/Interview/interview"
 import { Volume2Icon } from "lucide-react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useAppSelector } from "@/redux/store";
+import { socket } from "../socket";
+import { useDispatch } from "react-redux";
+import {
+  appendResponse,
+  setError,
+  setStreaming,
+  resetResponse,
+} from "../redux/features/Interview/socketResponseSlice";
 
 const intervieweeStatements = [
   "I'll use a hash map for quick lookups.",
@@ -30,9 +38,11 @@ const intervieweeStatements = [
 
 const InterviewQuestionContextPage: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const [streamData, setStreamData] = useState("");
   const navigate = useNavigate();
   const [userCurrentApproach, setUserCurrentApproach] = useState("");
   const { id } = useParams<{ id: string }>();
+  const dispatch = useDispatch();
   const [questionContext, { isLoading, isSuccess, isError, error, data }] =
     useQuestionContextMutation();
   const [
@@ -46,7 +56,8 @@ const InterviewQuestionContextPage: React.FC = () => {
   ] = useTestairesponseMutation();
   const code = useAppSelector((state: any) => state.editor.code);
   const language = useAppSelector((state: any) => state.editor.language);
-
+  let response = useAppSelector((state: any) => state.aiResponse.response);
+  console.log(response, "response");
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
   };
@@ -68,16 +79,41 @@ const InterviewQuestionContextPage: React.FC = () => {
   useEffect(() => {
     if (id) {
       questionContext({ questionId: id });
+      dispatch(resetResponse());
+      dispatch(setStreaming(true));
+      socket.emit("startQuestionContextGeneration", {
+        questionId: id,
+      });
     } else {
-      console.error("No question ID found in the URL.");
       navigate("/not-found");
     }
   }, [id, questionContext, navigate]);
 
+  useEffect(() => {
+    // Handle streaming data from Socket.IO
+    socket.on("responseStream", (chunk) => {
+      setStreamData((prev) => prev + chunk); // Append received chunk to the streamData
+    });
+
+    socket.on("responseComplete", () => {
+      console.log("Streaming complete.");
+    });
+
+    socket.on("error", (message) => {
+      console.error("Error:", message);
+    });
+
+    return () => {
+      socket.off("responseStream");
+      socket.off("responseComplete");
+      socket.off("error");
+    };
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col w-full items-center">
       <Card className="border rounded-lg w-full text-start self-center">
-        <div className="border cursor-pointer  w-fit p-2 rounded mt-2 mx-2">
+        <div className=" w-fit p-2 rounded mt-2 mx-2">
           <TextToSpeech text={data?.message || error?.data?.message} />
         </div>
         <CardHeader>
@@ -91,7 +127,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           ) : isError ? (
             <p>{error?.data?.message}</p>
           ) : (
-            <p>{data?.message  || "Null"}</p>
+            <p>{response[0] || "Null"}</p>
           )}
         </CardContent>
         <CardFooter>

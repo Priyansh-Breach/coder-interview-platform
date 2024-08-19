@@ -4,18 +4,20 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { apiSlice } from "./features/Api/apiSlice";
 import authReducer, { setLoading } from "./features/Auth/authSlice";
 import editorReducer from "./features/Interview/editorSlice";
+import { socketMiddleware } from "./features/Interview/SocketMiddleware";
+import aiResponseReducer from "./features/Interview/socketResponseSlice";
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
     auth: authReducer,
     editor: editorReducer,
+    aiResponse: aiResponseReducer,
   },
   devTools: false,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiSlice.middleware),
+    getDefaultMiddleware().concat(apiSlice.middleware, socketMiddleware),
 });
-
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

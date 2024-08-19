@@ -1,4 +1,3 @@
-// src/slices/editorSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface QuestionData {
@@ -11,13 +10,16 @@ interface QuestionData {
 interface EditorState {
   code: string;
   language: string;
+  messages: string[];
   questionData?: QuestionData | null; 
+  status: string;
 }
 
 const initialState: EditorState = {
   code: "",
   language: "javascript",
-  questionData: null,
+  messages: [], 
+  status: "disconnected", 
 };
 
 const editorSlice = createSlice({
@@ -30,11 +32,18 @@ const editorSlice = createSlice({
     setLanguage(state, action: PayloadAction<string>) {
       state.language = action.payload;
     },
-    setQuestionData(state, action: PayloadAction<QuestionData>) { 
+    addMessage(state, action: PayloadAction<string>) {
+      state.messages.push(action.payload);
+    },
+    setQuestionData(state, action: PayloadAction<QuestionData>) {
       state.questionData = action.payload;
+    },
+    updateStatus(state, action: PayloadAction<string>) {
+      state.status = action.payload;
     },
   },
 });
 
-export const { setCode, setLanguage, setQuestionData } = editorSlice.actions;
+export const { setCode, setLanguage, addMessage, updateStatus,setQuestionData } =
+  editorSlice.actions;
 export default editorSlice.reducer;
