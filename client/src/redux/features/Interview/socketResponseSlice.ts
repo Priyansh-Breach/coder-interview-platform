@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Define the initial state
+// Define the initial state with response as an empty string
 const initialState = {
   response: "",
   error: null,
@@ -14,6 +14,7 @@ const aiResponseSlice = createSlice({
   reducers: {
     // Append only the 'response' field from the payload
     appendResponse(state, action) {
+      console.log(action.payload,"Slice")
       if (action.payload && typeof action.payload.response === "string") {
         state.response += action.payload.response;
       }
