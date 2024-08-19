@@ -14,7 +14,7 @@ const aiResponseSlice = createSlice({
   reducers: {
     // Append only the 'response' field from the payload
     appendResponse(state, action) {
-      state.response += action.payload.response;
+      state.response += action.payload;
     },
     setError(state, action) {
       state.error = action.payload;
