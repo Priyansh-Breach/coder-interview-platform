@@ -18,18 +18,8 @@ export const socketMiddleware: Middleware = (storeAPI) => {
     storeAPI.dispatch(addMessage(chunk));
   });
 
-  socket.on("responseStream", (chunk) => {
-    // Convert the ArrayBuffer to a string
-    const stringData: any = arrayBufferToString(chunk);
-
-    // Optionally parse it if it's JSON
-    try {
-      const jsonData = JSON.parse(stringData);
-      storeAPI.dispatch(appendResponse(jsonData.response)); // Dispatch the 'response' field
-    } catch (error) {
-      console.error("Error parsing JSON:", error);
-      storeAPI.dispatch(appendResponse(stringData)); // Or handle the raw string if not JSON
-    }
+  socket.on("responseStream", (chunk: string) => {
+    storeAPI.dispatch(appendResponse(chunk));
   });
 
   socket.on("streamEnd", (message: string) => {
@@ -45,6 +35,3 @@ export const socketMiddleware: Middleware = (storeAPI) => {
     return next(action);
   };
 };
-function arrayBufferToString(chunk: any) {
-  throw new Error("Function not implemented.");
-}

@@ -15,7 +15,7 @@ const handleStream = (
   onEnd: () => void
 ) => {
   stream.on("data", (chunk) => {
-    const text = chunk; // Convert Buffer to string
+    const text = chunk.toString(); // Convert Buffer to string
     onData(text);
   });
 
