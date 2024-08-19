@@ -121,7 +121,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           ) : isError ? (
             <p>{error?.data?.message}</p>
           ) : (
-            <p>{JSON.parse(response.response)}</p>
+            <p>{response && JSON.parse(response.response) || "Null"}</p>
           )}
         </CardContent>
         <CardFooter>
