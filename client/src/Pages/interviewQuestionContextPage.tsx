@@ -16,12 +16,7 @@ import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placehold
 import { useAppSelector } from "@/redux/store";
 import { socket } from "../socket";
 import { useDispatch } from "react-redux";
-import {
-  appendResponse,
-  setError,
-  setStreaming,
-  resetResponse,
-} from "../redux/features/Interview/socketResponseSlice";
+
 
 const intervieweeStatements = [
   "I'll use a hash map for quick lookups.",
@@ -79,8 +74,6 @@ const InterviewQuestionContextPage: React.FC = () => {
   useEffect(() => {
     if (id) {
       questionContext({ questionId: id });
-      dispatch(resetResponse());
-      dispatch(setStreaming(true));
       socket.emit("startQuestionContextGeneration", {
         questionId: id,
       });
@@ -127,7 +120,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           ) : isError ? (
             <p>{error?.data?.message}</p>
           ) : (
-            <p>{response[0] || "Null"}</p>
+            <p>{response || "Null"}</p>
           )}
         </CardContent>
         <CardFooter>
