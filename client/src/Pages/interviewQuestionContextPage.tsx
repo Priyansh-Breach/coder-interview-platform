@@ -86,7 +86,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   useEffect(() => {
     socket.on("responseStream", (chunk: any) => {
       JSON.parse(chunk);
-      setStreamData((prev) => prev + chunk);
+      setStreamData((prev) => prev + chunk?.response);
     });
 
     socket.on("responseComplete", () => {
@@ -117,7 +117,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           ) : isError ? (
             <p>{error?.data?.message}</p>
           ) : (
-            <p className=" whitespace-pre-wrap break-words">{streamData?.response}</p>
+            <p className=" whitespace-pre-wrap break-words">{streamData}</p>
           )}
         </CardContent>
 
