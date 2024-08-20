@@ -2,7 +2,6 @@ import { Server, Socket } from "socket.io";
 import {
   generateQuestionContext,
   generateResponse,
-  simulateStream,
 } from "../../services/aiService";
 import { handleAiQuestionContext } from "../../controllers/Socket.io/interviewController";
 

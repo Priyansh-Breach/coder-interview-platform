@@ -10,7 +10,7 @@ const LoadingIndicator: React.FC = () => {
         <div
           key={index}
           className={`relative h-5 mb-2 rounded overflow-hidden l ${
-            index === 2 ? "w-48" : "w-80"
+            index === 2 ? "w-72" : "w-full"
           }`} // Adjust width for the third bar
         >
           <motion.div
