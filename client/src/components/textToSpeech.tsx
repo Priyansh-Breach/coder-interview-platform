@@ -1,4 +1,3 @@
-import { Volume2Icon } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 interface ITTS {
@@ -13,8 +12,8 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
   const [selectedVoice, setSelectedVoice] =
     useState<SpeechSynthesisVoice | null>(null);
   const [rate, setRate] = useState(1.2); // Default rate is 1.2
-  const [spokenChunks, setSpokenChunks] = useState<string[]>([]); // Array of already spoken chunks
-  const [queuedChunks, setQueuedChunks] = useState<string[]>([]); // Queue of new chunks to speak
+  const [spokenChunks, setSpokenChunks] = useState<string[]>([]); // Track spoken chunks
+  const [queuedChunks, setQueuedChunks] = useState<string[]>([]); // Queue for new chunks
 
   useEffect(() => {
     if (!("speechSynthesis" in window)) {
@@ -38,9 +37,9 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
     return () => {
       window.speechSynthesis.onvoiceschanged = null;
     };
-  }, []);
+  }, [voices]);
 
-  // Whenever a new chunk of text arrives, add it to queuedChunks
+  // Queue new chunks as they arrive
   useEffect(() => {
     if (textChunk && !isShutUp) {
       setQueuedChunks((prev) => [...prev, textChunk]); // Add new chunk to the queue
@@ -70,8 +69,13 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
 
     utterance.onend = () => {
       setIsSpeaking(false);
-      setSpokenChunks((prev) => [...prev, currentChunk]); // Move the spoken chunk to spokenChunks
-      setQueuedChunks((prev) => prev.slice(1)); // Remove the chunk from the queue after speaking
+
+      // Check if the current chunk is the last one in the queue
+      if (queuedChunks.length === 1) {
+        setQueuedChunks([]); // Clear the queue when the last chunk is spoken
+      } else {
+        setSpokenChunks((prev) => [...prev, queuedChunks.shift()!]); // Move spoken chunk to spokenChunks and remove it from the queue
+      }
     };
 
     window.speechSynthesis.speak(utterance);
