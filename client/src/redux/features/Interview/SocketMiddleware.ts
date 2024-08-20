@@ -1,8 +1,7 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { socket } from "../../../socket";
 import { addMessage, updateStatus } from "./editorSlice";
-import { appendResponse } from "./socketResponseSlice";
-import { setLoading } from "../Interview/socketResponseSlice";
+import { appendResponse, setLoading, setError } from "./socketResponseSlice";
 
 export const socketMiddleware: Middleware = (storeAPI) => {
   socket.on("connect", () => {
@@ -33,9 +32,9 @@ export const socketMiddleware: Middleware = (storeAPI) => {
     storeAPI.dispatch(addMessage(message));
   });
 
-  socket.on("error", (error: Error) => {
-    console.error("Socket.IO error:", error);
-    storeAPI.dispatch(updateStatus("error"));
+  socket.on("error", (error: Error, loading: boolean) => {
+    storeAPI.dispatch(setLoading(loading));
+    storeAPI.dispatch(setError(error));
   });
 
   return (next) => (action) => {

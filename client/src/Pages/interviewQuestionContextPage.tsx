@@ -36,8 +36,13 @@ const InterviewQuestionContextPage: React.FC = () => {
   const navigate = useNavigate();
   const [userCurrentApproach, setUserCurrentApproach] = useState("");
   const { id } = useParams<{ id: string }>();
-  const [questionContext, { isLoading, isSuccess, isError, error, data }] =
-    useQuestionContextMutation();
+  const code = useAppSelector((state: any) => state.editor.code);
+  const language = useAppSelector((state: any) => state.editor.language);
+  const response = useSelector((state: any) => state.aiResponse.response);
+  const streamLoading = useSelector((state: any) => state.aiResponse.loading);
+  const error = useSelector((state: any) => state.aiResponse.error);
+  // const [questionContext, { isLoading, isSuccess, isError, error, data }] =
+  //   useQuestionContextMutation();
   const [
     testAiResponse,
     {
@@ -47,10 +52,6 @@ const InterviewQuestionContextPage: React.FC = () => {
       data: testData,
     },
   ] = useTestairesponseMutation();
-  const code = useAppSelector((state: any) => state.editor.code);
-  const language = useAppSelector((state: any) => state.editor.language);
-  const response = useSelector((state: any) => state.aiResponse.response);
-  const streamLoading = useSelector((state: any) => state.aiResponse.loading);
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
   };
@@ -72,17 +73,15 @@ const InterviewQuestionContextPage: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      questionContext({ questionId: id });
       socket.emit("startQuestionContextGeneration", {
         questionId: id,
       });
     } else {
       navigate("/not-found");
     }
-  }, [id, questionContext, navigate]);
+  }, [id,  navigate]);
 
   useEffect(() => {
-
     return () => {};
   }, []);
 
@@ -90,14 +89,14 @@ const InterviewQuestionContextPage: React.FC = () => {
     <div className="min-h-screen flex flex-col  self-center">
       <Card className="border rounded-lg max-w-xl w-full text-start self-center shadow-lg overflow-hidden ">
         <div className="p-4 rounded-t-lg  shadow-sm">
-          <TextToSpeech text={data?.message || error?.data?.message} />
+          <TextToSpeech text={response || error} />
         </div>
 
         <CardContent className="p-4">
           {streamLoading?.loading ? (
             <p>Loading question context...</p>
-          ) : isError ? (
-            <p>{error?.data?.message}</p>
+          ) : error ? (
+            <p>{error}</p>
           ) : (
             <p className=" whitespace-pre-wrap break-words">{response}</p>
           )}
