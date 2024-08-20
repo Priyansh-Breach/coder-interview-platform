@@ -53,7 +53,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   const language = useAppSelector((state: any) => state.editor.language);
   const response = useSelector((state: any) => state.aiResponse.response);
 
-  console.log(response, "response Page");
+  
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
   };
@@ -86,6 +86,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   useEffect(() => {
     socket.on("responseStream", (chunk: any) => {
       JSON.parse(chunk);
+      console.log(chunk)
       setStreamData((prev) => prev + chunk?.response);
     });
 
