@@ -242,3 +242,54 @@ export const LogoutIcon = () => (
     ></path>
   </svg>
 );
+
+export const SpeakingAIIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    className="injected-svg h-4 w-4"
+    data-src="https://cdn.hugeicons.com/icons/voice-stroke-sharp.svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    role="img"
+  >
+    <path
+      d="M3 21H21V3H3V21Z"
+      stroke="#ffffff"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+    ></path>
+    <path
+      d="M12 7V17"
+      stroke="#ffffff"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+    ></path>
+    <path
+      d="M9 9V15"
+      stroke="#ffffff"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+    ></path>
+    <path
+      d="M6 11V13"
+      stroke="#ffffff"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+    ></path>
+    <path
+      d="M15 9V15"
+      stroke="#ffffff"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+    ></path>
+    <path
+      d="M18 11V13"
+      stroke="#ffffff"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+    ></path>
+  </svg>
+);

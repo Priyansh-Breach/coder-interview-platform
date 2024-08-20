@@ -1,19 +1,17 @@
+import { Volume2Icon } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import { SpeakingAIIcon } from "./ui/Icons/SelectMore";
 
 interface ITTS {
-  textChunk: string; // Single chunk of text received
-  loading: boolean; // Loading state to determine when chunks stop coming
+  text: string;
 }
 
-const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
+const TextToSpeech: React.FC<ITTS> = ({ text }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isShutUp, setIsShutUp] = useState(false); // "Shutup" mode state
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] =
     useState<SpeechSynthesisVoice | null>(null);
-  const [rate, setRate] = useState(1.2); // Default rate is 1.2
-  const [spokenChunks, setSpokenChunks] = useState<string[]>([]); // Track spoken chunks
-  const [queuedChunks, setQueuedChunks] = useState<string[]>([]); // Queue for new chunks
+  const [rate, setRate] = useState(1.2); // Default rate is 1
 
   useEffect(() => {
     if (!("speechSynthesis" in window)) {
@@ -31,35 +29,24 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
       setSelectedVoice(voice);
     };
 
+    // Populate voices list
     updateVoices();
+    // Update voices list when it changes
     window.speechSynthesis.onvoiceschanged = updateVoices;
 
     return () => {
       window.speechSynthesis.onvoiceschanged = null;
     };
-  }, [voices]);
-
-  // Queue new chunks as they arrive
-  useEffect(() => {
-    if (textChunk && !isShutUp) {
-      setQueuedChunks((prev) => [...prev, textChunk]); // Add new chunk to the queue
-    }
-  }, [textChunk, isShutUp]);
-
-  // Automatically speak when loading becomes false and new chunk is available
-  useEffect(() => {
-    if (!loading && queuedChunks.length > 0 && !isSpeaking && !isShutUp) {
-      handleSpeak(); // Automatically speak the next chunk when ready
-    }
-  }, [loading, queuedChunks, isSpeaking, isShutUp]);
+  }, []);
 
   const handleSpeak = () => {
-    if (!selectedVoice || queuedChunks.length === 0) {
+    console.log(text);
+    if (!selectedVoice) {
+      alert("No voice selected.");
       return;
     }
 
-    const currentChunk = queuedChunks[0]; // Get the first chunk in the queue
-    const utterance = new SpeechSynthesisUtterance(currentChunk);
+    const utterance = new SpeechSynthesisUtterance(text);
     utterance.voice = selectedVoice;
     utterance.rate = rate; // Set the speech rate
 
@@ -69,55 +56,26 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
 
     utterance.onend = () => {
       setIsSpeaking(false);
-
-      // Check if the current chunk is the last one in the queue
-      if (queuedChunks.length === 1) {
-        setQueuedChunks([]); // Clear the queue when the last chunk is spoken
-      } else {
-        setSpokenChunks((prev) => [...prev, queuedChunks.shift()!]); // Move spoken chunk to spokenChunks and remove it from the queue
-      }
     };
 
     window.speechSynthesis.speak(utterance);
   };
 
-  // Function to stop speaking
-  const handleStop = () => {
-    window.speechSynthesis.cancel();
-    setIsSpeaking(false);
-    setQueuedChunks([]); // Clear the queued chunks if stopped
-  };
-
-  // Toggle shutup mode
-  const toggleShutUp = () => {
-    setIsShutUp((prev) => !prev);
-    if (!isShutUp) {
-      handleStop(); // Stop speaking immediately if "shutup" is activated
-    }
-  };
-
   return (
     <div>
       <button
-        className="border cursor-pointer w-fit p-2 rounded mx-2"
+        className="border cursor-pointer  w-fit p-2 rounded  mx-2 "
         onClick={handleSpeak}
-        disabled={isSpeaking || isShutUp || queuedChunks.length === 0}
+        disabled={isSpeaking}
       >
-        Speak
+        {isSpeaking ? (
+          <SpeakingAIIcon />
+        ) : (
+          <>
+            <Volume2Icon className="h-4 w-4" />
+          </>
+        )}
       </button>
-      <button
-        className="border cursor-pointer w-fit p-2 rounded mx-2"
-        onClick={toggleShutUp}
-      >
-        {isShutUp ? "Resume" : "Shutup"}
-      </button>
-      <button
-        className="border cursor-pointer w-fit p-2 rounded mx-2"
-        onClick={handleStop}
-      >
-        Stop
-      </button>
-      <div>{isSpeaking ? "Speaking..." : "Idle"}</div>
     </div>
   );
 };

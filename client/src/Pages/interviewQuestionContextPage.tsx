@@ -89,7 +89,7 @@ const InterviewQuestionContextPage: React.FC = () => {
     <div className="min-h-screen flex flex-col  self-center">
       <Card className="border rounded-lg max-w-xl w-full text-start self-center shadow-lg overflow-hidden ">
         <div className="p-4 rounded-t-lg  shadow-sm">
-          <TextToSpeech loading={streamLoading?.loading} textChunk={response || error} />
+          <TextToSpeech text={response || error} />
         </div>
 
         <CardContent className="p-4">
