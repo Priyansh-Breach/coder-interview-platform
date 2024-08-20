@@ -36,16 +36,15 @@ io.on("connection", (socket) => {
   // Handling the custom event
   socket.on("startQuestionContextGeneration", async (data) => {
     const { questionId } = data;
-    console.log(questionId, "Check");
     try {
-      const questionData = (QuestionData as IQuestion[]).find(
+      const questionData: any = (QuestionData as IQuestion[]).find(
         (question: any) => question.id === questionId
       );
       if (!questionData) {
         return;
       }
 
-      await generateQuestionContext(questionData, socket);
+      await generateQuestionContext(questionData?.content, socket);
     } catch (error) {
       console.error("Error during streaming:", error);
       socket.emit("error", "Failed to generate question context");
