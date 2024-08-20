@@ -94,7 +94,7 @@ const InterviewQuestionContextPage: React.FC = () => {
         </div>
 
         <CardContent className="p-4">
-          {true ? (
+          {streamLoading?.loading ? (
             <>
               <LoadingIndicator />
             </>
