@@ -40,17 +40,17 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
     };
   }, []);
 
-  // Whenever a new chunk of text arrives, append it to queuedText
+  // Whenever a new chunk of text arrives, only queue the new chunk
   useEffect(() => {
     if (textChunk && !isShutUp) {
-      setQueuedText((prev) => prev + " " + textChunk); // Add new chunk to queue
+      setQueuedText(textChunk); // Only set the new chunk to queue
     }
   }, [textChunk, isShutUp]);
 
-  // Automatically speak when loading becomes false
+  // Automatically speak when loading becomes false and new text is queued
   useEffect(() => {
     if (!loading && queuedText && !isSpeaking && !isShutUp) {
-      handleSpeak(); // Automatically speak when loading completes
+      handleSpeak(); // Automatically speak when loading completes and new text is ready
     }
   }, [loading, queuedText, isSpeaking, isShutUp]);
 
@@ -69,7 +69,7 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
 
     utterance.onend = () => {
       setIsSpeaking(false);
-      setSpokenText((prev) => prev + queuedText); // Append spoken text to spokenText state
+      setSpokenText((prev) => prev + " " + queuedText); // Append spoken text to spokenText state
       setQueuedText(""); // Clear the queued text after speaking
     };
 
