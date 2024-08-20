@@ -33,11 +33,9 @@ const intervieweeStatements = [
 
 const InterviewQuestionContextPage: React.FC = () => {
   const currentYear = new Date().getFullYear();
-  const [streamData, setStreamData] = useState("");
   const navigate = useNavigate();
   const [userCurrentApproach, setUserCurrentApproach] = useState("");
   const { id } = useParams<{ id: string }>();
-  const dispatch = useDispatch();
   const [questionContext, { isLoading, isSuccess, isError, error, data }] =
     useQuestionContextMutation();
   const [
