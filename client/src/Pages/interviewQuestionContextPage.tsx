@@ -79,7 +79,7 @@ const InterviewQuestionContextPage: React.FC = () => {
     } else {
       navigate("/not-found");
     }
-  }, [id,  navigate]);
+  }, [id, navigate]);
 
   useEffect(() => {
     return () => {};
@@ -89,7 +89,7 @@ const InterviewQuestionContextPage: React.FC = () => {
     <div className="min-h-screen flex flex-col  self-center">
       <Card className="border rounded-lg max-w-xl w-full text-start self-center shadow-lg overflow-hidden ">
         <div className="p-4 rounded-t-lg  shadow-sm">
-          <TextToSpeech text={response || error} />
+          <TextToSpeech loading={streamLoading?.loading} textChunk={response || error} />
         </div>
 
         <CardContent className="p-4">
