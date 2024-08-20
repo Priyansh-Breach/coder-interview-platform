@@ -2,8 +2,12 @@ import { Server, Socket } from "socket.io";
 import {
   generateQuestionContext,
   generateResponse,
+  simulateStream,
 } from "../../services/aiService";
-import { handleAiQuestionContext } from "../../controllers/Socket.io/interviewController";
+import {
+  handleAiConversationResponse,
+  handleAiQuestionContext,
+} from "../../controllers/Socket.io/interviewController";
 
 export const socketRoutes = (io: Server) => {
   io.on("connection", (socket: Socket) => {
@@ -18,18 +22,10 @@ export const socketRoutes = (io: Server) => {
       }
     });
 
-    socket.on("startResponseGeneration", async (data) => {
-      const { question, conversationLog, userCurrentApproach, userCode } = data;
-
+    socket.on("startConversationResponseGeneration", async (data) => {
       try {
-        // Start the response generation process
-        await generateResponse(
-          question,
-          conversationLog,
-          userCurrentApproach,
-          userCode,
-          socket
-        );
+        socket.emit("loading", { loading: true });
+        await handleAiConversationResponse(socket, data);
       } catch (error) {
         console.error("Error during response generation:", error);
         socket.emit("error", "Failed to generate response");

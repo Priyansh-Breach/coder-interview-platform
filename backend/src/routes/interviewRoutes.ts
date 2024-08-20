@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  handleAiResponse,
+  handleAiConversationResponse,
   getQuestionData,
   handleAiQuestionContext,
 } from "../controllers/Socket.io/interviewController";
@@ -39,7 +39,7 @@ router.post(
   "/test-airesponse/:id",
   isUserAuthenticated,
   validateInterviewTokenMiddleware,
-  handleAiResponse
+  handleAiConversationResponse
 );
 
 export default router;

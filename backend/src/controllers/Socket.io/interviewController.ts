@@ -62,42 +62,47 @@ interface IConversation {
 /**
  * Ai Response based on user input
  */
-export const handleAiResponse = cactchAsyncError(
-  async (req: Request, res: Response) => {
-    try {
-      const { userCurrentApproach, questionId, userCode, language } =
-        req.body as IInterview;
-      const questionData = (QuestionData as IQuestion[]).find(
-        (question) => question.id === questionId
-      );
-
-      const conversationArray = [] as IConversation[];
-      const userCodeandLanguage = `${userCode} is in language ${language}`;
-      // if (userCurrentApproach) {
-      //   const aiResponse = await generateResponse(
-      //     questionData,
-      //     conversationArray,
-      //     userCurrentApproach,
-      //     userCodeandLanguage
-      //   );
-
-      //   conversationArray.push({
-      //     user: userCurrentApproach,
-      //     ai: aiResponse,
-      //   });
-      // }
-
-      res.status(201).json({
-        questionData: questionData,
-        message: "aiResponse",
-        conversation: conversationArray,
-      });
-    } catch (error) {
-      console.error("Error handling interview:", error);
-      res.status(500).send("Internal Server Error");
+export const handleAiConversationResponse = async (
+  socket: Socket,
+  data: any
+) => {
+  try {
+    const { userCurrentApproach, questionId, userCode, language } =
+      data as IInterview;
+    const questionData = (QuestionData as IQuestion[]).find(
+      (question) => question.id === questionId
+    );
+    const conversationLog = "";
+    const conversationArray = [] as IConversation[];
+    const userCodeandLanguage = `${userCode} is in language ${language}`;
+    if (!questionData) {
+      return;
     }
+
+    await generateResponse(
+      questionData?.content,
+      conversationLog,
+      userCurrentApproach,
+      userCode,
+      socket
+    );
+    // if (userCurrentApproach) {
+    //   const aiResponse = await generateResponse(
+    //     questionData,
+    //     conversationArray,
+    //     userCurrentApproach,
+    //     userCodeandLanguage
+    //   );
+
+    //   conversationArray.push({
+    //     user: userCurrentApproach,
+    //     ai: aiResponse,
+    //   });
+    // }
+  } catch (error) {
+    console.error("Error handling interview:", error);
   }
-);
+};
 
 // Interface for question ID
 interface IQuestionId {

@@ -57,7 +57,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   async function onSubmit(e: any) {
     e.preventDefault();
     try {
-      await testAiResponse({
+      socket.emit("startConversationResponseGeneration", {
         userCurrentApproach: userCurrentApproach,
         userCode: code,
         questionId: id,
@@ -107,7 +107,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           </CardDescription>
         </CardFooter>
       </Card>
-     
+
       <div className="bottom-6 fixed left-0 w-full z-[900] ">
         <PlaceholdersAndVanishInput
           placeholders={intervieweeStatements}
@@ -115,7 +115,6 @@ const InterviewQuestionContextPage: React.FC = () => {
           onSubmit={onSubmit}
         />
       </div>
-      
     </div>
   );
 };

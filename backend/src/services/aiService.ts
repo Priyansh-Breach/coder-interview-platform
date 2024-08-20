@@ -64,7 +64,7 @@ export const generateResponse = async (
   conversationLog: any,
   userCurrentApproach: string,
   userCode: any,
-  socket: any // Add socket parameter for emitting data
+  socket: any 
 ) => {
   const prompt = JSON.stringify({
     question: question,
@@ -79,7 +79,6 @@ export const generateResponse = async (
   };
 
   try {
-    console.log("Sending request with:", requestBody);
 
     const response = await axios.post(LLM_API_URL, requestBody, {
       responseType: "stream",
@@ -95,7 +94,6 @@ export const generateResponse = async (
       }
     );
   } catch (error) {
-    console.error("Error generating response:", error);
     socket.emit("error", "Failed to generate question context", {
       loading: false,
     }); // Emit error message to client
