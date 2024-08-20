@@ -37,9 +37,9 @@ export const handleAiQuestionContext = async (socket: Socket, data: any) => {
       return;
     }
 
-    // await generateQuestionContext(questionData?.content, socket);
+    await generateQuestionContext(questionData?.content, socket);
 
-    simulateStream(1000, socket);
+    // simulateStream(1000, socket);
   } catch (error) {
     console.error("Error during streaming:", error);
     socket.emit("error", "Failed to generate question context", {
