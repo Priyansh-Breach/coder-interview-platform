@@ -13,8 +13,8 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
   const [selectedVoice, setSelectedVoice] =
     useState<SpeechSynthesisVoice | null>(null);
   const [rate, setRate] = useState(1.2); // Default rate is 1.2
-  const [spokenText, setSpokenText] = useState(""); // Text that has already been spoken
-  const [queuedText, setQueuedText] = useState(""); // Text that is queued to be spoken (chunks)
+  const [spokenChunks, setSpokenChunks] = useState<string[]>([]); // Array of already spoken chunks
+  const [queuedChunks, setQueuedChunks] = useState<string[]>([]); // Queue of new chunks to speak
 
   useEffect(() => {
     if (!("speechSynthesis" in window)) {
@@ -40,26 +40,27 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
     };
   }, []);
 
-  // Whenever a new chunk of text arrives, only queue the new chunk
+  // Whenever a new chunk of text arrives, add it to queuedChunks
   useEffect(() => {
     if (textChunk && !isShutUp) {
-      setQueuedText(textChunk); // Only set the new chunk to queue
+      setQueuedChunks((prev) => [...prev, textChunk]); // Add new chunk to the queue
     }
   }, [textChunk, isShutUp]);
 
-  // Automatically speak when loading becomes false and new text is queued
+  // Automatically speak when loading becomes false and new chunk is available
   useEffect(() => {
-    if (!loading && queuedText && !isSpeaking && !isShutUp) {
-      handleSpeak(); // Automatically speak when loading completes and new text is ready
+    if (!loading && queuedChunks.length > 0 && !isSpeaking && !isShutUp) {
+      handleSpeak(); // Automatically speak the next chunk when ready
     }
-  }, [loading, queuedText, isSpeaking, isShutUp]);
+  }, [loading, queuedChunks, isSpeaking, isShutUp]);
 
   const handleSpeak = () => {
-    if (!selectedVoice || !queuedText) {
+    if (!selectedVoice || queuedChunks.length === 0) {
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(queuedText);
+    const currentChunk = queuedChunks[0]; // Get the first chunk in the queue
+    const utterance = new SpeechSynthesisUtterance(currentChunk);
     utterance.voice = selectedVoice;
     utterance.rate = rate; // Set the speech rate
 
@@ -69,8 +70,8 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
 
     utterance.onend = () => {
       setIsSpeaking(false);
-      setSpokenText((prev) => prev + " " + queuedText); // Append spoken text to spokenText state
-      setQueuedText(""); // Clear the queued text after speaking
+      setSpokenChunks((prev) => [...prev, currentChunk]); // Move the spoken chunk to spokenChunks
+      setQueuedChunks((prev) => prev.slice(1)); // Remove the chunk from the queue after speaking
     };
 
     window.speechSynthesis.speak(utterance);
@@ -80,7 +81,7 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
   const handleStop = () => {
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
-    setQueuedText(""); // Clear queued text if stopped
+    setQueuedChunks([]); // Clear the queued chunks if stopped
   };
 
   // Toggle shutup mode
@@ -96,7 +97,7 @@ const TextToSpeech: React.FC<ITTS> = ({ textChunk, loading }) => {
       <button
         className="border cursor-pointer w-fit p-2 rounded mx-2"
         onClick={handleSpeak}
-        disabled={isSpeaking || isShutUp || !queuedText}
+        disabled={isSpeaking || isShutUp || queuedChunks.length === 0}
       >
         Speak
       </button>
