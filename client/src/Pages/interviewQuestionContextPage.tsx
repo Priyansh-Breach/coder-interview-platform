@@ -86,7 +86,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   useEffect(() => {
     socket.on("responseStream", (chunk: any) => {
       JSON.parse(chunk);
-      console.log(chunk)
+      console.log(chunk?.response)
       setStreamData((prev) => prev + chunk?.response);
     });
 
