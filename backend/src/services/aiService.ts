@@ -121,6 +121,7 @@ export const simulateStream = async (interval: number, socket: any) => {
     const sendChunk = () => {
       if (index < questions.length) {
         const question = questions[index];
+        question.toString();
         socket.emit("responseStream", question); // Emit the chunk to the frontend
         index++;
       } else {

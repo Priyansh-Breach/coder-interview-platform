@@ -84,7 +84,6 @@ const InterviewQuestionContextPage: React.FC = () => {
   }, [id, questionContext, navigate]);
 
   useEffect(() => {
-    setStreamData((prev) => prev + response);
 
     return () => {};
   }, []);
@@ -102,7 +101,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           ) : isError ? (
             <p>{error?.data?.message}</p>
           ) : (
-            <p className=" whitespace-pre-wrap break-words">{streamData}</p>
+            <p className=" whitespace-pre-wrap break-words">{response}</p>
           )}
         </CardContent>
 
