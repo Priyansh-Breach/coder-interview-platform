@@ -20,6 +20,7 @@ import { InterviewQuestionContextPage } from "@/Routes";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Brain, CodeXml, EyeOff } from "lucide-react";
 import { TableOfContents } from "@/components/ui/Icons/SelectMore";
+import { Button } from "@/components/ui/button";
 const InterviewPage: React.FC = () => {
   const [aiResponse, setAiResponse] = useState<string>("");
   const { id } = useParams<{ id: string }>();
@@ -67,9 +68,9 @@ const InterviewPage: React.FC = () => {
         description="Join our innovative platform where you can give interviews and solve coding problems simultaneously. Enhance your skills with real-time coding challenges and comprehensive interview practice. Prepare for your dream job with our AI-powered educational resources and expert guidance."
         keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources, Dronacharya.co"
       />
-      <div>
+      {/* <div>
         <NavbarCodeEditor />
-      </div>
+      </div> */}
       <div className="flex h-screen w-screen">
         <ResizablePanelGroup
           direction="horizontal"
@@ -175,6 +176,9 @@ const InterviewPage: React.FC = () => {
             <CodeXml />
           </button>
         )}
+      </div>
+      <div className="bottom-20 transition fixed right-[-50px] hover:right-0 w-fit z-[800] ">
+        <p className="p-2 px-4 bg-green-500 rounded-l border">Timer</p>
       </div>
     </div>
   );

@@ -8,14 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useQuestionContextMutation } from "@/redux/features/Interview/interview";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTestairesponseMutation } from "@/redux/features/Interview/interview";
-import { Volume2Icon } from "lucide-react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useAppSelector } from "@/redux/store";
 import { socket } from "../socket";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import LoadingIndicator from "@/components/aiLoadinfComponent";
 
@@ -42,8 +39,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   const response = useSelector((state: any) => state.aiResponse.response);
   const streamLoading = useSelector((state: any) => state.aiResponse.loading);
   const error = useSelector((state: any) => state.aiResponse.error);
-  // const [questionContext, { isLoading, isSuccess, isError, error, data }] =
-  //   useQuestionContextMutation();
+
   const [
     testAiResponse,
     {
@@ -111,7 +107,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           </CardDescription>
         </CardFooter>
       </Card>
-
+     
       <div className="bottom-6 fixed left-0 w-full z-[900] ">
         <PlaceholdersAndVanishInput
           placeholders={intervieweeStatements}
@@ -119,6 +115,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           onSubmit={onSubmit}
         />
       </div>
+      
     </div>
   );
 };
