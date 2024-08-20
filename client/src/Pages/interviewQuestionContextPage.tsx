@@ -87,7 +87,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col w-full self-center">
+    <div className="min-h-screen flex flex-col w-full self-center p-5">
       <Card className=" rounded-lg max-w-3xl w-full text-start bg-[none] break-words self-center shadow-none border-none overflow-hidden ">
         <div className="p-4 pl-1 rounded-t-lg  shadow-sm">
           <TextToSpeech text={response || error} />
@@ -112,7 +112,7 @@ const InterviewQuestionContextPage: React.FC = () => {
         </CardFooter>
       </Card>
 
-      <div className="bottom-0 fixed left-0 w-full z-[900] ">
+      <div className="bottom-6 fixed left-0 w-full z-[900] ">
         <PlaceholdersAndVanishInput
           placeholders={intervieweeStatements}
           onChange={handleChange}

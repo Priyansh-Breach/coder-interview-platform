@@ -53,7 +53,7 @@ const InterviewPage: React.FC = () => {
   }
 
   if (isError) {
-    return <div>Error: {error?.message}</div>;
+    return <div>Error: {error?.data?.message}</div>;
   }
 
   return (
