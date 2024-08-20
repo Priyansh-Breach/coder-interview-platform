@@ -123,7 +123,7 @@ const InterviewPage: React.FC = () => {
                     </button>
                   )}
                   <ScrollArea className="h-full w-full rounded-md border">
-                    <div className="flex w-full p-2 pt-8">
+                    <div className="flex item-center justify-center w-full p-2 pt-8">
                       <InterviewQuestionContextPage />
                     </div>
                   </ScrollArea>

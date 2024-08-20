@@ -52,7 +52,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   const code = useAppSelector((state: any) => state.editor.code);
   const language = useAppSelector((state: any) => state.editor.language);
   const response = useSelector((state: any) => state.aiResponse.response);
-  
+
   console.log(response, "response Page");
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
@@ -84,9 +84,9 @@ const InterviewQuestionContextPage: React.FC = () => {
   }, [id, questionContext, navigate]);
 
   useEffect(() => {
-    // Handle streaming data from Socket.IO
-    socket.on("responseStream", (chunk) => {
-      setStreamData((prev) => prev + chunk); // Append received chunk to the streamData
+    socket.on("responseStream", (chunk: any) => {
+      JSON.parse(chunk);
+      setStreamData((prev) => prev + chunk);
     });
 
     socket.on("responseComplete", () => {
@@ -105,29 +105,29 @@ const InterviewQuestionContextPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col w-full items-center">
-      <Card className="border rounded-lg w-full text-start self-center">
-        <div className=" w-fit p-2 rounded mt-2 mx-2">
+    <div className="min-h-screen flex flex-col  self-center">
+      <Card className="border rounded-lg max-w-xl w-full text-start self-center shadow-lg overflow-hidden ">
+        <div className="p-4 rounded-t-lg  shadow-sm">
           <TextToSpeech text={data?.message || error?.data?.message} />
         </div>
-        <CardHeader>
-          <CardTitle>
-            <p>Let's understand what the question says.</p>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+
+        <CardContent className="p-4">
           {isLoading ? (
             <p>Loading question context...</p>
           ) : isError ? (
             <p>{error?.data?.message}</p>
           ) : (
-            <p>{response || "Null"}</p>
+            <p className=" whitespace-pre-wrap break-words">{streamData?.response}</p>
           )}
         </CardContent>
-        <CardFooter>
-          <CardDescription>&copy; {currentYear} coderinterview</CardDescription>
+
+        <CardFooter className=" p-2 rounded-b-lg">
+          <CardDescription className=" text-sm">
+            &copy; {currentYear} coderinterview
+          </CardDescription>
         </CardFooter>
       </Card>
+
       <div className="bottom-0 fixed left-0 w-full z-[900] ">
         <PlaceholdersAndVanishInput
           placeholders={intervieweeStatements}
