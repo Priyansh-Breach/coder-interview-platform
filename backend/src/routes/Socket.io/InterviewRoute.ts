@@ -6,13 +6,18 @@ import {
 } from "../../services/aiService";
 import { handleAiQuestionContext } from "../../controllers/Socket.io/interviewController";
 
-
 export const socketRoutes = (io: Server) => {
   io.on("connection", (socket: Socket) => {
     console.log("A user connected:", socket.id);
 
     socket.on("startQuestionContextGeneration", (data) => {
-      handleAiQuestionContext(socket, data); // Call the separate function
+      try {
+        socket.emit("loading", { loading: true });
+        handleAiQuestionContext(socket, data);
+        socket.emit("loading", { loading: false });
+      } catch (error: any) {
+        socket.emit("error", { loading: false });
+      }
     });
 
     socket.on("startResponseGeneration", async (data) => {

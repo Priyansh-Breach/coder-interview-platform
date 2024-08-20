@@ -2,6 +2,7 @@ import { Middleware } from "@reduxjs/toolkit";
 import { socket } from "../../../socket";
 import { addMessage, updateStatus } from "./editorSlice";
 import { appendResponse } from "./socketResponseSlice";
+import { setLoading } from "../Interview/socketResponseSlice";
 
 export const socketMiddleware: Middleware = (storeAPI) => {
   socket.on("connect", () => {
@@ -18,8 +19,13 @@ export const socketMiddleware: Middleware = (storeAPI) => {
     storeAPI.dispatch(addMessage(chunk));
   });
 
+  socket.on("loading", (chunk: boolean) => {
+    storeAPI.dispatch(setLoading(chunk));
+  });
+
   socket.on("responseStream", (chunk: string) => {
-    storeAPI.dispatch(appendResponse(chunk));
+    let jsonObject = JSON.parse(chunk);
+    storeAPI.dispatch(appendResponse(jsonObject?.response));
   });
 
   socket.on("streamEnd", (message: string) => {

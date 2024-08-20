@@ -2,8 +2,8 @@ import axios from "axios";
 import { Readable } from "stream";
 import { IQuestion } from "../controllers/Socket.io/interviewController";
 // streamUtils.ts
-import { promises as fs } from 'fs';
-import path from 'path';
+import { promises as fs } from "fs";
+import path from "path";
 
 // Set your LLM API URL
 const LLM_API_URL = "http://127.0.0.1:11434/api/generate";
@@ -39,7 +39,6 @@ export const generateQuestionContext = async (
   };
 
   try {
-
     const response = await axios.post(LLM_API_URL, requestBody, {
       responseType: "stream", // Set the response type to stream
     });
@@ -47,14 +46,16 @@ export const generateQuestionContext = async (
     handleStream(
       response.data as unknown as Readable,
       (chunk) => {
-        socket.emit("responseStream", chunk); 
+        socket.emit("responseStream", chunk);
       },
       () => {
-        socket.emit("responseComplete"); 
+        socket.emit("responseComplete");
       }
     );
   } catch (error) {
-    socket.emit("error", "Failed to generate question context"); 
+    socket.emit("error", "Failed to generate question context", {
+      loading: false,
+    });
   }
 };
 
@@ -87,27 +88,31 @@ export const generateResponse = async (
     handleStream(
       response.data as unknown as Readable,
       (chunk) => {
-        socket.emit("responseStream", chunk); 
+        socket.emit("responseStream", chunk);
       },
       () => {
-        socket.emit("responseComplete"); 
+        socket.emit("responseComplete");
       }
     );
   } catch (error) {
     console.error("Error generating response:", error);
-    socket.emit("error", "Failed to generate response"); // Emit error message to client
+    socket.emit("error", "Failed to generate question context", {
+      loading: false,
+    }); // Emit error message to client
   }
 };
 
-
 // Define the path to your JSON file
-const filePath = path.resolve(__dirname, '../Database/Questions/leetcode-solutions.json');
+const filePath = path.resolve(
+  __dirname,
+  "../Database/Questions/leetcode-solutions.json"
+);
 
 // Function to simulate streaming data
 export const simulateStream = async (interval: number, socket: any) => {
   try {
     // Read the JSON file
-    const data = await fs.readFile(filePath, 'utf-8');
+    const data = await fs.readFile(filePath, "utf-8");
     const questions = JSON.parse(data);
 
     let index = 0;
@@ -135,8 +140,7 @@ export const simulateStream = async (interval: number, socket: any) => {
         }
       }, interval * questions.length + 1000); // Allow some time for the last chunk to be sent
     });
-
   } catch (error) {
-    console.error('Error reading or parsing the file:', error);
+    console.error("Error reading or parsing the file:", error);
   }
 };

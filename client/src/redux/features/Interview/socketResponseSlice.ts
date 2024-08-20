@@ -5,6 +5,7 @@ const initialState = {
   response: "",
   error: null,
   streaming: false,
+  loading: false,
 };
 
 // Create the slice
@@ -25,12 +26,20 @@ const aiResponseSlice = createSlice({
     resetResponse(state) {
       state.response = "";
     },
+    setLoading(state, action) {
+      state.loading = action.payload;
+    },
   },
 });
 
 // Export the actions
-export const { appendResponse, setError, setStreaming, resetResponse } =
-  aiResponseSlice.actions;
+export const {
+  appendResponse,
+  setError,
+  setStreaming,
+  resetResponse,
+  setLoading,
+} = aiResponseSlice.actions;
 
 // Export the reducer
 export default aiResponseSlice.reducer;

@@ -52,10 +52,11 @@ const InterviewQuestionContextPage: React.FC = () => {
   const code = useAppSelector((state: any) => state.editor.code);
   const language = useAppSelector((state: any) => state.editor.language);
   const response = useSelector((state: any) => state.aiResponse.response);
-
+  const streamLoading = useSelector((state: any) => state.aiResponse.loading);
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
   };
+  console.log(streamLoading);
 
   async function onSubmit(e: any) {
     e.preventDefault();
@@ -83,24 +84,9 @@ const InterviewQuestionContextPage: React.FC = () => {
   }, [id, questionContext, navigate]);
 
   useEffect(() => {
-    socket.on("responseStream", (chunk: any) => {
-      let jsonObject = JSON.parse(chunk);
-      setStreamData((prev) => prev + jsonObject?.response);
-    });
+    setStreamData((prev) => prev + response);
 
-    socket.on("responseComplete", () => {
-      console.log("Streaming complete.");
-    });
-
-    socket.on("error", (message) => {
-      console.error("Error:", message);
-    });
-
-    return () => {
-      socket.off("responseStream");
-      socket.off("responseComplete");
-      socket.off("error");
-    };
+    return () => {};
   }, []);
 
   return (
@@ -111,7 +97,7 @@ const InterviewQuestionContextPage: React.FC = () => {
         </div>
 
         <CardContent className="p-4">
-          {isLoading ? (
+          {streamLoading?.loading ? (
             <p>Loading question context...</p>
           ) : isError ? (
             <p>{error?.data?.message}</p>
