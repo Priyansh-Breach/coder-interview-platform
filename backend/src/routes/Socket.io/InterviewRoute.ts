@@ -14,7 +14,6 @@ export const socketRoutes = (io: Server) => {
       try {
         socket.emit("loading", { loading: true });
         handleAiQuestionContext(socket, data);
-        socket.emit("loading", { loading: false });
       } catch (error: any) {
         socket.emit("error", { loading: false });
       }

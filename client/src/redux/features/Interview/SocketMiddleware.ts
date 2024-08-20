@@ -19,12 +19,13 @@ export const socketMiddleware: Middleware = (storeAPI) => {
     storeAPI.dispatch(addMessage(chunk));
   });
 
-  socket.on("loading", (chunk: boolean) => {
-    storeAPI.dispatch(setLoading(chunk));
-  });
+  // socket.on("loading", (chunk: boolean) => {
+  //   storeAPI.dispatch(setLoading(chunk));
+  // });
 
-  socket.on("responseStream", (chunk: string) => {
+  socket.on("responseStream", (chunk: string, loading: boolean) => {
     let jsonObject = JSON.parse(chunk);
+    storeAPI.dispatch(setLoading(loading));
     storeAPI.dispatch(appendResponse(jsonObject?.response));
   });
 

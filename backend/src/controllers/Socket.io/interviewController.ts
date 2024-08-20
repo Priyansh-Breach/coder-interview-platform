@@ -27,7 +27,6 @@ export interface IQuestion {
 
 export const handleAiQuestionContext = async (socket: Socket, data: any) => {
   const { questionId } = data;
-  console.log(socket, "Socket");
 
   try {
     const questionData: any = (QuestionData as IQuestion[]).find(
@@ -39,7 +38,7 @@ export const handleAiQuestionContext = async (socket: Socket, data: any) => {
 
     await generateQuestionContext(questionData?.content, socket);
 
-    // simulateStream(100, socket);
+    // simulateStream(10000, socket);
   } catch (error) {
     console.error("Error during streaming:", error);
     socket.emit("error", "Failed to generate question context", {

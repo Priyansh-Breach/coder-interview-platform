@@ -46,7 +46,7 @@ export const generateQuestionContext = async (
     handleStream(
       response.data as unknown as Readable,
       (chunk) => {
-        socket.emit("responseStream", chunk);
+        socket.emit("responseStream", chunk, { loading: false });
       },
       () => {
         socket.emit("responseComplete");
@@ -122,7 +122,7 @@ export const simulateStream = async (interval: number, socket: any) => {
       if (index < questions.length) {
         const question = questions[index];
         question.toString();
-        socket.emit("responseStream", question); // Emit the chunk to the frontend
+        socket.emit("responseStream", question, { loading: false }); // Emit the chunk to the frontend
         index++;
       } else {
         socket.emit("responseComplete"); // Signal that streaming is complete
