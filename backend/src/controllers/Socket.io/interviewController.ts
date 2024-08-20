@@ -1,19 +1,18 @@
 // src/controllers/interviewController.ts
-import { cactchAsyncError } from "../middleware/catchAsyncError";
-import { transcribeAudio } from "../services/speechToTextService";
-import { synthesizeSpeech } from "../services/textToSpeechService";
+import { cactchAsyncError } from "../../middleware/catchAsyncError";
+import { transcribeAudio } from "../../services/speechToTextService";
+import { synthesizeSpeech } from "../../services/textToSpeechService";
 import { NextFunction, Request, Response } from "express";
 import { promises as fs } from "fs";
 import path from "path";
-import QuestionData from "../Database/Questions/leetcode-solutions.json";
-import ErrorHandler from "../Utils/Error Handler/errorHandler";
+import QuestionData from "../../Database/Questions/leetcode-solutions.json";
+import ErrorHandler from "../../Utils/Error Handler/errorHandler";
 import {
   generateQuestionContext,
   generateResponse,
-} from "../services/aiService";
-import { stringify } from "querystring";
-import { io } from "../server";
-
+  simulateStream,
+} from "../../services/aiService";
+import { Socket } from "socket.io";
 
 export interface IQuestion {
   id: string;
@@ -22,41 +21,30 @@ export interface IQuestion {
   difficulty?: string;
 }
 
-interface IQuestionContext {
-  questionId: string;
-  userQuery: any;
-}
 /**
  * Ai Response based on question it gives question context
  */
 
-export const handleAiQuestionContext = cactchAsyncError(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { questionId } = req.body as IQuestionContext;
-      const questionData = (QuestionData as IQuestion[]).find(
-        (question: any) => question.id === questionId
-      );
+export const handleAiQuestionContext = async (socket: Socket, data: any) => {
+  const { questionId } = data;
+  console.log(socket, "Socket");
 
-      if (!questionData) {
-        return next(new ErrorHandler("Question not found", 404));
-      }
-      const questionContent =
-        "Hello Thiis is question content from interview controller";
-
-      io.emit("startQuestionContextGeneration", { questionContent });
-      // const questionContext = await generateQuestionContext(
-      //   questionData.content
-      // );
-
-      res.status(200).json({
-        message: "Response generation started",
-      });
-    } catch (error: any) {
-      return next(new ErrorHandler(error.message, 500));
+  try {
+    const questionData: any = (QuestionData as IQuestion[]).find(
+      (question: any) => question.id === questionId
+    );
+    if (!questionData) {
+      return;
     }
+
+    await generateQuestionContext(questionData?.content, socket);
+
+    // simulateStream(1000, socket);
+  } catch (error) {
+    console.error("Error during streaming:", error);
+    socket.emit("error", "Failed to generate question context");
   }
-);
+};
 
 interface IInterview {
   questionId: string;

@@ -3,7 +3,7 @@ import {
   handleAiResponse,
   getQuestionData,
   handleAiQuestionContext,
-} from "../controllers/interviewController";
+} from "../controllers/Socket.io/interviewController";
 import { isUserAuthenticated } from "../middleware/authMiddleware";
 import {
   generateInterviewTokenMiddleware,

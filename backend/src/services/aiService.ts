@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Readable } from "stream";
-import { IQuestion } from "../controllers/interviewController";
+import { IQuestion } from "../controllers/Socket.io/interviewController";
 // streamUtils.ts
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -116,11 +116,9 @@ export const simulateStream = async (interval: number, socket: any) => {
     const sendChunk = () => {
       if (index < questions.length) {
         const question = questions[index];
-        console.log(`Streaming data: ${JSON.stringify(question)}`);
         socket.emit("responseStream", question); // Emit the chunk to the frontend
         index++;
       } else {
-        console.log('All data streamed.');
         socket.emit("responseComplete"); // Signal that streaming is complete
         clearInterval(streamingInterval);
       }
