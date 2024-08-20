@@ -17,6 +17,7 @@ import { useAppSelector } from "@/redux/store";
 import { socket } from "../socket";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import LoadingIndicator from "@/components/aiLoadinfComponent";
 
 const intervieweeStatements = [
   "I'll use a hash map for quick lookups.",
@@ -86,15 +87,17 @@ const InterviewQuestionContextPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col  self-center">
-      <Card className="border rounded-lg max-w-xl w-full text-start self-center shadow-lg overflow-hidden ">
-        <div className="p-4 rounded-t-lg  shadow-sm">
+    <div className="min-h-screen flex flex-col w-full self-center">
+      <Card className=" rounded-lg max-w-3xl w-full text-start bg-[none] break-words self-center shadow-none border-none overflow-hidden ">
+        <div className="p-4 pl-1 rounded-t-lg  shadow-sm">
           <TextToSpeech text={response || error} />
         </div>
 
         <CardContent className="p-4">
-          {streamLoading?.loading ? (
-            <p>Loading question context...</p>
+          {true ? (
+            <>
+              <LoadingIndicator />
+            </>
           ) : error ? (
             <p>{error}</p>
           ) : (
@@ -102,7 +105,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           )}
         </CardContent>
 
-        <CardFooter className=" p-2 rounded-b-lg">
+        <CardFooter className=" p-2 rounded-b-lg break-words">
           <CardDescription className=" text-sm">
             &copy; {currentYear} coderinterview
           </CardDescription>
