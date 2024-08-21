@@ -18,6 +18,7 @@ import {
 import NotFound from "@/components/notFound";
 import { MetaData } from "@/lib/MetaData/metaData";
 import { ExpandableCardGrid } from "@/components/ui/Aceternity/expandable-card-grid";
+import { LoadingIcon } from "@/components/ui/Icons/SelectMore";
 
 const placeholders = [
   "Easy",
@@ -155,6 +156,13 @@ export default function ExplorePage() {
             </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"></div>
+          <div className="flex items-center justify-center h-fit">
+            {searchLoading && (
+              <>
+                <LoadingIcon /> <p className="m-2">{"loading Questions.."}</p>
+              </>
+            )}
+          </div>
           <ExpandableCardStandard data={searchedData?.results} />
           {searchedData?.results?.length < 1 && <NotFound />}
           <Pagination>
@@ -187,7 +195,6 @@ export default function ExplorePage() {
               <ExpandableCardGrid />
             </div>
           </div>
-          
         </aside>
       </div>
     </>
