@@ -17,7 +17,7 @@ router.post(
   isUserAuthenticated,
   generateInterviewTokenMiddleware,
   (req, res) => {
-    res.json({ token: "Interview Activated" });
+    res.json({ message: "Interview Activated" });
   }
 );
 

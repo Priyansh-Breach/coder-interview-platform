@@ -3,8 +3,6 @@ import { cactchAsyncError } from "../../middleware/catchAsyncError";
 import { transcribeAudio } from "../../services/speechToTextService";
 import { synthesizeSpeech } from "../../services/textToSpeechService";
 import { NextFunction, Request, Response } from "express";
-import { promises as fs } from "fs";
-import path from "path";
 import QuestionData from "../../Database/Questions/leetcode-solutions.json";
 import ErrorHandler from "../../Utils/Error Handler/errorHandler";
 import {

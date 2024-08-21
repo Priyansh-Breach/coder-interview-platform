@@ -5,8 +5,6 @@ import {
   CardContent,
   CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTestairesponseMutation } from "@/redux/features/Interview/interview";
@@ -52,7 +50,6 @@ const InterviewQuestionContextPage: React.FC = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
   };
-  console.log(streamLoading);
 
   async function onSubmit(e: any) {
     e.preventDefault();
@@ -77,10 +74,6 @@ const InterviewQuestionContextPage: React.FC = () => {
       navigate("/not-found");
     }
   }, [id, navigate]);
-
-  useEffect(() => {
-    return () => {};
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col w-full self-center p-5">
