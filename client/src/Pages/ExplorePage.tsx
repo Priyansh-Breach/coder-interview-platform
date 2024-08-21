@@ -1,7 +1,7 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-import { SearchIcon, TrendingUpIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useSearchContentQuery } from "@/redux/features/Explore/explore";
@@ -40,7 +40,6 @@ const placeholders = [
 export default function ExplorePage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchParams] = useSearchParams();
-  const [trendingQuestions, setTrendingQuestions] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(
     parseInt(searchParams.get("page") || "1")
   );
@@ -52,7 +51,6 @@ export default function ExplorePage() {
   const {
     data: searchedData,
     isLoading: searchLoading,
-    isError: searchError,
   } = useSearchContentQuery({ search: searchQuery, page: currentPage });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
