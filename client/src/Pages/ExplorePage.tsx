@@ -48,11 +48,10 @@ export default function ExplorePage() {
   const navigate = useNavigate();
   const searchQuery = searchParams.get("search") || "";
 
-  const {
-    data: searchedData,
-    isLoading: searchLoading,
-  } = useSearchContentQuery({ search: searchQuery, page: currentPage });
+  const { data: searchedData, isLoading: searchLoading } =
+    useSearchContentQuery({ search: searchQuery, page: currentPage });
 
+  
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(e.target.value);
   };

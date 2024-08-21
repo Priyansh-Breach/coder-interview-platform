@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import socket from "../socket"; // Import the socket instance
 import SpeechToText from "../components/SpeechToText"; // Ensure this import is correct
 import {
   ResizableHandle,
@@ -9,26 +8,44 @@ import {
 import QuestionScreen from "@/components/QuestionScreen";
 import { MetaData } from "@/lib/MetaData/metaData";
 import MonacoEditor from "@/components/CodeEditor";
-import NavbarCodeEditor from "@/components/NavbarCodeEditor";
 import { useParams } from "react-router-dom";
-import { useGetQuestionQuery } from "@/redux/features/Interview/interview";
+import {
+  useGetQuestionQuery,
+  useLeaveInterviewMutation,
+} from "@/redux/features/Interview/interview";
 import { useDispatch } from "react-redux";
 import { setQuestionData } from "@/redux/features/Interview/editorSlice";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SolutionScreen } from "@/components/solutionScreen";
 import { InterviewQuestionContextPage } from "@/Routes";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Brain, CodeXml, EyeOff } from "lucide-react";
-import { TableOfContents } from "@/components/ui/Icons/SelectMore";
-import { Button } from "@/components/ui/button";
+import { Brain,Minimize2, SquareArrowOutUpRight } from "lucide-react";
+import { LoadingIcon, TableOfContents } from "@/components/ui/Icons/SelectMore";
+import { FloatingDock } from "@/components/ui/Aceternity/floating-dock";
+import { IconTerminal2 } from "@tabler/icons-react";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalTrigger,
+} from "@/components/ui/Aceternity/animated-modal";
+import DuolingoButton from "@/components/ui/Animata/duolingo";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+
 const InterviewPage: React.FC = () => {
-  const [aiResponse, setAiResponse] = useState<string>("");
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const [showPanel1, setShowPanel1] = useState<boolean>(true);
   const [showPanel2, setShowPanel2] = useState<boolean>(true);
   const [showPanel3, setShowPanel3] = useState<boolean>(true);
-  // Calculate the number of visible panels
+
   const visiblePanels = [showPanel1, showPanel2].filter(Boolean).length;
   const {
     data: question,
@@ -38,6 +55,16 @@ const InterviewPage: React.FC = () => {
   } = useGetQuestionQuery(id!, {
     skip: !id,
   });
+  const [
+    leaveInterview,
+    { data: leaveData, isLoading: leaveLoading, error: leaveError },
+  ] = useLeaveInterviewMutation();
+
+  const handleLeaveInterview = async () => {
+    await leaveInterview({
+      questionId: id,
+    });
+  };
 
   useEffect(() => {
     if (question) {
@@ -50,12 +77,46 @@ const InterviewPage: React.FC = () => {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-screen flex gap-2 items-center justify-center">
+        <LoadingIcon />
+        <p>{"Loading..."}</p>
+      </div>
+    );
   }
 
   if (isError) {
     return <div>Error: {error?.data?.message}</div>;
   }
+
+  const links = [
+    !showPanel1 && {
+      title: "Unhide Question",
+      icon: <TableOfContents />,
+      href: "#",
+      handleClick: () => {
+        setShowPanel1(true);
+      },
+    },
+    !showPanel2 && {
+      title: "Unhide Chat",
+      icon: <Brain />,
+      href: "#",
+      handleClick: () => {
+        setShowPanel2(true);
+      },
+    },
+    !showPanel3 && {
+      title: "UnhideTerminal",
+      icon: (
+        <IconTerminal2 className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
+      href: "#",
+      handleClick: () => {
+        setShowPanel3(true);
+      },
+    },
+  ].filter(Boolean);
 
   return (
     <div>
@@ -68,9 +129,6 @@ const InterviewPage: React.FC = () => {
         description="Join our innovative platform where you can give interviews and solve coding problems simultaneously. Enhance your skills with real-time coding challenges and comprehensive interview practice. Prepare for your dream job with our AI-powered educational resources and expert guidance."
         keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources, Dronacharya.co"
       />
-      {/* <div>
-        <NavbarCodeEditor />
-      </div> */}
       <div className="flex h-screen w-screen">
         <ResizablePanelGroup
           direction="horizontal"
@@ -86,9 +144,9 @@ const InterviewPage: React.FC = () => {
                   {visiblePanels > 1 && (
                     <button
                       onClick={() => setShowPanel1(false)}
-                      className="absolute top-1 left-1 z-10 p-2 rounded"
+                      className="absolute top-5 border right-2 z-10 p-2 rounded"
                     >
-                      <EyeOff className="h-4 w-4" />
+                      <Minimize2 className="h-4 w-4" />
                     </button>
                   )}
                   <ScrollArea className="h-full w-full rounded-md border">
@@ -109,7 +167,7 @@ const InterviewPage: React.FC = () => {
                   </ScrollArea>
                 </ResizablePanel>
               )}
-              {showPanel1 && showPanel2 && <ResizableHandle withHandle />}
+              {showPanel1 && showPanel2 && <ResizableHandle />}
               {showPanel2 && (
                 <ResizablePanel
                   defaultSize={visiblePanels === 1 ? 100 : 50}
@@ -118,9 +176,9 @@ const InterviewPage: React.FC = () => {
                   {visiblePanels > 1 && (
                     <button
                       onClick={() => setShowPanel2(false)}
-                      className="absolute top-2 left-1 z-10    p-2 rounded"
+                      className="absolute top-2 right-2 border  z-10 p-2 rounded"
                     >
-                      <EyeOff className="h-4 w-4" />
+                      <Minimize2 className="h-4 w-4" />
                     </button>
                   )}
                   <ScrollArea className="h-full w-full rounded-md border">
@@ -133,17 +191,15 @@ const InterviewPage: React.FC = () => {
             </ResizablePanelGroup>
           </ResizablePanel>
 
-          {(showPanel1 || showPanel2) && showPanel3 && (
-            <ResizableHandle withHandle />
-          )}
+          {(showPanel1 || showPanel2) && showPanel3 && <ResizableHandle />}
 
           {showPanel3 && (
             <ResizablePanel defaultSize={50} className="relative">
               <button
                 onClick={() => setShowPanel3(false)}
-                className="absolute top-5 right-5 z-10  p-2 rounded"
+                className="absolute top-5 right-5 z-10 p-2 rounded"
               >
-                <EyeOff className="h-4 w-4" />
+                <Minimize2 className="h-4 w-4" />
               </button>
               <div className="flex h-full items-center justify-center p-4">
                 <MonacoEditor />
@@ -151,34 +207,65 @@ const InterviewPage: React.FC = () => {
             </ResizablePanel>
           )}
         </ResizablePanelGroup>
+        <div className="bottom-28 fixed p-r-4 right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
+          <FloatingDock
+            desktopClassName="translate-y-10"
+            mobileClassName="translate-y-10"
+            items={links}
+          />
+        </div>
+        <div className="bottom-40 fixed  right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
+          <div className="  flex items-center justify-center">
+            <Modal>
+              <ModalTrigger className="bg-black  rounded-l-xl bg-neutral-900 flex justify-center group/modal-btn">
+                <div className="flex items-center m-1 justify-center">
+                  <button className="h-10 w-10 rounded-full bg-gray-50 dark:bg-neutral-800 flex items-center justify-center">
+                    <SquareArrowOutUpRight className="h-5 w-5 text-neutral-500 dark:text-neutral-300" />
+                  </button>
+                </div>
+              </ModalTrigger>
+              <ModalBody>
+                <ModalContent className="p-6 rounded-md shadow-lg">
+                  <Card className="bg-[none] border-none">
+                    <CardHeader>
+                      <div>
+                        <h3>Are you sure you want to leave this interview?</h3>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        <p>
+                          After leaving, you will lose all your progress, and
+                          this interview cannot be continued in the future. You
+                          will have to create a new one.
+                        </p>
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </ModalContent>
 
-        {!showPanel1 && (
-          <button
-            onClick={() => setShowPanel1(true)}
-            className="absolute bottom-2 left-5 z-[1000] p-2 rounded-full bg-green-500"
-          >
-            <TableOfContents />
-          </button>
-        )}
-        {!showPanel2 && (
-          <button
-            onClick={() => setShowPanel2(true)}
-            className="absolute bottom-2 left-5 z-[1000]  p-2 rounded-full bg-green-500"
-          >
-            <Brain />
-          </button>
-        )}
-        {!showPanel3 && (
-          <button
-            onClick={() => setShowPanel3(true)}
-            className="absolute bottom-2 left-16 z-[1000] p-2 rounded-full bg-green-500"
-          >
-            <CodeXml />
-          </button>
-        )}
-      </div>
-      <div className="bottom-20 transition fixed right-[-50px] hover:right-0 w-fit z-[800] ">
-        <p className="p-2 px-4 bg-green-500 rounded-l border">Timer</p>
+                <ModalFooter className="gap-4">
+                  <button  className="px-2 py-1 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm w-28">
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleLeaveInterview}
+                    className="text-sm  rounded-md"
+                  >
+                    <DuolingoButton
+                      handleSubmit={() => {}}
+                      Icon={SquareArrowOutUpRight}
+                      isLoading={isLoading}
+                      color={"bg-orange-500"}
+                      title="Leave"
+                      href="/explore"
+                    />
+                  </button>
+                </ModalFooter>
+              </ModalBody>
+            </Modal>
+          </div>
+        </div>
       </div>
     </div>
   );

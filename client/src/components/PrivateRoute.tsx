@@ -3,6 +3,7 @@
 import React, { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useLoadUserQuery } from "@/redux/features/Api/apiSlice";
+import { LoadingIcon } from "./ui/Icons/SelectMore";
 
 interface PrivateRouteProps {
   allowedRoles: string[];
@@ -20,7 +21,12 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
   const { isLoading, data } = useLoadUserQuery(undefined, {});
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-screen flex gap-2 items-center justify-center" >
+        <LoadingIcon />
+        <p>{"Loading..."}</p>
+      </div>
+    );
   }
 
   if (!data?.user?.role) {

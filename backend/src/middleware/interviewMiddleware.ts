@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { IUser } from "../entities/User";
 import { connectRedis } from "../Database/redisDb";
-
+import { InterviewModel } from "../entities/interview";
 dotenv.config();
 
 const INTERVIEW_JWT_SECRET = process.env.INTERVIEW_JWT_SECRET || "";
@@ -13,10 +13,11 @@ declare global {
     interface Request {
       user?: IUser;
       interviewToken?: string;
+      userId?: string;
+      questionId?: string;
     }
   }
 }
-
 
 export const generateInterviewTokenMiddleware = async (
   req: Request,
@@ -32,11 +33,10 @@ export const generateInterviewTokenMiddleware = async (
       .json({ message: "User or question ID not provided" });
   }
 
-  
   const keys = await connectRedis.keys(`${user._id}InterviewToken*`);
 
   if (keys.length > 0) {
-    const existingToken = await connectRedis.get(keys[0]); 
+    const existingToken = await connectRedis.get(keys[0]);
 
     if (existingToken) {
       try {
@@ -52,7 +52,6 @@ export const generateInterviewTokenMiddleware = async (
           });
         }
       } catch (err) {
-    
         await connectRedis.del(keys[0]);
       }
     }
@@ -61,7 +60,7 @@ export const generateInterviewTokenMiddleware = async (
   const redisKey = `${user._id}InterviewToken${id}`;
 
   const interviewToken = jwt.sign(
-    { userId: user._id, id }, 
+    { userId: user._id, id },
     INTERVIEW_JWT_SECRET,
     {
       expiresIn: "45m",
@@ -71,10 +70,11 @@ export const generateInterviewTokenMiddleware = async (
   await connectRedis.set(redisKey, interviewToken, "EX", 45 * 60);
 
   req.interviewToken = interviewToken;
+  req.userId = user?._id;
+  req.questionId = id;
   res.status(200);
   next();
 };
-
 
 export const validateInterviewTokenMiddleware = async (
   req: Request,
@@ -108,8 +108,44 @@ export const validateInterviewTokenMiddleware = async (
           "Invalid or expired token for this question. Please restart the interview process.",
       });
     }
-
-    req.user = decoded;
+    req.questionId = id;
     next();
   });
+};
+
+export const deleteInterviewTokenMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user } = req;
+  const { id } = req.params;
+  if (!user || !user._id || !id) {
+    return res.status(400).json({
+      message: "User or question ID not provided de",
+      user: user,
+      id: id,
+    });
+  }
+
+  const redisKey = `${user._id}InterviewToken${id}`;
+
+  try {
+    const deleteResult = await connectRedis.del(redisKey);
+
+    if (deleteResult) {
+      req.user = user;
+      req.questionId = id;
+      next();
+    } else {
+      return res.status(404).json({
+        message: "Interview token not found or already deleted.",
+      });
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: "Error deleting interview token from Redis.",
+      error: error.message,
+    });
+  }
 };

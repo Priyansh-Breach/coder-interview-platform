@@ -23,13 +23,10 @@ export const interviewApi = apiSlice.injectEndpoints({
         credentials: "include" as const,
       }),
     }),
-    questionContext: builder.mutation({
+    leaveInterview: builder.mutation({
       query: ({ questionId }) => ({
-        url: `interview/question-context/${questionId}`,
+        url: `interview/leave-Interview/${questionId}`,
         method: "POST",
-        body: {
-          questionId,
-        },
         credentials: "include" as const,
       }),
     }),
@@ -44,7 +41,7 @@ export const interviewApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useQuestionContextMutation,
+  useLeaveInterviewMutation,
   useGetQuestionQuery,
   useStartInterviewMutation,
   useTestairesponseMutation,

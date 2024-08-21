@@ -67,6 +67,7 @@ const InterviewQuestionContextPage: React.FC = () => {
 
   useEffect(() => {
     if (id) {
+      console.log("Called Emit");
       socket.emit("startQuestionContextGeneration", {
         questionId: id,
       });

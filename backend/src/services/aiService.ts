@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Readable } from "stream";
-import { IQuestion } from "../controllers/Socket.io/interviewController";
+import { IQuestion } from "../controllers/Socket.io/SocketinterviewController";
 // streamUtils.ts
 import { promises as fs } from "fs";
 import path from "path";

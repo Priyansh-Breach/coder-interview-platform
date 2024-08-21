@@ -1,11 +1,12 @@
 import { Router } from "express";
 import {
-  handleAiConversationResponse,
   getQuestionData,
-  handleAiQuestionContext,
-} from "../controllers/Socket.io/interviewController";
+  handleCreateInterviewMongo,
+  handleLeaveInterviewMongo,
+} from "../controllers/interviewController";
 import { isUserAuthenticated } from "../middleware/authMiddleware";
 import {
+  deleteInterviewTokenMiddleware,
   generateInterviewTokenMiddleware,
   validateInterviewTokenMiddleware,
 } from "../middleware/interviewMiddleware";
@@ -16,16 +17,15 @@ router.post(
   "/start-Interview/:id",
   isUserAuthenticated,
   generateInterviewTokenMiddleware,
-  (req, res) => {
-    res.json({ message: "Interview Activated" });
-  }
+  handleCreateInterviewMongo
 );
 
 router.post(
-  "/question-context/:id",
+  "/leave-Interview/:id",
   isUserAuthenticated,
   validateInterviewTokenMiddleware,
-  handleAiQuestionContext
+  deleteInterviewTokenMiddleware,
+  handleLeaveInterviewMongo
 );
 
 router.get(
@@ -35,11 +35,21 @@ router.get(
   getQuestionData
 );
 
-router.post(
-  "/test-airesponse/:id",
-  isUserAuthenticated,
-  validateInterviewTokenMiddleware,
-  handleAiConversationResponse
-);
+{
+  /**These route are Socket Routes now and are in Interview Socket Routes file */
+}
+// router.post(
+//   "/test-airesponse/:id",
+//   isUserAuthenticated,
+//   validateInterviewTokenMiddleware,
+//   handleAiConversationResponse
+// );
+
+// router.post(
+//   "/question-context/:id",
+//   isUserAuthenticated,
+//   validateInterviewTokenMiddleware,
+//   handleAiQuestionContext
+// );
 
 export default router;

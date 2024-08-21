@@ -7,7 +7,7 @@ import {
 import {
   handleAiConversationResponse,
   handleAiQuestionContext,
-} from "../../controllers/Socket.io/interviewController";
+} from "../../controllers/Socket.io/SocketinterviewController";
 
 export const socketRoutes = (io: Server) => {
   io.on("connection", (socket: Socket) => {

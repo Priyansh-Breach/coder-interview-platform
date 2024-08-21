@@ -1,10 +1,8 @@
 // src/controllers/interviewController.ts
-import { cactchAsyncError } from "../../middleware/catchAsyncError";
 import { transcribeAudio } from "../../services/speechToTextService";
 import { synthesizeSpeech } from "../../services/textToSpeechService";
 import { NextFunction, Request, Response } from "express";
 import QuestionData from "../../Database/Questions/leetcode-solutions.json";
-import ErrorHandler from "../../Utils/Error Handler/errorHandler";
 import {
   generateQuestionContext,
   generateResponse,
@@ -101,34 +99,3 @@ export const handleAiConversationResponse = async (
     console.error("Error handling interview:", error);
   }
 };
-
-// Interface for question ID
-interface IQuestionId {
-  id: string;
-}
-
-/**
- * Return the question based on Params id
- */
-export const getQuestionData = cactchAsyncError(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { id } = req.params as unknown as IQuestionId;
-
-      const questionData = (QuestionData as IQuestion[]).find(
-        (question) => question.id === id
-      );
-
-      if (!questionData) {
-        return next(new ErrorHandler("Question not found", 404));
-      }
-
-      res.status(200).json({
-        success: true,
-        data: questionData,
-      });
-    } catch (error: any) {
-      return next(new ErrorHandler(error.message, 500));
-    }
-  }
-);
