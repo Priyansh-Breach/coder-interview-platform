@@ -51,7 +51,6 @@ export default function ExplorePage() {
   const { data: searchedData, isLoading: searchLoading } =
     useSearchContentQuery({ search: searchQuery, page: currentPage });
 
-  
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(e.target.value);
   };
@@ -162,28 +161,34 @@ export default function ExplorePage() {
           </div>
           <ExpandableCardStandard data={searchedData?.results} />
           {searchedData?.results?.length < 1 && <NotFound />}
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious onClick={handlePreviousPage} />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink onClick={handlePreviousSet}>
-                  <PaginationEllipsis />
-                </PaginationLink>
-              </PaginationItem>
-              {renderPaginationItems()}
-              {searchedData?.totalPages}
-              <PaginationItem>
-                <PaginationLink onClick={handleNextSet}>
-                  <PaginationEllipsis />
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext onClick={handleNextPage} />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <div>
+            {!searchLoading && (
+              <>
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious onClick={handlePreviousPage} />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink onClick={handlePreviousSet}>
+                        <PaginationEllipsis />
+                      </PaginationLink>
+                    </PaginationItem>
+                    {renderPaginationItems()}
+                    {searchedData?.totalPages}
+                    <PaginationItem>
+                      <PaginationLink onClick={handleNextSet}>
+                        <PaginationEllipsis />
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationNext onClick={handleNextPage} />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </>
+            )}
+          </div>
         </main>
         <aside className="w-full border-b bg-background p-6 sm:p-8 md:p-10">
           <div className="mb-6">

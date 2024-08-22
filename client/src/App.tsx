@@ -9,7 +9,7 @@ import {
   ExplorePage,
 } from "./Routes";
 import PrivateRoute from "./components/PrivateRoute";
-import { initializeAppAsync, refreshTokenFunc } from "@/redux/store";
+import { initializeAppAsync, refreshTokenFunc  } from "@/redux/store";
 import { useEffect } from "react";
 
 function App() {

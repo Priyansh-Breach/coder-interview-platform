@@ -1,19 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { LoadingIcon } from "./ui/Icons/SelectMore";
-
 const LoadingIndicator: React.FC = () => {
   return (
     <div  >
-      <div className="absolute z-10 w-fit h-fit rounded">
-        <LoadingIcon />
-      </div>
+      
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "start",
         }}
+        
       >
         {Array.from({ length: 3 }).map((_, index) => (
           <div

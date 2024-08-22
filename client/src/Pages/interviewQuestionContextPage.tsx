@@ -8,11 +8,12 @@ import {
 } from "@/components/ui/card";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTestairesponseMutation } from "@/redux/features/Interview/interview";
-import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
-import { useAppSelector } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { socket } from "../socket";
 import { useSelector } from "react-redux";
 import LoadingIndicator from "@/components/aiLoadinfComponent";
+import { userMessage } from "@/redux/features/Interview/editorSlice";
+import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 
 const intervieweeStatements = [
   "I'll use a hash map for quick lookups.",
@@ -29,11 +30,12 @@ const intervieweeStatements = [
 
 const InterviewQuestionContextPage: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [userCurrentApproach, setUserCurrentApproach] = useState("");
   const { id } = useParams<{ id: string }>();
-  const code = useAppSelector((state: any) => state.editor.code);
-  const language = useAppSelector((state: any) => state.editor.language);
+  const code = useSelector((state: any) => state.editor.code);
+  const language = useSelector((state: any) => state.editor.language);
   const response = useSelector((state: any) => state.aiResponse.response);
   const streamLoading = useSelector((state: any) => state.aiResponse.loading);
   const error = useSelector((state: any) => state.aiResponse.error);
@@ -53,7 +55,9 @@ const InterviewQuestionContextPage: React.FC = () => {
 
   async function onSubmit(e: any) {
     e.preventDefault();
+
     try {
+      dispatch(userMessage(userCurrentApproach));
       socket.emit("startConversationResponseGeneration", {
         userCurrentApproach: userCurrentApproach,
         userCode: code,
@@ -102,7 +106,7 @@ const InterviewQuestionContextPage: React.FC = () => {
         </CardFooter>
       </Card>
 
-      <div className="bottom-6 fixed left-0 w-full z-[900] ">
+      <div className="bottom-6 fixed h-fit left-0 w-full z-[900] ">
         <PlaceholdersAndVanishInput
           placeholders={intervieweeStatements}
           onChange={handleChange}

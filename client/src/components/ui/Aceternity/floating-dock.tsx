@@ -26,7 +26,7 @@ export const FloatingDock = ({
     icon: React.ReactNode;
     href: string;
     handleClick: any;
-  }[];
+  }[] | any;
   desktopClassName?: string;
   mobileClassName?: string;
 }) => {

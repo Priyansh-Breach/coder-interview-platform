@@ -13,13 +13,12 @@ import {
   useGetQuestionQuery,
   useLeaveInterviewMutation,
 } from "@/redux/features/Interview/interview";
-import { useDispatch } from "react-redux";
 import { setQuestionData } from "@/redux/features/Interview/editorSlice";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SolutionScreen } from "@/components/solutionScreen";
 import { InterviewQuestionContextPage } from "@/Routes";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Brain,Minimize2, SquareArrowOutUpRight } from "lucide-react";
+import { Brain, Minimize2, SquareArrowOutUpRight } from "lucide-react";
 import { LoadingIcon, TableOfContents } from "@/components/ui/Icons/SelectMore";
 import { FloatingDock } from "@/components/ui/Aceternity/floating-dock";
 import { IconTerminal2 } from "@tabler/icons-react";
@@ -35,18 +34,31 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import {
+  setQuestionPanel,
+  setConsolePanel,
+  setChatPanel,
+} from "@/redux/features/Interview/panelSlice";
+import { useAppSelector, useAppDispatch } from "@/redux/store";
 
 const InterviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const dispatch = useDispatch();
-  const [showPanel1, setShowPanel1] = useState<boolean>(true);
-  const [showPanel2, setShowPanel2] = useState<boolean>(true);
-  const [showPanel3, setShowPanel3] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
+  const chatPanelState = useAppSelector(
+    (state) => state.panel.chatPanelVisible
+  );
+  const questionPanelState = useAppSelector(
+    (state) => state.panel.questionPanelVisible
+  );
+  const consolePanelState = useAppSelector(
+    (state) => state.panel.consolePanelVisible
+  );
 
-  const visiblePanels = [showPanel1, showPanel2].filter(Boolean).length;
+  const visiblePanels = [questionPanelState, chatPanelState].filter(
+    Boolean
+  ).length;
   const {
     data: question,
     isError,
@@ -55,10 +67,7 @@ const InterviewPage: React.FC = () => {
   } = useGetQuestionQuery(id!, {
     skip: !id,
   });
-  const [
-    leaveInterview,
-    { data: leaveData, isLoading: leaveLoading, error: leaveError },
-  ] = useLeaveInterviewMutation();
+  const [leaveInterview, {}] = useLeaveInterviewMutation();
 
   const handleLeaveInterview = async () => {
     await leaveInterview({
@@ -70,7 +79,7 @@ const InterviewPage: React.FC = () => {
     if (question) {
       dispatch(setQuestionData(question));
     }
-  }, [question, dispatch]);
+  }, [question]);
 
   if (!id) {
     return <div>Invalid question ID</div>;
@@ -90,30 +99,30 @@ const InterviewPage: React.FC = () => {
   }
 
   const links = [
-    !showPanel1 && {
+    !questionPanelState && {
       title: "Unhide Question",
       icon: <TableOfContents />,
       href: "#",
       handleClick: () => {
-        setShowPanel1(true);
+        dispatch(setQuestionPanel(!questionPanelState));
       },
     },
-    !showPanel2 && {
+    !chatPanelState && {
       title: "Unhide Chat",
       icon: <Brain />,
       href: "#",
       handleClick: () => {
-        setShowPanel2(true);
+        dispatch(setChatPanel(!chatPanelState));
       },
     },
-    !showPanel3 && {
+    !consolePanelState && {
       title: "UnhideTerminal",
       icon: (
         <IconTerminal2 className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#",
       handleClick: () => {
-        setShowPanel3(true);
+        dispatch(setConsolePanel(!consolePanelState));
       },
     },
   ].filter(Boolean);
@@ -136,14 +145,16 @@ const InterviewPage: React.FC = () => {
         >
           <ResizablePanel defaultSize={50} className="relative">
             <ResizablePanelGroup direction="vertical" className="h-full">
-              {showPanel1 && (
+              {questionPanelState && (
                 <ResizablePanel
                   defaultSize={visiblePanels === 1 ? 100 : 50}
                   className="relative"
                 >
                   {visiblePanels > 1 && (
                     <button
-                      onClick={() => setShowPanel1(false)}
+                      onClick={() => {
+                        dispatch(setQuestionPanel(false));
+                      }}
                       className="absolute top-5 border right-2 z-10 p-2 rounded"
                     >
                       <Minimize2 className="h-4 w-4" />
@@ -167,15 +178,17 @@ const InterviewPage: React.FC = () => {
                   </ScrollArea>
                 </ResizablePanel>
               )}
-              {showPanel1 && showPanel2 && <ResizableHandle />}
-              {showPanel2 && (
+              {questionPanelState && chatPanelState && <ResizableHandle />}
+              {chatPanelState && (
                 <ResizablePanel
                   defaultSize={visiblePanels === 1 ? 100 : 50}
                   className="relative"
                 >
                   {visiblePanels > 1 && (
                     <button
-                      onClick={() => setShowPanel2(false)}
+                      onClick={() => {
+                        dispatch(setChatPanel(false));
+                      }}
                       className="absolute top-2 right-2 border  z-10 p-2 rounded"
                     >
                       <Minimize2 className="h-4 w-4" />
@@ -191,12 +204,16 @@ const InterviewPage: React.FC = () => {
             </ResizablePanelGroup>
           </ResizablePanel>
 
-          {(showPanel1 || showPanel2) && showPanel3 && <ResizableHandle />}
+          {(questionPanelState || chatPanelState) && consolePanelState && (
+            <ResizableHandle />
+          )}
 
-          {showPanel3 && (
+          {consolePanelState && (
             <ResizablePanel defaultSize={50} className="relative">
               <button
-                onClick={() => setShowPanel3(false)}
+                onClick={() => {
+                  dispatch(setConsolePanel(false));
+                }}
                 className="absolute top-5 right-5 z-10 p-2 rounded"
               >
                 <Minimize2 className="h-4 w-4" />
@@ -207,18 +224,18 @@ const InterviewPage: React.FC = () => {
             </ResizablePanel>
           )}
         </ResizablePanelGroup>
-        <div className="bottom-28 fixed p-r-4 right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
+        <div className="bottom-56 fixed p-r-4 right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
           <FloatingDock
             desktopClassName="translate-y-10"
             mobileClassName="translate-y-10"
             items={links}
           />
         </div>
-        <div className="bottom-40 fixed  right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
+        <div className="bottom-28 fixed  right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
           <div className="  flex items-center justify-center">
             <Modal>
-              <ModalTrigger className="bg-black  rounded-l-xl bg-neutral-900 flex justify-center group/modal-btn">
-                <div className="flex items-center m-1 justify-center">
+              <ModalTrigger className=" rounded-l-xl shadow-md bg-neutral-100 dark:bg-neutral-900 flex justify-center group/modal-btn">
+                <div className="flex items-center  justify-center">
                   <button className="h-10 w-10 rounded-full bg-gray-50 dark:bg-neutral-800 flex items-center justify-center">
                     <SquareArrowOutUpRight className="h-5 w-5 text-neutral-500 dark:text-neutral-300" />
                   </button>
@@ -245,7 +262,7 @@ const InterviewPage: React.FC = () => {
                 </ModalContent>
 
                 <ModalFooter className="gap-4">
-                  <button  className="px-2 py-1 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm w-28">
+                  <button className="px-2 py-1 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm w-28">
                     Cancel
                   </button>
                   <button

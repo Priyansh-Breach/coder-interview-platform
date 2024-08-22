@@ -10,16 +10,18 @@ interface QuestionData {
 interface EditorState {
   code: string;
   language: string;
+  userMessage: string;
   messages: string[];
-  questionData?: QuestionData | null; 
+  questionData?: QuestionData | null;
   status: string;
 }
 
 const initialState: EditorState = {
   code: "",
   language: "javascript",
-  messages: [], 
-  status: "disconnected", 
+  userMessage: "",
+  messages: [],
+  status: "disconnected",
 };
 
 const editorSlice = createSlice({
@@ -31,6 +33,9 @@ const editorSlice = createSlice({
     },
     setLanguage(state, action: PayloadAction<string>) {
       state.language = action.payload;
+    },
+    userMessage(state, action: PayloadAction<string>) {
+      state.userMessage = action.payload;
     },
     addMessage(state, action: PayloadAction<string>) {
       state.messages.push(action.payload);
@@ -44,6 +49,12 @@ const editorSlice = createSlice({
   },
 });
 
-export const { setCode, setLanguage, addMessage, updateStatus,setQuestionData } =
-  editorSlice.actions;
+export const {
+  setCode,
+  setLanguage,
+  addMessage,
+  updateStatus,
+  setQuestionData,
+  userMessage,
+} = editorSlice.actions;
 export default editorSlice.reducer;
