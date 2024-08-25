@@ -18,7 +18,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SolutionScreen } from "@/components/solutionScreen";
 import { InterviewQuestionContextPage } from "@/Routes";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Brain, Minimize2, SquareArrowOutUpRight } from "lucide-react";
+import {
+  Brain,
+  ChevronsDown,
+  ChevronsRight,
+  ChevronsUp,
+  Minimize2,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import { LoadingIcon, TableOfContents } from "@/components/ui/Icons/SelectMore";
 import { FloatingDock } from "@/components/ui/Aceternity/floating-dock";
 import { IconTerminal2 } from "@tabler/icons-react";
@@ -155,9 +162,9 @@ const InterviewPage: React.FC = () => {
                       onClick={() => {
                         dispatch(setQuestionPanel(false));
                       }}
-                      className="absolute top-5 border right-2 z-10 p-2 rounded"
+                      className="absolute top-5 right-2 z-10 p-2 rounded"
                     >
-                      <Minimize2 className="h-4 w-4" />
+                      <ChevronsUp className="h-6 w-6" />
                     </button>
                   )}
                   <ScrollArea className="h-full w-full rounded-md border">
@@ -189,9 +196,9 @@ const InterviewPage: React.FC = () => {
                       onClick={() => {
                         dispatch(setChatPanel(false));
                       }}
-                      className="absolute top-2 right-2 border  z-10 p-2 rounded"
+                      className="absolute top-2 right-2  z-10 p-2 rounded"
                     >
-                      <Minimize2 className="h-4 w-4" />
+                      <ChevronsDown  className="h-6 w-6" />
                     </button>
                   )}
                   <ScrollArea className="h-full w-full rounded-md border">
@@ -214,9 +221,9 @@ const InterviewPage: React.FC = () => {
                 onClick={() => {
                   dispatch(setConsolePanel(false));
                 }}
-                className="absolute top-5 right-5 z-10 p-2 rounded"
+                className="absolute top-4 right-5 z-10 p-2 rounded"
               >
-                <Minimize2 className="h-4 w-4" />
+                <ChevronsRight className="h-6 w-6" />
               </button>
               <div className="flex h-full items-center justify-center p-4">
                 <MonacoEditor />
