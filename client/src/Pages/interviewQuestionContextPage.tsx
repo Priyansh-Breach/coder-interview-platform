@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import LoadingIndicator from "@/components/aiLoadinfComponent";
 import { userMessage } from "@/redux/features/Interview/editorSlice";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
+import ChatComponent from "@/components/chat";
 
 const intervieweeStatements = [
   "I'll use a hash map for quick lookups.",
@@ -93,9 +94,13 @@ const InterviewQuestionContextPage: React.FC = () => {
               <LoadingIndicator />
             </>
           ) : error ? (
-            <p>{error}</p>
+            <>
+              <p>{error}</p>
+            </>
           ) : (
-            <p className=" whitespace-pre-wrap break-words">{response}</p>
+            <>
+              <p className=" whitespace-pre-wrap break-words">{response}</p>
+            </>
           )}
         </CardContent>
 
@@ -105,7 +110,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           </CardDescription>
         </CardFooter>
       </Card>
-
+      <ChatComponent />
       <div className="bottom-6 fixed h-fit left-0 w-full z-[900] ">
         <PlaceholdersAndVanishInput
           placeholders={intervieweeStatements}

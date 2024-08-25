@@ -15,7 +15,7 @@ const handleStream = (
   onEnd: () => void
 ) => {
   stream.on("data", (chunk) => {
-    const text = chunk?.toString(); // Convert Buffer to string
+    const text = chunk; // Convert Buffer to string
     onData(text);
   });
 
@@ -64,7 +64,7 @@ export const generateResponse = async (
   conversationLog: any,
   userCurrentApproach: string,
   userCode: any,
-  socket: any 
+  socket: any
 ) => {
   const prompt = JSON.stringify({
     question: question,
@@ -79,7 +79,6 @@ export const generateResponse = async (
   };
 
   try {
-
     const response = await axios.post(LLM_API_URL, requestBody, {
       responseType: "stream",
     });
@@ -87,7 +86,7 @@ export const generateResponse = async (
     handleStream(
       response.data as unknown as Readable,
       (chunk) => {
-        socket.emit("responseStream", chunk);
+        socket.emit("responseStreamConversation", chunk);
       },
       () => {
         socket.emit("responseComplete");
@@ -115,12 +114,12 @@ export const simulateStream = async (interval: number, socket: any) => {
 
     let index = 0;
 
-    // Function to send a chunk of data
     const sendChunk = () => {
-      if (index < questions.length) {
-        const question = questions[index];
-        question.toString();
-        socket.emit("responseStream", question, { loading: false }); // Emit the chunk to the frontend
+      if (index < 30) {
+     const question =
+          '{"response": "Just to confirm, your approach is to use a hash map to store the numbers in the nums array and their indices. Is that correct?", "code": 0, "solved": 0}';
+        let q = question.split(" ");
+        socket.emit("responseStreamConversation", {"response": q[index]}, { loading: false }); // Emit the chunk to the frontend
         index++;
       } else {
         socket.emit("responseComplete"); // Signal that streaming is complete
