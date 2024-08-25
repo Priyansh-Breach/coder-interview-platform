@@ -138,10 +138,10 @@ export default function ExplorePage() {
         keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources"
       />
       <Navbar />
-      <div className="flex flex-col-reverse  min-h-screen w-full mt-14">
-        <main className="flex-1 border-r bg-background p-6 sm:p-8 md:p-10">
+      <div className="flex  self-center items-center justify-center flex-col-reverse  min-h-screen w-full mt-14">
+        <main className="flex-1 w-2/3 border rounded-t-lg p-6 sm:p-8 md:p-10">
           <div className="mb-6 flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Questions</h1>
+            <h1 className="text-lg font-semibold">Page No. {currentPage}</h1>
             <div className="relative flex-1 max-w-sm">
               <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <PlaceholdersAndVanishInput
@@ -190,7 +190,7 @@ export default function ExplorePage() {
             )}
           </div>
         </main>
-        <aside className="w-full border-b bg-background p-6 sm:p-8 md:p-10">
+        <aside className="w-2/3 border-b bg-background p-6 sm:p-8 md:p-10">
           <div className="mb-6">
             <h2 className="text-2xl font-bold">Your Interviews</h2>
             <div className="mt-4 space-y-4">
