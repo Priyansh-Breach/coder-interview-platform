@@ -15,7 +15,7 @@ const LoadingIndicator: React.FC = () => {
         {Array.from({ length: 3 }).map((_, index) => (
           <div
             key={index}
-            className={`relative ml-8 h-5 mb-2 rounded overflow-hidden l ${
+            className={`relative  h-5 mb-2 rounded overflow-hidden l ${
               index === 2 ? "w-72" : "w-full"
             }`} 
           >
