@@ -116,10 +116,14 @@ export const simulateStream = async (interval: number, socket: any) => {
 
     const sendChunk = () => {
       if (index < 30) {
-     const question =
+        const question =
           '{"response": "Just to confirm, your approach is to use a hash map to store the numbers in the nums array and their indices. Is that correct?", "code": 0, "solved": 0}';
         let q = question.split(" ");
-        socket.emit("responseStreamConversation", {"response": q[index]}, { loading: false }); // Emit the chunk to the frontend
+        socket.emit(
+          "responseStreamConversation",
+          { response: q[index], done: index != 29 ? false : true },
+          { loading: false }
+        ); // Emit the chunk to the frontend
         index++;
       } else {
         socket.emit("responseComplete"); // Signal that streaming is complete

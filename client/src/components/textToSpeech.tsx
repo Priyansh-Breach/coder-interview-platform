@@ -61,11 +61,14 @@ const TextToSpeech: React.FC<ITTS> = ({ text }) => {
     window.speechSynthesis.speak(utterance);
   };
 
+  const stop = () => {
+   
+  };
   return (
     <div>
       <button
-        className="border cursor-pointer  w-fit p-2 rounded  mx-2 "
-        onClick={handleSpeak}
+        className=" cursor-pointer  "
+        onClick={!isSpeaking ? handleSpeak : stop}
         disabled={isSpeaking}
       >
         {isSpeaking ? (

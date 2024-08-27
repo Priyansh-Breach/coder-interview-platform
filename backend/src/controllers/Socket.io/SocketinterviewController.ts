@@ -75,26 +75,15 @@ export const handleAiConversationResponse = async (
       return;
     }
 
-    await generateResponse(
-      questionData?.content,
-      conversationLog,
-      userCurrentApproach,
-      userCode,
-      socket
-    );
-    // if (userCurrentApproach) {
-    //   const aiResponse = await generateResponse(
-    //     questionData,
-    //     conversationArray,
-    //     userCurrentApproach,
-    //     userCodeandLanguage
-    //   );
-
-    //   conversationArray.push({
-    //     user: userCurrentApproach,
-    //     ai: aiResponse,
-    //   });
-    // }
+    // await generateResponse(
+    //   questionData?.content,
+    //   conversationLog,
+    //   userCurrentApproach,
+    //   userCode,
+    //   socket
+    // );
+  
+    simulateStream(100, socket);
   } catch (error) {
     console.error("Error handling interview:", error);
   }

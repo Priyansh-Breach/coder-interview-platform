@@ -1,41 +1,81 @@
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import { useAppSelector } from "@/redux/store";
+import { Card, CardContent, CardDescription, CardFooter } from "./ui/card";
+import TextToSpeech from "./textToSpeech";
+import LoadingIndicator from "./aiLoadinfComponent";
+import { motion } from "framer-motion";
 
 export default function Component() {
-  const [messages, setMessages] = useState([
-    {
-      id: 2,
-      sender: "You",
-      content: "I'm good, thanks! How about you?",
-      timestamp: "10:02 AM",
-    },
-  ]);
-  const userMessage = useAppSelector((state:any)=>state.editor.userMessage)
+  const conversation = useAppSelector(
+    (state: any) => state.conversation.message
+  );
+  const response = useAppSelector((state: any) => state.aiResponse.response);
+  const streamLoading = useAppSelector(
+    (state: any) => state.aiResponse.loading
+  );
+  const error = useAppSelector((state: any) => state.aiResponse.error);
+  const currentYear = new Date().getFullYear();
+
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [conversation]);
 
   return (
-    <div className="flex flex-col h-screen  bg-background text-foreground">
-      <div className="space-y-4">
-        {messages.map((message) => (
+    <div className="flex flex-col w-full max-w-3xl h-screen bg-background text-foreground">
+      <div>
+        {conversation?.map((message: any, index: number) => (
           <div
-            key={message.id}
+            key={index}
             className={`flex ${
-              message.sender === "You" ? "justify-end" : "justify-start"
-            }`}
+              message.sender === "user" ? "justify-end" : "justify-center"
+            } w-full my-2`}
           >
-            <div
-              className={`max-w-[70%] ${
-                message.sender === "You"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted"
-              } rounded-lg p-3`}
+            <Card
+              className={`rounded-lg  max-w-3xl w-full text-start bg-[none] break-words self-center shadow-none border-none overflow-hidden ${
+                message.sender === "user"
+                  ? "bg-muted w-fit mr-10  break-words rounded-xl max-w-lg "
+                  : ""
+              }`}
             >
-              <p className="text-sm">{message.content}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {message.timestamp}
-              </p>
-            </div>
+              <CardContent className="p-4">
+                <p className={`whitespace-pre-wrap break-words`}>
+                  {message.response}
+                </p>
+              </CardContent>
+
+              {message?.sender === "ai" && (
+                <CardFooter className="pl-4 flex gap-4 rounded-b-lg break-words">
+                  <div className="pt-1">
+                    <TextToSpeech text={message.response || error} />
+                  </div>
+
+                  <CardDescription className="text-sm">
+                    &copy; {currentYear} coderinterview
+                  </CardDescription>
+                </CardFooter>
+              )}
+            </Card>
+            <div ref={bottomRef} />
           </div>
         ))}
+
+        <div className="flex justify-center ">
+          <Card className="rounded-lg max-w-3xl mb-24 w-full text-start bg-[none] break-words self-center shadow-none border-none overflow-hidden">
+            <CardContent className="p-4">
+              {streamLoading?.loading ? (
+                <LoadingIndicator />
+              ) : error ? (
+                <p>{error}</p>
+              ) : (
+                <p className="whitespace-pre-wrap break-words">{response}</p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

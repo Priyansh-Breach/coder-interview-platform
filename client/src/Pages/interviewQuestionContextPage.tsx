@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import LoadingIndicator from "@/components/aiLoadinfComponent";
 import { userMessage } from "@/redux/features/Interview/editorSlice";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
+import { setConversation } from "@/redux/features/Interview/conversationSlice";
 import ChatComponent from "@/components/chat";
 
 const intervieweeStatements = [
@@ -59,6 +60,15 @@ const InterviewQuestionContextPage: React.FC = () => {
 
     try {
       dispatch(userMessage(userCurrentApproach));
+      dispatch(
+        setConversation({
+          sender: "user",
+          response: userCurrentApproach,
+          code: code,
+          language: language,
+        })
+      );
+
       socket.emit("startConversationResponseGeneration", {
         userCurrentApproach: userCurrentApproach,
         userCode: code,
@@ -83,34 +93,9 @@ const InterviewQuestionContextPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col w-full self-center p-5">
-      <Card className=" rounded-lg max-w-3xl w-full text-start bg-[none] break-words self-center shadow-none border-none overflow-hidden ">
-        <div className="p-4 pl-1 rounded-t-lg  shadow-sm">
-          <TextToSpeech text={response || error} />
-        </div>
-
-        <CardContent className="p-4">
-          {streamLoading?.loading ? (
-            <>
-              <LoadingIndicator />
-            </>
-          ) : error ? (
-            <>
-              <p>{error}</p>
-            </>
-          ) : (
-            <>
-              <p className=" whitespace-pre-wrap break-words">{response}</p>
-            </>
-          )}
-        </CardContent>
-
-        <CardFooter className=" p-2 rounded-b-lg break-words">
-          <CardDescription className=" text-sm">
-            &copy; {currentYear} coderinterview
-          </CardDescription>
-        </CardFooter>
-      </Card>
-      <ChatComponent />
+      <div className="flex justify-center" >
+        <ChatComponent />
+      </div>
       <div className="bottom-6 fixed h-fit left-0 w-full z-[900] ">
         <PlaceholdersAndVanishInput
           placeholders={intervieweeStatements}

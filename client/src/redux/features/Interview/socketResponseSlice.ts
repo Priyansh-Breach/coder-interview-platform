@@ -1,19 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Define the initial state with response as an empty string
 const initialState = {
   response: "",
+  userMessage: "",
+  code: "",
+  language: "",
   error: null,
   streaming: false,
   loading: false,
 };
 
-// Create the slice
 const aiResponseSlice = createSlice({
   name: "aiResponse",
   initialState,
   reducers: {
-    // Append only the 'response' field from the payload
     appendResponse(state, action) {
       state.response += action.payload;
     },
@@ -29,17 +29,27 @@ const aiResponseSlice = createSlice({
     setLoading(state, action) {
       state.loading = action.payload;
     },
+    setUserMessage(state, action) {
+      state.userMessage = action.payload;
+    },
+    setCode(state, action) {
+      state.code = action.payload;
+    },
+    setLanguage(state, action) {
+      state.language = action.payload;
+    },
   },
 });
 
-// Export the actions
 export const {
   appendResponse,
   setError,
   setStreaming,
   resetResponse,
   setLoading,
+  setUserMessage,
+  setCode,
+  setLanguage,
 } = aiResponseSlice.actions;
 
-// Export the reducer
 export default aiResponseSlice.reducer;

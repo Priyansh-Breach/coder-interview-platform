@@ -7,6 +7,7 @@ import editorReducer from "./features/Interview/editorSlice";
 import { socketMiddleware } from "./features/Interview/SocketMiddleware";
 import aiResponseReducer from "./features/Interview/socketResponseSlice";
 import panelReducer from "./features/Interview/panelSlice";
+import conversationSlice from "./features/Interview/conversationSlice";
 import { persistStore, persistReducer } from "redux-persist";
 import persistConfig from "./persistConfig";
 import { createLogger } from "redux-logger";
@@ -28,6 +29,7 @@ export const store = configureStore({
     [apiSlice.reducerPath]: apiSlice.reducer,
     auth: authReducer,
     aiResponse: aiResponseReducer,
+    conversation: conversationSlice,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) =>
