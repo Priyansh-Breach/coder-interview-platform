@@ -1,14 +1,17 @@
 // src/controllers/interviewController.ts
-import { transcribeAudio } from "../../services/speechToTextService";
-import { synthesizeSpeech } from "../../services/textToSpeechService";
-import { NextFunction, Request, Response } from "express";
 import QuestionData from "../../Database/Questions/leetcode-solutions.json";
 import {
   generateQuestionContext,
   generateResponse,
   simulateStream,
 } from "../../services/aiService";
+import dotenv from "dotenv";
 import { Socket } from "socket.io";
+import jwt from "jsonwebtoken";
+import { connectRedis } from "../../Database/redisDb";
+dotenv.config();
+
+const INTERVIEW_JWT_SECRET = process.env.INTERVIEW_JWT_SECRET || "";
 
 export interface IQuestion {
   id: string;
@@ -22,13 +25,54 @@ export interface IQuestion {
  */
 
 export const handleAiQuestionContext = async (socket: Socket, data: any) => {
-  const { questionId } = data;
-
+  const { questionId, user } = data;
   try {
+    if (!user || !user._id || !questionId) {
+      socket.emit(
+        "error",
+        "Failed to generate question context, User or Question Id not Provided, Try after Login. :(",
+        {
+          loading: false,
+        }
+      );
+      return;
+    }
+
+    const redisKey = `${user._id}InterviewToken${questionId}`;
+
+    const token: any = await connectRedis.get(redisKey);
+
+    if (!token) {
+      socket.emit(
+        "error",
+        "No active interview session found for this question. Please restart the interview process. :(",
+        {
+          loading: false,
+        }
+      );
+      return;
+    }
+
+    jwt.verify(token, INTERVIEW_JWT_SECRET, (err: any, decoded: any) => {
+      if (err || decoded.id !== questionId) {
+        socket.emit(
+          "error",
+          "Invalid or expired token for this question. Please restart the interview process. :(",
+          {
+            loading: false,
+          }
+        );
+        return;
+      }
+    });
+
     const questionData: any = (QuestionData as IQuestion[]).find(
       (question: any) => question.id === questionId
     );
     if (!questionData) {
+      socket.emit("error", "Question does not exist. :(", {
+        loading: false,
+      });
       return;
     }
 
@@ -48,6 +92,7 @@ interface IInterview {
   language: string;
   userCurrentApproach: string;
   userCode: string;
+  user: any;
 }
 
 interface IConversation {
@@ -63,8 +108,48 @@ export const handleAiConversationResponse = async (
   data: any
 ) => {
   try {
-    const { userCurrentApproach, questionId, userCode, language } =
+    const { userCurrentApproach, questionId, userCode, language, user } =
       data as IInterview;
+
+    if (!user || !user._id || !questionId) {
+      socket.emit(
+        "error",
+        "Failed to generate question context, User or Question Id not Provided, Try after Login. :(",
+        {
+          loading: false,
+        }
+      );
+      return;
+    }
+
+    const redisKey = `${user._id}InterviewToken${questionId}`;
+
+    const token: any = await connectRedis.get(redisKey);
+
+    if (!token) {
+      socket.emit(
+        "error",
+        "No active interview session found for this question. Please restart the interview process. :(",
+        {
+          loading: false,
+        }
+      );
+      return;
+    }
+
+    jwt.verify(token, INTERVIEW_JWT_SECRET, (err: any, decoded: any) => {
+      if (err || decoded.id !== questionId) {
+        socket.emit(
+          "error",
+          "Invalid or expired token for this question. Please restart the interview process. :(",
+          {
+            loading: false,
+          }
+        );
+        return;
+      }
+    });
+
     const questionData = (QuestionData as IQuestion[]).find(
       (question) => question.id === questionId
     );
@@ -82,7 +167,7 @@ export const handleAiConversationResponse = async (
     //   userCode,
     //   socket
     // );
-  
+
     simulateStream(100, socket);
   } catch (error) {
     console.error("Error handling interview:", error);

@@ -72,6 +72,7 @@ export const socketMiddleware: Middleware = (storeAPI) => {
   socket.on("error", (error: Error, loading: boolean) => {
     storeAPI.dispatch(setLoading(loading));
     storeAPI.dispatch(setError(error));
+    storeAPI.dispatch(appendResponse(error));
   });
 
   return (next) => (action) => {

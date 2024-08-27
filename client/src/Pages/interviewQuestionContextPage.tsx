@@ -1,17 +1,9 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import TextToSpeech from "@/components/textToSpeech";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-} from "@/components/ui/card";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTestairesponseMutation } from "@/redux/features/Interview/interview";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { useAppDispatch } from "@/redux/store";
 import { socket } from "../socket";
 import { useSelector } from "react-redux";
-import LoadingIndicator from "@/components/aiLoadinfComponent";
 import { userMessage } from "@/redux/features/Interview/editorSlice";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { setConversation } from "@/redux/features/Interview/conversationSlice";
@@ -38,10 +30,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const code = useSelector((state: any) => state.editor.code);
   const language = useSelector((state: any) => state.editor.language);
-  const response = useSelector((state: any) => state.aiResponse.response);
-  const streamLoading = useSelector((state: any) => state.aiResponse.loading);
-  const error = useSelector((state: any) => state.aiResponse.error);
-
+  const user = useSelector((state: any) => state.auth.user);
   const [
     testAiResponse,
     {
@@ -74,6 +63,7 @@ const InterviewQuestionContextPage: React.FC = () => {
         userCode: code,
         questionId: id,
         language: language,
+        user: user,
       });
     } catch (error: any) {
       console.log(testError);
@@ -85,6 +75,7 @@ const InterviewQuestionContextPage: React.FC = () => {
       console.log("Called Emit");
       socket.emit("startQuestionContextGeneration", {
         questionId: id,
+        user: user,
       });
     } else {
       navigate("/not-found");
@@ -93,7 +84,7 @@ const InterviewQuestionContextPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col w-full self-center p-5">
-      <div className="flex justify-center" >
+      <div className="flex justify-center">
         <ChatComponent />
       </div>
       <div className="bottom-6 fixed h-fit left-0 w-full z-[900] ">
