@@ -17,13 +17,23 @@ import { setCode, setLanguage } from "@/redux/features/Interview/editorSlice";
 import { debounce } from "lodash";
 
 const languages = [
+  { label: "C", value: "c" },
   { label: "JavaScript", value: "javascript" },
   { label: "TypeScript", value: "typescript" },
   { label: "Python", value: "python" },
   { label: "Java", value: "java" },
   { label: "C++", value: "cpp" },
-  // Add more languages as needed
+  { label: "C#", value: "csharp" },
+  { label: "Ruby", value: "ruby" },
+  { label: "Go", value: "go" },
+  { label: "Swift", value: "swift" },
+  { label: "Rust", value: "rust" },
+  { label: "Dart", value: "dart" },
+  { label: "Scala", value: "scala" },
+  { label: "Perl", value: "perl" },
+  { label: "Shell", value: "shell" },
 ];
+
 
 const MonacoEditor: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -31,6 +41,7 @@ const MonacoEditor: React.FC = () => {
   const language = useAppSelector((state) => state.editor.language);
   const [localCode, setLocalCode] = useState(code);
   const [theme, setTheme] = useState<string | null>("dark");
+  const [warning, setWarning] = useState<string | null>(null);
 
   useEffect(() => {
     const storedTheme = getLocalStorageValue("vite-ui-theme");
@@ -52,7 +63,16 @@ const MonacoEditor: React.FC = () => {
 
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {
-      setLocalCode(value);
+      const lines = value.split("\n");
+      if (lines.length > 1000) {
+        setWarning(
+          "Code exceeds 1000 lines. Only the first 1000 lines will be processed."
+        );
+        setLocalCode(lines.slice(0, 1000).join("\n"));
+      } else {
+        setWarning(null);
+        setLocalCode(value);
+      }
     }
   };
 
@@ -84,6 +104,11 @@ const MonacoEditor: React.FC = () => {
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
+        {warning && (
+          <div className=" w-full text-left text-red-500 text-xs">
+            {warning}
+          </div>
+        )}
       </div>
       <Editor
         height="100%"
