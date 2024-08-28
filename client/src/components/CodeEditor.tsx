@@ -34,56 +34,6 @@ const languages = [
   { label: "Shell", value: "shell" },
 ];
 
-const boilerplateCode: Record<string, string> = {
-  c: `#include <stdio.h>
-
-int main() {
-    printf("Hello, World!\\n");
-    return 0;
-}`,
-  javascript: `console.log("Hello, World!");`,
-  typescript: `console.log("Hello, World!");`,
-  python: `print("Hello, World!")`,
-  java: `public class HelloWorld {
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-    }
-}`,
-  cpp: `#include <iostream>
-
-int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
-}`,
-  csharp: `using System;
-
-class Program {
-    static void Main() {
-        Console.WriteLine("Hello, World!");
-    }
-}`,
-  ruby: `puts 'Hello, World!'`,
-  go: `package main
-
-import "fmt"
-
-func main() {
-    fmt.Println("Hello, World!")
-}`,
-  swift: `print("Hello, World!")`,
-  rust: `fn main() {
-    println!("Hello, World!");
-}`,
-  dart: `void main() {
-    print('Hello, World!');
-}`,
-  scala: `object HelloWorld extends App {
-    println("Hello, World!")
-}`,
-  perl: `print "Hello, World!\\n";`,
-  shell: `#!/bin/bash
-echo "Hello, World!"`,
-};
 
 const MonacoEditor: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -99,13 +49,6 @@ const MonacoEditor: React.FC = () => {
       setTheme(storedTheme);
     }
   }, []);
-
-
-  useEffect(() => {
-    const initialCode = boilerplateCode[language] || '';
-    setLocalCode(initialCode);
-    dispatch(setCode(initialCode)); 
-  }, [language, dispatch]);
 
   const autosaveCode = useCallback(
     debounce((code) => {
