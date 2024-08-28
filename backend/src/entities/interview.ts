@@ -5,7 +5,8 @@ interface IInterview extends Document {
   questionId: string;
   status: "active" | "completed" | "cancelled";
   startTime: Date;
-  endTime?: Date;
+  duration: number;
+  timeLeft: number;
   totalScore: number;
   feedback?: string;
   createdAt?: Date;
@@ -22,7 +23,8 @@ const interviewSchema: Schema = new Schema<IInterview>(
       default: "active",
     },
     startTime: { type: Date, default: Date.now },
-    endTime: { type: Date },
+    timeLeft: { type: Number },
+    duration: { type: Number },
     totalScore: { type: Number, default: 0 },
     feedback: { type: String },
   },

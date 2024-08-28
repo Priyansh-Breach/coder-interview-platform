@@ -25,6 +25,7 @@ declare global {
       interviewToken?: string;
       userId?: string;
       questionId?: string;
+      interViewDuration?: any;
     }
   }
 }
@@ -68,8 +69,8 @@ export const getQuestionData = cactchAsyncError(
 export const handleCreateInterviewMongo = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { userId, questionId } = req as any;
-      await createInterview(userId, questionId);
+      const { userId, questionId, interViewDuration } = req as any;
+      await createInterview(userId, questionId, interViewDuration);
       res.status(200).json({
         success: true,
         message: "Interview Activated",
@@ -88,8 +89,8 @@ export const handleCreateInterviewMongo = cactchAsyncError(
 export const handleLeaveInterviewMongo = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { user, questionId } = req as any;
-      await leaveInterviewMongo(user?._id, questionId);
+      const { user, questionId, tokenRemainingTime } = req as any;
+      await leaveInterviewMongo(user?._id, questionId, tokenRemainingTime);
       res.status(200).json({
         success: true,
         message: "Canceled the interview.",

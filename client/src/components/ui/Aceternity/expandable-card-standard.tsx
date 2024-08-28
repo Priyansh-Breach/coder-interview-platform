@@ -6,6 +6,7 @@ import DuolingoButton from "../Animata/duolingo";
 import { useStartInterviewMutation } from "@/redux/features/Interview/interview";
 import { useToast } from "@/components/ui/use-toast";
 import { Navigate } from "react-router-dom";
+import { LoadingIcon } from "../Icons/SelectMore";
 
 interface Card {
   data: any;
@@ -38,7 +39,8 @@ export function ExpandableCardStandard({ data }: Card) {
   const [active, setActive] = useState<any[number] | boolean | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
-  const [startInterview, { isSuccess }] = useStartInterviewMutation();
+  const [startInterview, { isSuccess, isLoading }] =
+    useStartInterviewMutation();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -59,10 +61,10 @@ export function ExpandableCardStandard({ data }: Card) {
   }, [active]);
 
   useOutsideClick(ref, () => setActive(null));
-  console.log(active?.id);
+
   const handleSubmit = async () => {
     try {
-      await startInterview({ id: active?.id }).unwrap();
+      await startInterview({ id: active?.id, time: "45" }).unwrap();
     } catch (err: any) {
       toast({
         title: "Failed to start interview",
@@ -130,10 +132,7 @@ export function ExpandableCardStandard({ data }: Card) {
                     </motion.h3>
                   </div>
                   {isSuccess && (
-                    <Navigate
-                      to={`/interview/${active.id}`}
-                      replace={true}
-                    />
+                    <Navigate to={`/interview/${active.id}`} replace={true} />
                   )}
                   <motion.a
                     layoutId={`button-${active.title}-${id}`}
@@ -141,11 +140,19 @@ export function ExpandableCardStandard({ data }: Card) {
                     // href={`/interview/question-context/${active.id}`}
                     target="_blank"
                   >
-                    <DuolingoButton
-                      title="Interview this"
-                      handleSubmit={() => { }}
-                      isLoading={false}
-                    />
+                    {!isLoading ? (
+                      <>
+                        <DuolingoButton
+                          title="Take Interview"
+                          handleSubmit={() => {}}
+                          isLoading={false}
+                        />
+                      </>
+                    ) : (
+                      <div className="flex gap-2" >
+                        <LoadingIcon />{"setting up interview.."}
+                      </div>
+                    )}
                   </motion.a>
                 </div>
                 <div className="pt-4 relative px-4 py-4">
@@ -175,8 +182,9 @@ export function ExpandableCardStandard({ data }: Card) {
             layoutId={`card-${card.title}-${id}`}
             key={`card-${card.title}-${id}`}
             onClick={() => setActive(card)}
-            className={` ${index % 2 == 0 ? "bg-neutral-50 dark:bg-neutral-900" : ""
-              } p-4 m-2 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer`}
+            className={` ${
+              index % 2 == 0 ? "bg-neutral-50 dark:bg-neutral-900" : ""
+            } p-4 m-2 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer`}
           >
             <div className="flex gap-4 flex-col md:flex-row ">
               <motion.div layoutId={`image-${card.title}-${id}`}>

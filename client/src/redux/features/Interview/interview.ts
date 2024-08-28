@@ -17,9 +17,12 @@ export const interviewApi = apiSlice.injectEndpoints({
       }),
     }),
     startInterview: builder.mutation({
-      query: ({ id }) => ({
+      query: ({ id, time }) => ({
         url: `interview/start-Interview/${id}`,
         method: "POST",
+        body: {
+          time,
+        },
         credentials: "include" as const,
       }),
     }),

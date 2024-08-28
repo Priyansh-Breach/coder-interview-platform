@@ -16,6 +16,7 @@ declare global {
       userId?: string;
       questionId?: string;
       tokenRemainingTime?: any;
+      interViewDuration?: any;
     }
   }
 }
@@ -27,6 +28,9 @@ export const generateInterviewTokenMiddleware = async (
 ) => {
   const { user } = req;
   const { id } = req.params;
+  const { time } = req.body;
+
+  const interviewDuration = time === 60 ? 60 : 45;
 
   if (!user || !user._id || !id) {
     return res
@@ -64,15 +68,21 @@ export const generateInterviewTokenMiddleware = async (
     { userId: user._id, id },
     INTERVIEW_JWT_SECRET,
     {
-      expiresIn: "45m",
+      expiresIn: `${interviewDuration}m`,
     }
   );
 
-  await connectRedis.set(redisKey, interviewToken, "EX", 45 * 60);
+  await connectRedis.set(
+    redisKey,
+    interviewToken,
+    "EX",
+    interviewDuration * 60
+  );
 
   req.interviewToken = interviewToken;
   req.userId = user?._id;
   req.questionId = id;
+  req.interViewDuration = interviewDuration;
   res.status(200);
   next();
 };
@@ -101,7 +111,6 @@ export const validateInterviewTokenMiddleware = async (
     });
   }
 
-
   const ttl: any = await new Promise<number>((resolve, reject) => {
     connectRedis.ttl(redisKey, (err: any, ttl: any) => {
       if (err) {
@@ -126,6 +135,7 @@ export const validateInterviewTokenMiddleware = async (
     next();
   });
 };
+
 export const deleteInterviewTokenMiddleware = async (
   req: Request,
   res: Response,
