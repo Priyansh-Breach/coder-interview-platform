@@ -26,6 +26,7 @@ import {
   ChevronsDown,
   ChevronsRight,
   ChevronsUp,
+  CircleCheck,
   Minimize2,
   SquareArrowOutUpRight,
 } from "lucide-react";
@@ -66,7 +67,9 @@ const InterviewPage: React.FC = () => {
   const consolePanelState = useAppSelector(
     (state) => state.panel.consolePanelVisible
   );
-
+  const remainingTimeSecondsForInterview = useAppSelector(
+    (state: any) => state.editor.interviewTimeLeft
+  ) || 0;
   const visiblePanels = [questionPanelState, chatPanelState].filter(
     Boolean
   ).length;
@@ -247,58 +250,117 @@ const InterviewPage: React.FC = () => {
             items={links}
           />
         </div>
-        <div className="bottom-28 fixed  right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
-          <div className="  flex items-center justify-center">
-            <Modal>
-              <ModalTrigger className=" rounded-l-xl shadow-md bg-neutral-100 dark:bg-neutral-900 flex justify-center group/modal-btn">
-                <div className="flex items-center  justify-center">
-                  <button className="h-10 w-10 rounded-full bg-gray-50 dark:bg-neutral-800 flex items-center justify-center">
-                    <SquareArrowOutUpRight className="h-5 w-5 text-neutral-500 dark:text-neutral-300" />
-                  </button>
-                </div>
-              </ModalTrigger>
-              <ModalBody>
-                <ModalContent className="p-6 rounded-md shadow-lg">
-                  <Card className="bg-[none] border-none">
-                    <CardHeader>
-                      <div>
-                        <h3>Are you sure you want to leave this interview?</h3>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription>
-                        <p>
-                          After leaving, you will lose all your progress, and
-                          this interview cannot be continued in the future. You
-                          will have to create a new one.
-                        </p>
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                </ModalContent>
+        {remainingTimeSecondsForInterview ? (
+          <>
+            <div className="bottom-28 fixed  right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
+              <div className="  flex items-center justify-center">
+                <Modal>
+                  <ModalTrigger className=" rounded-l-xl shadow-md bg-neutral-100 dark:bg-neutral-900 flex justify-center group/modal-btn">
+                    <div className="flex items-center  justify-center">
+                      <button className="h-10 w-10 rounded-full bg-gray-50 dark:bg-neutral-800 flex items-center justify-center">
+                        <SquareArrowOutUpRight className="h-5 w-5 text-red-500 dark:text-red-300" />
+                      </button>
+                    </div>
+                  </ModalTrigger>
+                  <ModalBody>
+                    <ModalContent className="p-6 rounded-md shadow-lg">
+                      <Card className="bg-[none] border-none">
+                        <CardHeader>
+                          <div>
+                            <h3>
+                              Are you sure you want to leave this interview?
+                            </h3>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <CardDescription>
+                            <p>
+                              After leaving, you will lose all your progress,
+                              and this interview cannot be continued in the
+                              future. You will have to create a new one.
+                            </p>
+                          </CardDescription>
+                        </CardContent>
+                      </Card>
+                    </ModalContent>
 
-                <ModalFooter className="gap-4">
-                  <button className="px-2 py-1 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm w-28">
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleLeaveInterview}
-                    className="text-sm  rounded-md"
-                  >
-                    <DuolingoButton
-                      handleSubmit={() => {}}
-                      Icon={SquareArrowOutUpRight}
-                      isLoading={isLoading}
-                      color={"bg-orange-500"}
-                      title="Leave"
-                      href="/explore"
-                    />
-                  </button>
-                </ModalFooter>
-              </ModalBody>
-            </Modal>
-          </div>
-        </div>
+                    <ModalFooter className="gap-4">
+                      <button className="px-2 py-1 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm w-28">
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleLeaveInterview}
+                        className="text-sm  rounded-md"
+                      >
+                        <DuolingoButton
+                          handleSubmit={() => {}}
+                          Icon={SquareArrowOutUpRight}
+                          isLoading={isLoading}
+                          color={"bg-orange-500"}
+                          title="Leave"
+                          href="/explore"
+                        />
+                      </button>
+                    </ModalFooter>
+                  </ModalBody>
+                </Modal>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="bottom-28 fixed  right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
+              <div className="  flex items-center justify-center">
+                <Modal>
+                  <ModalTrigger className=" rounded-l-xl shadow-md bg-neutral-100 dark:bg-neutral-900 flex justify-center group/modal-btn">
+                    <div className="flex items-center  justify-center">
+                      <button className="h-10 w-10 rounded-full bg-gray-50 dark:bg-neutral-800 flex items-center justify-center">
+                        <CircleCheck className="h-5 w-5 text-green-500 dark:text-green-300" />
+                      </button>
+                    </div>
+                  </ModalTrigger>
+                  <ModalBody>
+                    <ModalContent className="p-6 rounded-md shadow-lg">
+                      <Card className="bg-[none] border-none">
+                        <CardHeader>
+                          <div>
+                            <h3>Interview Completed</h3>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <CardDescription>
+                            <p>
+                              Congratulations! You have successfully completed
+                              the interview. Your responses have been recorded,
+                              and the session is now closed. Thank you for your
+                              participation.
+                            </p>
+                          </CardDescription>
+                        </CardContent>
+                      </Card>
+                    </ModalContent>
+
+                    <ModalFooter className="gap-4">
+                      <button
+                        
+                        className="text-sm  rounded-md"
+                      >
+                        <DuolingoButton
+                          handleSubmit={() => {}}
+                          Icon={SquareArrowOutUpRight}
+                          isLoading={isLoading}
+                          color={"bg-green-500"}
+                          title="Review"
+                          href={`/review`}
+                        />
+                      </button>
+                    </ModalFooter>
+                  </ModalBody>
+                </Modal>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
