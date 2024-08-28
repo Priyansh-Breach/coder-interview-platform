@@ -15,6 +15,7 @@ declare global {
       interviewToken?: string;
       userId?: string;
       questionId?: string;
+      tokenRemainingTime?: any;
     }
   }
 }
@@ -91,7 +92,6 @@ export const validateInterviewTokenMiddleware = async (
   }
 
   const redisKey = `${user._id}InterviewToken${id}`;
-
   const token = await connectRedis.get(redisKey);
 
   if (!token) {
@@ -101,6 +101,16 @@ export const validateInterviewTokenMiddleware = async (
     });
   }
 
+
+  const ttl: any = await new Promise<number>((resolve, reject) => {
+    connectRedis.ttl(redisKey, (err: any, ttl: any) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(ttl);
+    });
+  });
+
   jwt.verify(token, INTERVIEW_JWT_SECRET, (err: any, decoded: any) => {
     if (err || decoded.id !== id) {
       return res.status(403).json({
@@ -108,11 +118,14 @@ export const validateInterviewTokenMiddleware = async (
           "Invalid or expired token for this question. Please restart the interview process.",
       });
     }
+
+    // Add the remaining time to the request object
     req.questionId = id;
+    req.tokenRemainingTime = ttl; // Add this line to pass the remaining time to the next route
+
     next();
   });
 };
-
 export const deleteInterviewTokenMiddleware = async (
   req: Request,
   res: Response,

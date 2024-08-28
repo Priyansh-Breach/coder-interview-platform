@@ -13,7 +13,10 @@ import {
   useGetQuestionQuery,
   useLeaveInterviewMutation,
 } from "@/redux/features/Interview/interview";
-import { setQuestionData } from "@/redux/features/Interview/editorSlice";
+import {
+  setInterviewTime,
+  setQuestionData,
+} from "@/redux/features/Interview/editorSlice";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SolutionScreen } from "@/components/solutionScreen";
 import { InterviewQuestionContextPage } from "@/Routes";
@@ -49,6 +52,7 @@ import {
   setChatPanel,
 } from "@/redux/features/Interview/panelSlice";
 import { useAppSelector, useAppDispatch } from "@/redux/store";
+import TimerComponent from "@/components/NavbarCodeEditor";
 
 const InterviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -85,6 +89,7 @@ const InterviewPage: React.FC = () => {
   useEffect(() => {
     if (question) {
       dispatch(setQuestionData(question));
+      dispatch(setInterviewTime(question?.timeLeftForInterview));
     }
   }, [question]);
 
@@ -145,7 +150,10 @@ const InterviewPage: React.FC = () => {
         description="Join our innovative platform where you can give interviews and solve coding problems simultaneously. Enhance your skills with real-time coding challenges and comprehensive interview practice. Prepare for your dream job with our AI-powered educational resources and expert guidance."
         keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources, Dronacharya.co"
       />
-      <div className="flex h-screen w-screen">
+      <div className="flex h-screen justify-start  w-screen">
+        <div className="absolute z-[1000] left-52 top-2">
+          <TimerComponent />
+        </div>
         <ResizablePanelGroup
           direction="horizontal"
           className="w-full h-full rounded-lg border"
@@ -198,7 +206,7 @@ const InterviewPage: React.FC = () => {
                       }}
                       className="absolute top-2 right-2  z-10 p-2 rounded"
                     >
-                      <ChevronsDown  className="h-6 w-6" />
+                      <ChevronsDown className="h-6 w-6" />
                     </button>
                   )}
                   <ScrollArea className="h-full w-full rounded-md border">
@@ -231,6 +239,7 @@ const InterviewPage: React.FC = () => {
             </ResizablePanel>
           )}
         </ResizablePanelGroup>
+
         <div className="bottom-56 fixed p-r-4 right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
           <FloatingDock
             desktopClassName="translate-y-10"

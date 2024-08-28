@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
-
 interface QuestionData {
   id: string;
   title: string;
@@ -16,6 +14,7 @@ interface EditorState {
   messages: string[];
   questionData?: QuestionData | null;
   status: string;
+  interviewTimeLeft: any;
 }
 
 const initialState: EditorState = {
@@ -24,6 +23,7 @@ const initialState: EditorState = {
   userMessage: "",
   messages: [],
   status: "disconnected",
+  interviewTimeLeft: 0,
 };
 
 const editorSlice = createSlice({
@@ -48,6 +48,9 @@ const editorSlice = createSlice({
     updateStatus(state, action: PayloadAction<string>) {
       state.status = action.payload;
     },
+    setInterviewTime(state, action: PayloadAction<any>) {
+      state.interviewTimeLeft = action.payload;
+    },
   },
 });
 
@@ -58,5 +61,6 @@ export const {
   updateStatus,
   setQuestionData,
   userMessage,
+  setInterviewTime,
 } = editorSlice.actions;
 export default editorSlice.reducer;

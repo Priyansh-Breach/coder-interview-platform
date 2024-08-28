@@ -1,98 +1,65 @@
-// src/components/NavbarCodeEditor.tsx
-import { useState, useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { ClockIcon, CodeIcon } from "lucide-react";
-import { ProfileComponent } from "./ProfileComponent";
-import DuolingoButton from "./ui/Animata/duolingo";
+import React, { useState, useEffect, useRef } from "react";
+import Draggable from "react-draggable";
+import { ClockIcon } from "lucide-react";
 import { useAppSelector } from "@/redux/store";
-// import { useGiveInterviewMutation } from "@/redux/features/Interview/interview";
 
-export default function NavbarCodeEditor() {
-  const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [elapsedTime, setElapsedTime] = useState<number>(0);
+const TimerComponent: React.FC = () => {
+  const remainingTimeSeconds = useAppSelector(
+    (state: any) => state.editor.interviewTimeLeft
+  ) || 0;
+
+  // Convert seconds to milliseconds for initial state
+  const [remainingTime, setRemainingTime] = useState<number>(remainingTimeSeconds * 1000);
   const intervalRef = useRef<number | null>(null);
-  const code = useAppSelector((state: any) => state.editor.code);
-  const language = useAppSelector((state: any) => state.editor.language);
-
-  // const [interview, { isLoading, isSuccess, isError, error, data }] =
-  //   useGiveInterviewMutation();
 
   const formatTime = (time: number): string => {
     const minutes = String(Math.floor(time / 60000)).padStart(2, "0");
     const seconds = String(Math.floor((time % 60000) / 1000)).padStart(2, "0");
-    const milliseconds = String(time % 1000).padStart(3, "0");
-    return `${minutes}:${seconds}:${milliseconds}`;
+    return `${minutes}:${seconds}/45 min`;
   };
 
   const startTimer = (): void => {
-    if (!isRunning) {
-      setIsRunning(true);
-      const startTime = Date.now() - elapsedTime;
-      intervalRef.current = window.setInterval(() => {
-        setElapsedTime(Date.now() - startTime);
-      }, 1);
-    }
+    if (intervalRef.current !== null) return; // Prevent multiple intervals
+
+    intervalRef.current = window.setInterval(() => {
+      setRemainingTime((prevTime) => {
+        const newRemainingTime = Math.max(prevTime - 1000, 0); // Decrease by 1 second (1000 ms)
+        if (newRemainingTime === 0) {
+          clearInterval(intervalRef.current!);
+        }
+        return newRemainingTime;
+      });
+    }, 1000);
   };
 
   const stopTimer = (): void => {
-    setIsRunning(false);
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
   };
 
-  const handleSubmit = (): void => {
-    stopTimer();
-    console.log("Code submitted");
-    // Add your code submission logic here
-  };
-
-  async function askAiSubmit() {
-    const question = "";
-    const userExplanation = "";
-    console.log("Pressed");
-    console.log("Code:", code);
-    console.log("Language:", language);
-    if (code === "") {
-      console.log("Please provide code"); //Toast
-      return;
-    }
-    // await interview({ question, language, code, userExplanation });
-  }
-
+  // Update the timer when remainingTimeSeconds changes
   useEffect(() => {
+    setRemainingTime(remainingTimeSeconds * 1000);
+  }, [remainingTimeSeconds]);
+
+  // Start the timer once and clean up
+  useEffect(() => {
+    startTimer();
     return () => {
-      if (intervalRef.current !== null) {
-        clearInterval(intervalRef.current);
-      }
+      stopTimer();
     };
   }, []);
 
   return (
-    <header className="flex items-center justify-between h-16 px-4 bg-background border-b">
-      <div className="flex items-center gap-2">
-        <a href="#" className="flex items-center gap-2">
-          <CodeIcon className="w-6 h-6 text-primary" />
-          <span className="text-md font-bold">code editor</span>
-        </a>
+    <Draggable>
+      <div className="flex items-center gap-2 cursor-grab  border bg-muted p-2 rounded-lg mt-4 shadow-md">
+        <ClockIcon className="w-4 h-4" />
+        <span>{formatTime(remainingTime)}</span>
       </div>
-      <div className="flex items-center gap-4">
-        <div
-          className="flex items-center gap-2 text-muted-foreground cursor-pointer"
-          onClick={startTimer}
-        >
-          <ClockIcon className="w-5 h-5" />
-          <span>{formatTime(elapsedTime)}</span>
-        </div>
-       
-        <Button onClick={handleSubmit} variant={"ghost"}>
-          Submit
-        </Button>
-      </div>
-      <div>
-        <ProfileComponent />
-      </div>
-    </header>
+    </Draggable>
   );
-}
+};
+
+export default TimerComponent;

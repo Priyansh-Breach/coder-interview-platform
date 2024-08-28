@@ -41,6 +41,7 @@ export const getQuestionData = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params as unknown as IQuestionId;
+      const { tokenRemainingTime } = req;
 
       const questionData = (QuestionData as IQuestion[]).find(
         (question) => question.id === id
@@ -53,6 +54,7 @@ export const getQuestionData = cactchAsyncError(
       res.status(200).json({
         success: true,
         data: questionData,
+        timeLeftForInterview: tokenRemainingTime,
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
