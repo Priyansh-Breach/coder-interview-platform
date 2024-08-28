@@ -3,7 +3,6 @@ import { useAppSelector } from "@/redux/store";
 import { Card, CardContent, CardDescription, CardFooter } from "./ui/card";
 import TextToSpeech from "./textToSpeech";
 import LoadingIndicator from "./aiLoadinfComponent";
-import { motion } from "framer-motion";
 
 export default function Component() {
   const conversation = useAppSelector(
