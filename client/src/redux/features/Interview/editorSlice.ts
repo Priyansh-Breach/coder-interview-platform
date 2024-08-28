@@ -20,7 +20,7 @@ interface EditorState {
 
 const initialState: EditorState = {
   code: "",
-  language: "javascript",
+  language: "Select Language",
   userMessage: "",
   messages: [],
   status: "disconnected",
