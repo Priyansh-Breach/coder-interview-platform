@@ -54,7 +54,7 @@ const TimerComponent: React.FC = () => {
 
   return (
     <Draggable>
-      <div className="flex items-center gap-2 cursor-grab  border bg-muted p-2 rounded-lg mt-4 shadow-md">
+      <div className="flex items-center gap-2 cursor-grab active:cursor-grabbing border bg-muted p-2 rounded-lg mt-4 shadow-md">
         <ClockIcon className="w-4 h-4" />
         <span>{formatTime(remainingTime)}</span>
       </div>
