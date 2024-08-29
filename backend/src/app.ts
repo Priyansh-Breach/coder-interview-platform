@@ -25,10 +25,10 @@ export const app = express();
 app.use(
   cors({
     origin: [
+      "https://66df4851a15f6dadfbb2aa959f8020de.serveo.net",
       "http://localhost:5173",
       "http://10.128.0.5:5173",
       "https://dronacharya.co",
-      "http://34.27.45.184:5173",
     ],
     methods: ["GET", "POST"],
     credentials: true,

@@ -31,6 +31,7 @@ const InterviewQuestionContextPage: React.FC = () => {
   const code = useSelector((state: any) => state.editor.code);
   const language = useSelector((state: any) => state.editor.language);
   const user = useSelector((state: any) => state.auth.user);
+  const conversation = useSelector((state: any) => state.conversation.message);
   const [
     testAiResponse,
     {
@@ -63,6 +64,7 @@ const InterviewQuestionContextPage: React.FC = () => {
         userCode: code,
         questionId: id,
         language: language,
+        conversation: conversation,
         user: user,
       });
     } catch (error: any) {

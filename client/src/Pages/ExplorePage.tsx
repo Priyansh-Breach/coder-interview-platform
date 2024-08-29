@@ -1,7 +1,14 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-import { SearchIcon } from "lucide-react";
+import {
+  Bell,
+  CheckCircle,
+  ChevronDown,
+  Play,
+  Search,
+  SearchIcon,
+} from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useSearchContentQuery } from "@/redux/features/Explore/explore";
@@ -19,7 +26,14 @@ import NotFound from "@/components/notFound";
 import { MetaData } from "@/lib/MetaData/metaData";
 import { ExpandableCardGrid } from "@/components/ui/Aceternity/expandable-card-grid";
 import { LoadingIcon } from "@/components/ui/Icons/SelectMore";
-
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { TabsList, Tabs, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Badge as CustomBadge } from "@/components/ui/Aceternity/expandable-card-standard";
+import { ProfileComponent } from "@/components/ProfileComponent";
 const placeholders = [
   "Easy",
   "Hard",
@@ -137,67 +151,156 @@ export default function ExplorePage() {
         description="Join our innovative platform where you can give interviews and solve coding problems simultaneously. Enhance your skills with real-time coding challenges and comprehensive interview practice. Prepare for your dream job with our AI-powered educational resources and expert guidance."
         keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources"
       />
-      <Navbar />
-      <div className="flex  self-center items-center justify-center flex-col-reverse  min-h-screen w-full mt-14">
-        <main className="flex-1 w-2/3 border rounded-t-lg p-6 sm:p-8 md:p-10">
-          <div className="mb-6 flex items-center justify-between">
-            <h1 className="text-lg font-semibold">Page No. {currentPage}</h1>
-            <div className="relative flex-1 max-w-sm">
-              <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <PlaceholdersAndVanishInput
-                placeholders={placeholders}
-                onChange={handleChange}
-                onSubmit={onSubmit}
-              />
+
+      <div className="flex flex-col min-h-screen bg-background ">
+        <header className="flex items-center h-14 px-4 border-b shrink-0 md:px-6">
+          <nav className="flex flex-1 items-center space-x-4 lg:space-x-6">
+            <Button variant="link" className="text-lg font-semibold">
+              CoderInterview
+            </Button>
+          </nav>
+          <div className="ml-auto flex items-center space-x-4">
+            <Button variant="ghost" size="icon">
+              <Bell className="h-4 w-4" />
+              <span className="sr-only">Notifications</span>
+            </Button>
+            <ProfileComponent />
+          </div>
+        </header>
+        <div className="flex-1 flex p-4 ">
+          <div className="w-3/4 p-6 overflow-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-bold">
+                Category - {searchTerm ? searchTerm : "All"}
+              </h1>
+              <div className="w-fit mx-4">
+                <PlaceholdersAndVanishInput
+                  placeholders={placeholders}
+                  onChange={handleChange}
+                  onSubmit={onSubmit}
+                />
+              </div>
+            </div>
+            <Tabs defaultValue="algorithms" className="mb-6">
+              <TabsList>
+                <TabsTrigger value="system-design">System Design</TabsTrigger>
+                <TabsTrigger value="oo-design">OO Design</TabsTrigger>
+                <TabsTrigger value="operating-system">
+                  Operating System
+                </TabsTrigger>
+                <TabsTrigger value="algorithms">Algorithms</TabsTrigger>
+                <TabsTrigger value="database">Database</TabsTrigger>
+                <TabsTrigger value="shell">Shell</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <div className="flex items-center space-x-4 mb-6">
+              <Badge variant="secondary">427/587 Solved</Badge>
+              <Badge variant="secondary" className="bg-green-500 text-white">
+                Easy 247
+              </Badge>
+              <Badge variant="secondary" className="bg-yellow-500 text-white">
+                Medium 124
+              </Badge>
+              <Badge variant="secondary" className="bg-red-500 text-white">
+                Hard 56
+              </Badge>
+              <Button variant="outline" size="sm">
+                Pick One
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex items-center space-x-4 mb-6">
+              <Button variant="outline" size="sm">
+                Difficulty
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="sm">
+                Status
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="sm">
+                Lists
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="sm">
+                Tags
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex items-center justify-center h-fit">
+              {searchLoading && (
+                <>
+                  <LoadingIcon /> <p className="m-2">{"loading Questions.."}</p>
+                </>
+              )}
+            </div>
+            <ExpandableCardStandard data={searchedData?.results} />
+            {searchedData?.results?.length < 1 && <NotFound />}
+            <div className="flex items-center justify-center h-fit">
+              {!searchLoading && (
+                <>
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious onClick={handlePreviousPage} />
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationLink onClick={handlePreviousSet}>
+                          <PaginationEllipsis />
+                        </PaginationLink>
+                      </PaginationItem>
+                      {renderPaginationItems()}
+                      {searchedData?.totalPages}
+                      <PaginationItem>
+                        <PaginationLink onClick={handleNextSet}>
+                          <PaginationEllipsis />
+                        </PaginationLink>
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationNext onClick={handleNextPage} />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </>
+              )}
             </div>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"></div>
-          <div className="flex items-center justify-center h-fit">
-            {searchLoading && (
-              <>
-                <LoadingIcon /> <p className="m-2">{"loading Questions.."}</p>
-              </>
-            )}
+          <div className="w-1/4 p-6 border-l">
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Introduction to Algorithms</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="aspect-video bg-muted"></div>
+                <div className="flex justify-between items-center mt-4">
+                  <div>
+                    <div className="font-semibold">5 Chapters</div>
+                    <div className="text-sm text-muted-foreground">
+                      128 Items
+                    </div>
+                  </div>
+                  <Button size="sm">
+                    <Play className="mr-2 h-4 w-4" />
+                    Resume
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Progress</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Progress value={33} className="mb-2" />
+                <div className="flex justify-between text-sm">
+                  <span>Easy</span>
+                  <span>Medium</span>
+                  <span>Hard</span>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-          <ExpandableCardStandard data={searchedData?.results} />
-          {searchedData?.results?.length < 1 && <NotFound />}
-          <div>
-            {!searchLoading && (
-              <>
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious onClick={handlePreviousPage} />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink onClick={handlePreviousSet}>
-                        <PaginationEllipsis />
-                      </PaginationLink>
-                    </PaginationItem>
-                    {renderPaginationItems()}
-                    {searchedData?.totalPages}
-                    <PaginationItem>
-                      <PaginationLink onClick={handleNextSet}>
-                        <PaginationEllipsis />
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationNext onClick={handleNextPage} />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </>
-            )}
-          </div>
-        </main>
-        <aside className="w-2/3 border-b bg-background p-6 sm:p-8 md:p-10">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold">Your Interviews</h2>
-            <div className="mt-4 space-y-4">
-              <ExpandableCardGrid />
-            </div>
-          </div>
-        </aside>
+        </div>
       </div>
     </>
   );

@@ -18,7 +18,7 @@ export default defineConfig({
       "@mui/x-data-grid",
       "@radix-ui_react-tabs",
       "@radix-ui_react-alert-dialog",
-
+      "@radix-ui/react-progress",
       // ... other dependencies
     ],
   },

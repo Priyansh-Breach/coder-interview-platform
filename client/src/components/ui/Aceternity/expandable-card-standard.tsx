@@ -7,6 +7,8 @@ import { useStartInterviewMutation } from "@/redux/features/Interview/interview"
 import { useToast } from "@/components/ui/use-toast";
 import { Navigate } from "react-router-dom";
 import { LoadingIcon } from "../Icons/SelectMore";
+import { Button } from "../button";
+import { Search } from "lucide-react";
 
 interface Card {
   data: any;
@@ -149,8 +151,9 @@ export function ExpandableCardStandard({ data }: Card) {
                         />
                       </>
                     ) : (
-                      <div className="flex gap-2" >
-                        <LoadingIcon />{"setting up interview.."}
+                      <div className="flex gap-2">
+                        <LoadingIcon />
+                        {"setting up interview.."}
                       </div>
                     )}
                   </motion.a>
@@ -176,34 +179,46 @@ export function ExpandableCardStandard({ data }: Card) {
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="w-full mx-auto  gap-4">
-        {data?.map((card: any, index: number) => (
-          <motion.div
-            layoutId={`card-${card.title}-${id}`}
-            key={`card-${card.title}-${id}`}
-            onClick={() => setActive(card)}
-            className={` ${
-              index % 2 == 0 ? "bg-neutral-50 dark:bg-neutral-900" : ""
-            } p-4 m-2 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer`}
-          >
-            <div className="flex gap-4 flex-col md:flex-row ">
-              <motion.div layoutId={`image-${card.title}-${id}`}>
-                {index}.
-              </motion.div>
-              <div className="">
-                <motion.h3
-                  layoutId={`title-${card.title}-${id}`}
-                  className="font-medium hover:underline transition hover:text-green-800 dark:hover:text-green-500 text-neutral-800 dark:text-neutral-200 text-center md:text-left "
-                >
-                  <a>{card.title}</a>
-                </motion.h3>
-              </div>
-            </div>
 
-            <Badge difficulty={card?.difficulty ? card?.difficulty : "NaN"} />
-          </motion.div>
-        ))}
-      </ul>
+      <table className="w-full max-w-7xl">
+        <thead>
+          <tr className="border-b">
+            <th className="text-left py-2">#</th>
+            <th className="text-left py-2">Title</th>
+            <th className="text-left py-2">Solution</th>
+            <th className="text-left py-2">Acceptance</th>
+            <th className="text-left py-2">Difficulty</th>
+            <th className="text-left py-2">Frequency</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data?.map((problem: any, index: any) => (
+            <tr
+              key={problem.id}
+              className="border-b "
+            
+            >
+              <td className="py-2">
+                {/* <CheckCircle className="text-green-500 h-4 w-4" /> */}
+                {index}
+              </td>
+              <td className="py-2 cursor-pointer hover:text-green-500 hover:underline"   onClick={() => setActive(problem)}>{problem.title}</td>
+              <td className="py-2 ">
+                <Button variant="ghost" size="sm">
+                  <Search className="h-4 w-4" />
+                </Button>
+              </td>
+              <td className="py-2">{problem.acceptance}</td>
+              <td className="py-2">
+                <Badge
+                  difficulty={problem?.difficulty ? problem?.difficulty : "NaN"}
+                />
+              </td>
+              <td className="py-2"></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }

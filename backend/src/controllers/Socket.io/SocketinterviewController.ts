@@ -76,9 +76,9 @@ export const handleAiQuestionContext = async (socket: Socket, data: any) => {
       return;
     }
 
-    // await generateQuestionContext(questionData?.content, socket);
+    await generateQuestionContext(questionData?.content, socket);
 
-    simulateStream(100, socket);
+    // simulateStream(100, socket);
   } catch (error) {
     console.error("Error during streaming:", error);
     socket.emit("error", "Failed to generate question context", {
@@ -93,6 +93,7 @@ interface IInterview {
   userCurrentApproach: string;
   userCode: string;
   user: any;
+  conversation: any;
 }
 
 interface IConversation {
@@ -108,9 +109,14 @@ export const handleAiConversationResponse = async (
   data: any
 ) => {
   try {
-    const { userCurrentApproach, questionId, userCode, language, user } =
-      data as IInterview;
-
+    const {
+      userCurrentApproach,
+      questionId,
+      userCode,
+      language,
+      user,
+      conversation,
+    } = data as IInterview;
     if (!user || !user._id || !questionId) {
       socket.emit(
         "error",
@@ -160,15 +166,15 @@ export const handleAiConversationResponse = async (
       return;
     }
 
-    // await generateResponse(
-    //   questionData?.content,
-    //   conversationLog,
-    //   userCurrentApproach,
-    //   userCode,
-    //   socket
-    // );
+    await generateResponse(
+      questionData?.content,
+      conversation,
+      userCurrentApproach,
+      userCodeandLanguage,
+      socket
+    );
 
-    simulateStream(100, socket);
+    // simulateStream(100, socket);
   } catch (error) {
     console.error("Error handling interview:", error);
   }

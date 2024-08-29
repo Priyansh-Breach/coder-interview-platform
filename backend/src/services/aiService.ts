@@ -42,11 +42,10 @@ export const generateQuestionContext = async (
     const response = await axios.post(LLM_API_URL, requestBody, {
       responseType: "stream", // Set the response type to stream
     });
-
     handleStream(
       response.data as unknown as Readable,
       (chunk) => {
-        socket.emit("responseStream", chunk, { loading: false });
+        socket.emit("responseStream", chunk.toString(), { loading: false });
       },
       () => {
         socket.emit("responseComplete");
@@ -77,7 +76,7 @@ export const generateResponse = async (
     model: "phase_2",
     prompt: prompt,
   };
-
+  console.log(prompt);
   try {
     const response = await axios.post(LLM_API_URL, requestBody, {
       responseType: "stream",
@@ -86,7 +85,9 @@ export const generateResponse = async (
     handleStream(
       response.data as unknown as Readable,
       (chunk) => {
-        socket.emit("responseStreamConversation", chunk);
+        socket.emit("responseStreamConversation", chunk.toString(), {
+          loading: false,
+        });
       },
       () => {
         socket.emit("responseComplete");
