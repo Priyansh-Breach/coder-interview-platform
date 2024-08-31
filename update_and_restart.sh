@@ -8,7 +8,7 @@ for PORT in "${PORTS[@]}"; do
   PID=$(lsof -t -i:$PORT)
   if [ ! -z "$PID" ]; then
     echo "Killing process $PID running on port $PORT..."
-    kill -9 $PID
+    kill $PID
   fi
 done
 
