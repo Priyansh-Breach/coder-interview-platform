@@ -11,7 +11,6 @@ import {
 
 export const socketRoutes = (io: Server) => {
   io.on("connection", (socket: Socket) => {
-    console.log("A user connected:", socket.id);
 
     socket.on("startQuestionContextGeneration", (data) => {
       try {

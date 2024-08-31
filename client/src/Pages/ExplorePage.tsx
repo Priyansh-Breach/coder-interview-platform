@@ -1,15 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-import {
-  Bell,
-  CheckCircle,
-  ChevronDown,
-  Play,
-  Search,
-  SearchIcon,
-} from "lucide-react";
-import { Navbar } from "@/components/Navbar";
+import { Bell, BrainCircuit, Play } from "lucide-react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useSearchContentQuery } from "@/redux/features/Explore/explore";
 import { ExpandableCardStandard } from "@/components/ui/Aceternity/expandable-card-standard";
@@ -24,16 +16,12 @@ import {
 } from "@/components/ui/pagination";
 import NotFound from "@/components/notFound";
 import { MetaData } from "@/lib/MetaData/metaData";
-import { ExpandableCardGrid } from "@/components/ui/Aceternity/expandable-card-grid";
 import { LoadingIcon } from "@/components/ui/Icons/SelectMore";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ProfileComponent } from "@/components/ProfileComponent";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { TabsList, Tabs, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Badge as CustomBadge } from "@/components/ui/Aceternity/expandable-card-standard";
-import { ProfileComponent } from "@/components/ProfileComponent";
 const placeholders = [
   "Easy",
   "Hard",
@@ -155,9 +143,7 @@ export default function ExplorePage() {
       <div className="flex flex-col min-h-screen bg-background ">
         <header className="flex items-center h-14 px-4 border-b shrink-0 md:px-6">
           <nav className="flex flex-1 items-center space-x-4 lg:space-x-6">
-            <Button variant="link" className="text-lg font-semibold">
-              CoderInterview
-            </Button>
+            <BrainCircuit className="h-6 w-6" />
           </nav>
           <div className="ml-auto flex items-center space-x-4">
             <Button variant="ghost" size="icon">
@@ -170,9 +156,41 @@ export default function ExplorePage() {
         <div className="flex-1 flex p-4 ">
           <div className="w-3/4 p-6 overflow-auto">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold">
-                Category - {searchTerm ? searchTerm : "All"}
-              </h1>
+              <div className="flex items-center space-x-4 mb-6">
+                <Badge
+                  variant="secondary"
+                  className="bg-green-500 cursor-pointer text-white hover:text-green-500"
+                  onClick={() =>
+                    navigate(
+                      `/explore?search=${encodeURIComponent("easy")}&page=1`
+                    )
+                  }
+                >
+                  Easy
+                </Badge>
+                <Badge
+                  variant="secondary"
+                  className="bg-yellow-500 cursor-pointer text-white hover:text-yellow-500"
+                  onClick={() =>
+                    navigate(
+                      `/explore?search=${encodeURIComponent("Medium")}&page=1`
+                    )
+                  }
+                >
+                  Medium
+                </Badge>
+                <Badge
+                  variant="secondary"
+                  className="bg-red-500 cursor-pointer text-white hover:text-red-500"
+                  onClick={() =>
+                    navigate(
+                      `/explore?search=${encodeURIComponent("hard")}&page=1`
+                    )
+                  }
+                >
+                  Hard
+                </Badge>
+              </div>
               <div className="w-fit mx-4">
                 <PlaceholdersAndVanishInput
                   placeholders={placeholders}
@@ -181,60 +199,15 @@ export default function ExplorePage() {
                 />
               </div>
             </div>
-            <Tabs defaultValue="algorithms" className="mb-6">
-              <TabsList>
-                <TabsTrigger value="system-design">System Design</TabsTrigger>
-                <TabsTrigger value="oo-design">OO Design</TabsTrigger>
-                <TabsTrigger value="operating-system">
-                  Operating System
-                </TabsTrigger>
-                <TabsTrigger value="algorithms">Algorithms</TabsTrigger>
-                <TabsTrigger value="database">Database</TabsTrigger>
-                <TabsTrigger value="shell">Shell</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <div className="flex items-center space-x-4 mb-6">
-              <Badge variant="secondary">427/587 Solved</Badge>
-              <Badge variant="secondary" className="bg-green-500 text-white">
-                Easy 247
-              </Badge>
-              <Badge variant="secondary" className="bg-yellow-500 text-white">
-                Medium 124
-              </Badge>
-              <Badge variant="secondary" className="bg-red-500 text-white">
-                Hard 56
-              </Badge>
-              <Button variant="outline" size="sm">
-                Pick One
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-            <div className="flex items-center space-x-4 mb-6">
-              <Button variant="outline" size="sm">
-                Difficulty
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="sm">
-                Status
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="sm">
-                Lists
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="sm">
-                Tags
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
+
+            <ExpandableCardStandard data={searchedData?.results} />
             <div className="flex items-center justify-center h-fit">
               {searchLoading && (
                 <>
-                  <LoadingIcon /> <p className="m-2">{"loading Questions.."}</p>
+                  <LoadingIcon /> <p className="m-2">{"loading questions.."}</p>
                 </>
               )}
             </div>
-            <ExpandableCardStandard data={searchedData?.results} />
             {searchedData?.results?.length < 1 && <NotFound />}
             <div className="flex items-center justify-center h-fit">
               {!searchLoading && (
