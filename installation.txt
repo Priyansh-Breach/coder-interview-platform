@@ -3,3 +3,4 @@ sudo apt install git nodejs coreutils lsof curl -y
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo npm install -g express-generator
 curl -fsSL https://ollama.com/install.sh | sh
+npm create vite@latest
