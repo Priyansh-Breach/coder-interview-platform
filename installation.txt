@@ -3,4 +3,6 @@ sudo apt install git nodejs coreutils lsof curl -y
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo npm install -g express-generator
 curl -fsSL https://ollama.com/install.sh | sh
-npm create vite@latest
+npm install ts-node-dev --save-dev
+npm install vite --save-dev
+npm install @vitejs/plugin-react --save-dev

@@ -20,9 +20,11 @@ git pull origin main
 echo "Starting services..."
 cd client
 rm nohup.out
+npm i
 nohup npm run dev &
 cd ../backend
 rm nohup.out
+npm i
 nohup npm run dev &
 cd ..
 ollama create phase_1 -f ./modelfiles/Modelfile_phase_1
