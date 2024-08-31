@@ -27,7 +27,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://dronacharya.co",
-      "http://35.192.173.75:5173/",
+      "http://35.192.173.75:5173",
     ],
     methods: ["GET", "POST"],
     credentials: true,

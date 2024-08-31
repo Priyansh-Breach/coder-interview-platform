@@ -9,7 +9,7 @@ export default function NotFound() {
         <div className="text-center">
           <h2 className="text-2xl font-bold md:text-3xl">No Results Found</h2>
           <p className="mt-2 text-muted-foreground md:text-lg">
-            It looks like we couldn't find what you were looking for. Please try a different search.
+            It looks like we couldn't find what you were looking for. Try refreshing site or try a different search. 
           </p>
         </div>
       </div>

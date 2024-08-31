@@ -173,7 +173,7 @@ export default function ExplorePage() {
                   className="bg-yellow-500 cursor-pointer text-white hover:text-yellow-500"
                   onClick={() =>
                     navigate(
-                      `/explore?search=${encodeURIComponent("Medium")}&page=1`
+                      `/explore?search=${encodeURIComponent("medium")}&page=1`
                     )
                   }
                 >
