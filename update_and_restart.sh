@@ -30,4 +30,4 @@ cd ..
 ollama create phase_1 -f ./modelfiles/Modelfile_phase_1
 ollama create phase_2 -f ./modelfiles/Modelfile_phase_2
 
-echo "Update and restart process completed."
+echo "Update and restart process completed!"
