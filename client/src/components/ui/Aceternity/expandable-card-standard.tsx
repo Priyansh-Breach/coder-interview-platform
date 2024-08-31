@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Navigate } from "react-router-dom";
 import { LoadingIcon } from "../Icons/SelectMore";
 import { Button } from "../button";
-import { Search } from "lucide-react";
+import { FileText, Search } from "lucide-react";
 
 interface Card {
   data: any;
@@ -39,6 +39,7 @@ export const Badge = ({ difficulty }: any) => (
 
 export function ExpandableCardStandard({ data }: Card) {
   const [active, setActive] = useState<any[number] | boolean | null>(null);
+  const [solution, setSolution] = useState<any[number] | boolean | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
   const [startInterview, { isSuccess, isLoading }] =
@@ -60,9 +61,12 @@ export function ExpandableCardStandard({ data }: Card) {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [active]);
+  }, [active, solution]);
 
-  useOutsideClick(ref, () => setActive(null));
+  useOutsideClick(ref, () => {
+    setActive(null);
+    setSolution(null);
+  });
 
   const handleSubmit = async () => {
     try {
@@ -179,6 +183,79 @@ export function ExpandableCardStandard({ data }: Card) {
           </div>
         ) : null}
       </AnimatePresence>
+      <AnimatePresence>
+        {solution && typeof solution === "object" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/20 h-full w-full z-10"
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {solution && typeof solution === "object" ? (
+          <div className="fixed inset-0  grid place-items-center z-[100]">
+            <motion.button
+              key={`button-${solution.title}-${id}`}
+              layout
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+                transition: {
+                  duration: 0.05,
+                },
+              }}
+              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
+              onClick={() => setSolution(null)}
+            >
+              <CloseIcon />
+            </motion.button>
+            <motion.div
+              layoutId={`card-${solution.title}-${id}`}
+              ref={ref}
+              className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+            >
+              <div>
+                <div className="flex justify-between items-start p-4">
+                  <div className="">
+                    <motion.h3
+                      layoutId={`title-${solution.title}-${id}`}
+                      className="font-bold text-xl  text-neutral-700 dark:text-neutral-200"
+                    >
+                      {solution.title}
+                    </motion.h3>
+                  </div>
+                  {isSuccess && (
+                    <Navigate to={`/interview/${solution.id}`} replace={true} />
+                  )}
+                </div>
+                <div className="pt-4 relative px-4 py-4">
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+                  >
+                    {solution?.answer?.explanation}
+                  </motion.div>
+                  <Badge
+                    difficulty={
+                      solution?.difficulty ? solution?.difficulty : "NaN"
+                    }
+                  />
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        ) : null}
+      </AnimatePresence>
 
       <table className="w-full max-w-7xl">
         <thead>
@@ -186,27 +263,28 @@ export function ExpandableCardStandard({ data }: Card) {
             <th className="text-left py-2">#</th>
             <th className="text-left py-2">Title</th>
             <th className="text-left py-2">Solution</th>
-            <th className="text-left py-2">Acceptance</th>
+            <th className="text-left py-2"></th>
             <th className="text-left py-2">Difficulty</th>
-            <th className="text-left py-2">Frequency</th>
           </tr>
         </thead>
         <tbody>
           {data?.map((problem: any, index: any) => (
-            <tr
-              key={problem.id}
-              className="border-b "
-            
-            >
+            <tr key={problem.id} className="border-b ">
               <td className="py-2">
                 {/* <CheckCircle className="text-green-500 h-4 w-4" /> */}
                 {index}
               </td>
-              <td className="py-2 cursor-pointer hover:text-green-500 hover:underline"   onClick={() => setActive(problem)}>{problem.title}</td>
-              <td className="py-2 ">
-                <Button variant="ghost" size="sm">
-                  <Search className="h-4 w-4" />
-                </Button>
+              <td
+                className="py-2 cursor-pointer hover:text-green-500 hover:underline"
+                onClick={() => setActive(problem)}
+              >
+                {problem.title}
+              </td>
+              <td className="p-2 ">
+                <FileText
+                  onClick={() => setSolution(problem)}
+                  className="cursor-pointer hover:text-green-500  stroke-[0.5]"
+                />
               </td>
               <td className="py-2">{problem.acceptance}</td>
               <td className="py-2">
@@ -214,7 +292,6 @@ export function ExpandableCardStandard({ data }: Card) {
                   difficulty={problem?.difficulty ? problem?.difficulty : "NaN"}
                 />
               </td>
-              <td className="py-2"></td>
             </tr>
           ))}
         </tbody>

@@ -170,7 +170,7 @@ export const handleAiConversationResponse = async (
       questionData?.content,
       conversation,
       userCurrentApproach,
-      userCodeandLanguage,
+      userCode,
       socket
     );
 
