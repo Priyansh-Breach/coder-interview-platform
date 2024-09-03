@@ -13,6 +13,7 @@ import SwipeButton from "../Animata/swipeButton";
 
 interface Card {
   data: any;
+  searchLoading: any;
 }
 
 const getBadgeColor = (difficulty: any) => {
@@ -38,7 +39,7 @@ export const Badge = ({ difficulty }: any) => (
   </span>
 );
 
-export function ExpandableCardStandard({ data }: Card) {
+export function ExpandableCardStandard({ data, searchLoading }: Card) {
   const [active, setActive] = useState<any[number] | boolean | null>(null);
   const [solution, setSolution] = useState<any[number] | boolean | null>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -260,15 +261,13 @@ export function ExpandableCardStandard({ data }: Card) {
       </AnimatePresence>
 
       <table
-        className="w-full h-screen  max-w-7xl self-center"
+        className="w-full h-fit  max-w-7xl self-center "
         style={{ userSelect: "none", outline: "none" }}
         onFocus={(e) => e.preventDefault()}
       >
         <thead>
           <tr className="border-b ">
-            <th className="text-left py-2 pl-6">
-              
-            </th>
+            <th className="text-left py-2 pl-6"></th>
             <th className="text-left py-2">Title</th>
             <th className="text-left py-2">Solution</th>
             <th className="text-left py-2"></th>
@@ -307,6 +306,24 @@ export function ExpandableCardStandard({ data }: Card) {
               </td>
             </tr>
           ))}
+
+          {searchLoading && (
+            <>
+              {Array.from({ length: 30 }, (_, index) => index + 1)?.map(
+                (item: any, index: any) => {
+                  return (
+                    <>
+                      <SkeletonRow
+                        className={`${
+                          index % 2 == 0 ? " border border-x-0 " : ""
+                        } rounded-sm`}
+                      />
+                    </>
+                  );
+                }
+              )}
+            </>
+          )}
         </tbody>
       </table>
     </>
@@ -345,3 +362,24 @@ export const CloseIcon = () => {
     </motion.svg>
   );
 };
+
+export const SkeletonRow = ({ className }: any) => (
+  <tr className={`animate-pulse ${className}`}>
+    <td className="py-2 pl-8">
+      <div className="h-8 w-8 bg-muted rounded-full"></div>
+    </td>
+    <td className="py-2">
+      <div className="h-8 w-72 bg-muted rounded-md"></div>
+    </td>
+    <td className="p-2">
+      <div className="h-8 w-8 bg-muted rounded-md"></div>
+    </td>
+    <td className="py-2">
+      <div className="h-8 w-fit bg-muted rounded-md"></div>
+    </td>
+    <td className="py-2">
+      <div className="h-8 w-20 bg-muted rounded-md"></div>
+    </td>
+  </tr>
+);
+

@@ -11,7 +11,10 @@ import {
 } from "lucide-react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useSearchContentQuery } from "@/redux/features/Explore/explore";
-import { ExpandableCardStandard } from "@/components/ui/Aceternity/expandable-card-standard";
+import {
+  ExpandableCardStandard,
+  SkeletonRow,
+} from "@/components/ui/Aceternity/expandable-card-standard";
 import {
   Pagination,
   PaginationContent,
@@ -167,7 +170,7 @@ export default function ExplorePage() {
           </div>
         </header>
         <div className="flex-1 flex p-4 ">
-          <div className="w-3/4 p-6 flex flex-col justify-between overflow-auto">
+          <div className="w-3/4 p-6 flex flex-col overflow-auto">
             <div className="flex justify-between items-center  mb-6">
               <div className="flex items-center space-x-4 mb-6">
                 <SwipeButton
@@ -212,22 +215,10 @@ export default function ExplorePage() {
                 />
               </div>
             </div>
-            {searchQuery && (
-              <div className="flex w-full items-center justify-center">
-                <Card className="w-64 h-fit border-none shadow-none">
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <LeftDownIcon />
-                      <span className="text-sm font-medium">
-                        {searchQuery?.toLocaleUpperCase()}
-                      </span>
-                      <RightDownIcon />
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-            <ExpandableCardStandard data={searchedData?.results} />
+            <ExpandableCardStandard
+              searchLoading={searchLoading}
+              data={searchedData?.results}
+            />
 
             <div className="flex items-center justify-center h-fit">
               {searchLoading && (
