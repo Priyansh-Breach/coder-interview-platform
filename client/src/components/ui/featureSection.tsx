@@ -10,62 +10,58 @@ import {
   MonitorCheckIcon,
   NotebookTabsIcon,
   UserRoundPenIcon,
-  BrainCircuitIcon
+  BrainCircuitIcon,
 } from "lucide-react";
 
 export function FeaturesSection() {
   const features = [
     {
-      title: "Built for developers",
+      title: "Problem-Specific Interviews",
       description:
-        "Built for engineers, developers, dreamers, thinkers and doers.",
+        "Pick coding problems and get interviewed on them in real-time.",
       icon: <IconTerminal2 />,
     },
     {
-      title: "Real-time Coding Interviews",
-      description:
-        "Simulated coding interviews with a live code editor and output console.",
+      title: "Code IDE Integration",
+      description: "Built-in editor to write and test code during interviews.",
       icon: <IconEaseInOut />,
     },
     {
-      title: "Mock Interviews",
-      description:
-        "Full-length mock interviews with varying levels of difficulty.",
+      title: "Live Questioning",
+      description: "Get real-time follow-up questions based on your code.",
       icon: <Brain />,
     },
     {
-      title: "100% Uptime guarantee",
-      description:
-        "We are available a 100% of the time. Atleast our AI Agents are.",
+      title: "Response Recording",
+      description: "Record and review answers for coding and verbal responses.",
       icon: <IconCloud />,
     },
     {
-      title: "Solution Optimization",
-      description:
-        "AI-driven suggestions to improve code efficiency and readability.",
+      title: "AI-Powered Feedback",
+      description: "Receive AI-driven feedback on your code and approach.",
       icon: <BrainCircuitIcon />,
     },
     {
-      title: "Progress Tracking",
-      description:
-        "Dashboard for users to monitor their performance over time.",
+      title: "Performance Dashboard",
+      description: "Track your progress and view past interview results.",
       icon: <MonitorCheckIcon />,
     },
     {
-      title: "Detailed Explanations",
+      title: "Code Optimization",
       description:
-        "Step-by-step breakdowns of solutions and alternative approaches.",
+        "AI suggestions for improving code efficiency and readability.",
       icon: <NotebookTabsIcon />,
     },
     {
       title: "Behavioral Interview Prep",
       description:
-        "Practice sessions for explaining problem-solving approaches and thought processes.",
+        "Practice answering questions about your problem-solving methods.",
       icon: <UserRoundPenIcon />,
     },
   ];
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  relative z-10 py-10 max-w-7xl mx-auto">
+    <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4  relative z-10 py-10 max-w-7xl mx-auto">
       {features.map((feature, index) => (
         <Feature key={feature.title} {...feature} index={index} />
       ))}
@@ -87,7 +83,7 @@ const Feature = ({
   return (
     <div
       className={cn(
-        "flex flex-col lg:border-r  py-10 relative group/feature dark:border-neutral-800",
+        "flex flex-col lg:border-r bg-background  py-10 relative group/feature dark:border-neutral-800",
         (index === 0 || index === 4) && "lg:border-l dark:border-neutral-800",
         index < 4 && "lg:border-b dark:border-neutral-800"
       )}

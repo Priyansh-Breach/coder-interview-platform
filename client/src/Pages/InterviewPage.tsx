@@ -54,6 +54,7 @@ import {
 } from "@/redux/features/Interview/panelSlice";
 import { useAppSelector, useAppDispatch } from "@/redux/store";
 import TimerComponent from "@/components/NavbarCodeEditor";
+import SwipeButton from "@/components/ui/Animata/swipeButton";
 
 const InterviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -152,7 +153,7 @@ const InterviewPage: React.FC = () => {
         description="Join our innovative platform where you can give interviews and solve coding problems simultaneously. Enhance your skills with real-time coding challenges and comprehensive interview practice. Prepare for your dream job with our AI-powered educational resources and expert guidance."
         keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources, Dronacharya.co"
       />
-      <div className="flex h-screen justify-start  w-screen">
+      <div className="flex h-screen justify-start  w-screen select-none">
         <div className="absolute z-[1000] left-52 top-2">
           <TimerComponent />
         </div>
@@ -291,13 +292,12 @@ const InterviewPage: React.FC = () => {
                         onClick={handleLeaveInterview}
                         className="text-sm  rounded-md"
                       >
-                        <DuolingoButton
-                          handleSubmit={() => {}}
-                          Icon={SquareArrowOutUpRight}
-                          isLoading={isLoading}
-                          color={"bg-orange-500"}
-                          title="Leave"
+                        <SwipeButton
                           href="/explore"
+                          firstText="Leave"
+                          secondText="Leave"
+                          firstClass=" font-light bg-orange-600"
+                          secondClass="font-light bg-orange-600"
                         />
                       </button>
                     </ModalFooter>

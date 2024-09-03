@@ -1,7 +1,14 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-import { Bell, BrainCircuit, Play } from "lucide-react";
+import {
+  Bell,
+  BrainCircuit,
+  CalendarIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  Play,
+} from "lucide-react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useSearchContentQuery } from "@/redux/features/Explore/explore";
 import { ExpandableCardStandard } from "@/components/ui/Aceternity/expandable-card-standard";
@@ -16,12 +23,17 @@ import {
 } from "@/components/ui/pagination";
 import NotFound from "@/components/notFound";
 import { MetaData } from "@/lib/MetaData/metaData";
-import { LoadingIcon } from "@/components/ui/Icons/SelectMore";
+import {
+  LeftDownIcon,
+  LoadingIcon,
+  RightDownIcon,
+} from "@/components/ui/Icons/SelectMore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProfileComponent } from "@/components/ProfileComponent";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import SwipeButton from "@/components/ui/Animata/swipeButton";
+
 const placeholders = [
   "Easy",
   "Hard",
@@ -120,7 +132,7 @@ export default function ExplorePage() {
     const end = Math.min(start + 5, searchedData.totalPages);
 
     return Array.from({ length: end - start }, (_, index) => (
-      <PaginationItem key={index + start}>
+      <PaginationItem key={index + start} className="bg-secondary rounded-md">
         <PaginationLink onClick={() => handlePageClick(index + start + 1)}>
           {index + start + 1}
         </PaginationLink>
@@ -144,6 +156,7 @@ export default function ExplorePage() {
         <header className="flex items-center h-14 px-4 border-b shrink-0 md:px-6">
           <nav className="flex flex-1 items-center space-x-4 lg:space-x-6">
             <BrainCircuit className="h-6 w-6" />
+            <Badge variant={"secondary"}>Beta access</Badge>
           </nav>
           <div className="ml-auto flex items-center space-x-4">
             <Button variant="ghost" size="icon">
@@ -154,42 +167,42 @@ export default function ExplorePage() {
           </div>
         </header>
         <div className="flex-1 flex p-4 ">
-          <div className="w-3/4 p-6 overflow-auto">
-            <div className="flex justify-between items-center mb-6">
+          <div className="w-3/4 p-6 flex flex-col justify-between overflow-auto">
+            <div className="flex justify-between items-center  mb-6">
               <div className="flex items-center space-x-4 mb-6">
-                <Badge
-                  variant="secondary"
-                  className="bg-green-500 cursor-pointer text-white hover:text-green-500"
+                <SwipeButton
                   onClick={() =>
                     navigate(
                       `/explore?search=${encodeURIComponent("easy")}&page=1`
                     )
                   }
-                >
-                  Easy
-                </Badge>
-                <Badge
-                  variant="secondary"
-                  className="bg-yellow-500 cursor-pointer text-white hover:text-yellow-500"
+                  firstText="Easy"
+                  secondText="Easy"
+                  firstClass=" font-light bg-green-900 text-white"
+                  secondClass="font-light bg-green-900 text-white"
+                />
+                <SwipeButton
                   onClick={() =>
                     navigate(
                       `/explore?search=${encodeURIComponent("medium")}&page=1`
                     )
                   }
-                >
-                  Medium
-                </Badge>
-                <Badge
-                  variant="secondary"
-                  className="bg-red-500 cursor-pointer text-white hover:text-red-500"
+                  firstText="Medium"
+                  secondText="Medium"
+                  firstClass=" font-light bg-yellow-900 text-white"
+                  secondClass="font-light bg-yellow-900 text-white"
+                />
+                <SwipeButton
                   onClick={() =>
                     navigate(
                       `/explore?search=${encodeURIComponent("hard")}&page=1`
                     )
                   }
-                >
-                  Hard
-                </Badge>
+                  firstText="Hard"
+                  secondText="Hard"
+                  firstClass=" font-light bg-red-900 text-white"
+                  secondClass="font-light bg-red-900 text-white"
+                />
               </div>
               <div className="w-fit mx-4">
                 <PlaceholdersAndVanishInput
@@ -199,8 +212,23 @@ export default function ExplorePage() {
                 />
               </div>
             </div>
-
+            {searchQuery && (
+              <div className="flex w-full items-center justify-center">
+                <Card className="w-64 h-fit border-none shadow-none">
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <LeftDownIcon />
+                      <span className="text-sm font-medium">
+                        {searchQuery?.toLocaleUpperCase()}
+                      </span>
+                      <RightDownIcon />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
             <ExpandableCardStandard data={searchedData?.results} />
+
             <div className="flex items-center justify-center h-fit">
               {searchLoading && (
                 <>
@@ -209,70 +237,40 @@ export default function ExplorePage() {
               )}
             </div>
             {searchedData?.results?.length < 1 && <NotFound />}
-            <div className="flex items-center justify-center h-fit">
+            <div className="flex items-center justify-center h-fit p-3">
               {!searchLoading && (
                 <>
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
+                  <Pagination className=" rounded-md cursor-pointer w-fit">
+                    <PaginationContent className="flex gap-2">
+                      <PaginationItem className="bg-secondary rounded-md">
                         <PaginationPrevious onClick={handlePreviousPage} />
                       </PaginationItem>
-                      <PaginationItem>
+                      <PaginationItem className="bg-secondary rounded-md">
                         <PaginationLink onClick={handlePreviousSet}>
                           <PaginationEllipsis />
                         </PaginationLink>
                       </PaginationItem>
                       {renderPaginationItems()}
-                      {searchedData?.totalPages}
-                      <PaginationItem>
+
+                      <PaginationItem className="bg-secondary rounded-md">
                         <PaginationLink onClick={handleNextSet}>
                           <PaginationEllipsis />
                         </PaginationLink>
                       </PaginationItem>
-                      <PaginationItem>
+                      <PaginationItem className="bg-secondary rounded-md">
                         <PaginationNext onClick={handleNextPage} />
                       </PaginationItem>
                     </PaginationContent>
                   </Pagination>
+                  <div className="bg-secondary flex gap-2 p-2 rounded-md shadow-sm items-center">
+                    <p>{"Total pages"}</p>
+                    <p>{searchedData?.totalPages}</p>
+                  </div>
                 </>
               )}
             </div>
           </div>
-          <div className="w-1/4 p-6 border-l">
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>Introduction to Algorithms</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="aspect-video bg-muted"></div>
-                <div className="flex justify-between items-center mt-4">
-                  <div>
-                    <div className="font-semibold">5 Chapters</div>
-                    <div className="text-sm text-muted-foreground">
-                      128 Items
-                    </div>
-                  </div>
-                  <Button size="sm">
-                    <Play className="mr-2 h-4 w-4" />
-                    Resume
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Progress</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Progress value={33} className="mb-2" />
-                <div className="flex justify-between text-sm">
-                  <span>Easy</span>
-                  <span>Medium</span>
-                  <span>Hard</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <div className="w-1/4 p-6 border-l"></div>
         </div>
       </div>
     </>

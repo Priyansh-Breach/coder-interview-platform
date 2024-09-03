@@ -10,6 +10,8 @@ import { FlipWords } from "@/components/ui/flip-words";
 import DuolingoButton from "@/components/ui/Animata/duolingo";
 import { MapPin, Search } from "lucide-react";
 import { HoverBorderGradient } from "@/components/ui/Aceternity/container-scroll-animation";
+import { Badge } from "@/components/ui/badge";
+import SwipeButton from "@/components/ui/Animata/swipeButton";
 
 function CardHoverEffect() {
   return (
@@ -72,44 +74,51 @@ export default function LandingPage() {
       <div className="flex flex-col min-h-[100dvh]">
         <Navbar />
         <main className="flex items-center justify-center">
-          <section className="w-full max-w-7xl py-12 md:py-24 lg:py-32">
-            <div className="container px-4 md:px-6">
-              <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <div className="inline-block px-3 py-1 text-sm">
-                    <HoverBorderGradient
-                      containerClassName="rounded-full"
-                      as="button"
-                      onClick={() => {
-                        navigate("/explore", {
-                          state: { Key: "/explore" },
-                        });
-                      }}
-                      className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
-                    >
-                      <span> Get Started</span>
-                    </HoverBorderGradient>
+          <div className="mt-14 h-screen w-full dark:bg-background bg-white  dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative flex items-center justify-center">
+            {/* Radial gradient for the container to give a faded look */}
+            <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-background bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+
+            <section className="w-full max-w-7xl py-12 md:py-24 lg:py-32">
+              <div className="container px-4 md:px-6">
+                <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                  <div className="space-y-4 my-12">
+                    <div className="inline-block px-3 py-1 text-sm">
+                      <Badge variant="secondary" className="font-light ">
+                        Beta access
+                      </Badge>
+                    </div>
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                      Elevate Your Coding Interview Prep
+                    </h2>
+                    <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                      Our AI-powered platform provides personalized guidance and
+                      practice to help you ace your next coding interview.
+                    </p>
                   </div>
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                    Elevate Your Coding Interview Prep
-                  </h2>
-                  <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Our AI-powered platform provides personalized guidance and
-                    practice to help you ace your next coding interview.
-                  </p>
+                  <SwipeButton
+                    onClick={() => {
+                      navigate("/explore", {
+                        state: { Key: "/explore" },
+                      });
+                    }}
+                    firstText="Get Started"
+                    secondText="Explore"
+                    firstClass=" font-light bg-background"
+                    secondClass="font-light bg-background"
+                  />
                 </div>
-                <FeaturesSection />
               </div>
-            </div>
-          </section>
+              <FeaturesSection />
+            </section>
+          </div>
         </main>
       </div>
-        <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-          <p className="text-xs text-muted-foreground">
-            &copy; {currentYear} AI Coding Interview. All rights reserved.
-          </p>
-          <nav className="sm:ml-auto flex gap-4 sm:gap-6"></nav>
-        </footer>
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+        <p className="text-xs text-muted-foreground">
+          &copy; {currentYear} AI Coding Interview. All rights reserved.
+        </p>
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6"></nav>
+      </footer>
     </>
   );
 }

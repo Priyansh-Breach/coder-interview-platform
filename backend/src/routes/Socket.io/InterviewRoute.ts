@@ -11,7 +11,6 @@ import {
 
 export const socketRoutes = (io: Server) => {
   io.on("connection", (socket: Socket) => {
-
     socket.on("startQuestionContextGeneration", (data) => {
       try {
         socket.emit("loading", { loading: true });
@@ -24,6 +23,7 @@ export const socketRoutes = (io: Server) => {
     socket.on("startConversationResponseGeneration", async (data) => {
       try {
         socket.emit("loading", { loading: true });
+     
         await handleAiConversationResponse(socket, data);
       } catch (error) {
         console.error("Error during response generation:", error);

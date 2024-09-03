@@ -25,22 +25,23 @@ export default function Component() {
 
   return (
     <div className="flex flex-col w-full max-w-3xl h-screen bg-background text-foreground">
+     
       <div>
         {conversation?.map((message: any, index: number) => (
           <div
             key={index}
             className={`flex ${
               message.sender === "user" ? "justify-end" : "justify-center"
-            } w-full my-2`}
+            } w-full my-2 px-14`}
           >
             <Card
-              className={`rounded-lg  max-w-3xl w-full text-start bg-[none] break-words self-center shadow-none border-none overflow-hidden ${
+              className={`rounded-lg   max-w-3xl w-full text-start bg-[none] break-words self-center shadow-none border-none overflow-hidden ${
                 message.sender === "user"
-                  ? "bg-muted w-fit mr-10  break-words rounded-xl max-w-lg "
+                  ? "bg-muted w-fit   break-words rounded-xl max-w-lg "
                   : ""
               }`}
             >
-              <CardContent className="p-4">
+              <CardContent className="p-4 text-sm">
                 <p className={`whitespace-pre-wrap break-words`}>
                   {message.response}
                 </p>
@@ -48,7 +49,7 @@ export default function Component() {
 
               {message?.sender === "ai" && (
                 <CardFooter className="pl-4 flex gap-4 rounded-b-lg break-words">
-                  <div className="pt-1">
+                  <div className="pt-1 text-sm">
                     <TextToSpeech text={message.response || error} />
                   </div>
 
@@ -63,14 +64,16 @@ export default function Component() {
         ))}
 
         <div className="flex justify-center ">
-          <Card className="rounded-lg max-w-3xl mb-24 w-full text-start bg-[none] break-words self-center shadow-none border-none overflow-hidden">
+          <Card className="rounded-lg max-w-3xl px-14 mb-24 w-full text-start bg-[none] break-words self-center shadow-none border-none overflow-hidden">
             <CardContent className="p-4">
               {streamLoading?.loading ? (
                 <LoadingIndicator />
               ) : error ? (
                 <p>{error}</p>
               ) : (
-                <p className="whitespace-pre-wrap break-words">{response}</p>
+                <p className="whitespace-pre-wrap break-words text-sm">
+                  {response}
+                </p>
               )}
             </CardContent>
           </Card>

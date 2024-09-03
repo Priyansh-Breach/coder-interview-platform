@@ -117,6 +117,7 @@ export const handleAiConversationResponse = async (
       user,
       conversation,
     } = data as IInterview;
+
     if (!user || !user._id || !questionId) {
       socket.emit(
         "error",
@@ -165,7 +166,12 @@ export const handleAiConversationResponse = async (
     if (!questionData) {
       return;
     }
-
+    console.log(
+      questionData?.content,
+      conversation,
+      userCurrentApproach,
+      userCode
+    );
     await generateResponse(
       questionData?.content,
       conversation,

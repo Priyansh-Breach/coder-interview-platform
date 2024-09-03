@@ -71,17 +71,15 @@ export const generateResponse = async (
     user_current_approach: userCurrentApproach,
     user_code: userCode,
   });
-
+  
   const requestBody = {
     model: "phase_2",
     prompt: prompt,
   };
-  console.log(prompt);
   try {
     const response = await axios.post(LLM_API_URL, requestBody, {
       responseType: "stream",
     });
-
     handleStream(
       response.data as unknown as Readable,
       (chunk) => {

@@ -8,7 +8,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { Navigate } from "react-router-dom";
 import { LoadingIcon } from "../Icons/SelectMore";
 import { Button } from "../button";
-import { FileText, Search } from "lucide-react";
+import { CalendarCheck, FileText, Search } from "lucide-react";
+import SwipeButton from "../Animata/swipeButton";
 
 interface Card {
   data: any;
@@ -148,16 +149,17 @@ export function ExpandableCardStandard({ data }: Card) {
                   >
                     {!isLoading ? (
                       <>
-                        <DuolingoButton
-                          title="Take Interview"
-                          handleSubmit={() => {}}
-                          isLoading={false}
+                        <SwipeButton
+                          firstText="Start Interview"
+                          secondText="Begin Session"
+                          firstClass=" font-light bg-green-800 text-white"
+                          secondClass="font-light bg-green-800 text-white "
                         />
                       </>
                     ) : (
                       <div className="flex gap-2">
                         <LoadingIcon />
-                        {"setting up interview.."}
+                        {"Setting up an interview.."}
                       </div>
                     )}
                   </motion.a>
@@ -257,10 +259,16 @@ export function ExpandableCardStandard({ data }: Card) {
         ) : null}
       </AnimatePresence>
 
-      <table className="w-full max-w-7xl">
+      <table
+        className="w-full h-screen  max-w-7xl self-center"
+        style={{ userSelect: "none", outline: "none" }}
+        onFocus={(e) => e.preventDefault()}
+      >
         <thead>
-          <tr className="border-b">
-            <th className="text-left py-2">#</th>
+          <tr className="border-b ">
+            <th className="text-left py-2 pl-6">
+              
+            </th>
             <th className="text-left py-2">Title</th>
             <th className="text-left py-2">Solution</th>
             <th className="text-left py-2"></th>
@@ -269,13 +277,18 @@ export function ExpandableCardStandard({ data }: Card) {
         </thead>
         <tbody>
           {data?.map((problem: any, index: any) => (
-            <tr key={problem.id} className="border-b ">
-              <td className="py-2">
+            <tr
+              key={problem.id}
+              className={`border-b ${
+                index % 2 == 0 ? "bg-muted rounded-sm border-none" : ""
+              } `}
+            >
+              <td className="py-2 pl-8">
                 {/* <CheckCircle className="text-green-500 h-4 w-4" /> */}
                 {index}
               </td>
               <td
-                className="py-2 cursor-pointer hover:text-green-500 hover:underline"
+                className="py-2 cursor-pointer hover:text-green-500 "
                 onClick={() => setActive(problem)}
               >
                 {problem.title}
@@ -283,7 +296,7 @@ export function ExpandableCardStandard({ data }: Card) {
               <td className="p-2 ">
                 <FileText
                   onClick={() => setSolution(problem)}
-                  className="cursor-pointer hover:text-green-500  stroke-[0.5]"
+                  className="cursor-pointer   stroke-[0.5]"
                 />
               </td>
               <td className="py-2">{problem.acceptance}</td>
