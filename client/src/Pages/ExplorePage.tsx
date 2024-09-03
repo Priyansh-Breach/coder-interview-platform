@@ -152,7 +152,7 @@ export default function ExplorePage() {
         keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources"
       />
 
-      <div className="flex flex-col min-h-screen bg-background ">
+      <div className="flex flex-col min-h-screen bg-background">
         <header className="flex items-center h-14 px-4 border-b shrink-0 md:px-6">
           <nav className="flex flex-1 items-center space-x-4 lg:space-x-6">
             <BrainCircuit className="h-6 w-6" />
