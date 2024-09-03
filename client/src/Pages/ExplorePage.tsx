@@ -181,8 +181,8 @@ export default function ExplorePage() {
                   }
                   firstText="Easy"
                   secondText="Easy"
-                  firstClass=" font-light bg-green-900 text-white"
-                  secondClass="font-light bg-green-900 text-white"
+                  firstClass=" font-light bg-green-900 text-white text-sm tracking-[0.05em]"
+                  secondClass="font-light bg-green-900 text-white text-sm tracking-[0.05em]"
                 />
                 <SwipeButton
                   onClick={() =>
@@ -192,8 +192,8 @@ export default function ExplorePage() {
                   }
                   firstText="Medium"
                   secondText="Medium"
-                  firstClass=" font-light bg-yellow-900 text-white"
-                  secondClass="font-light bg-yellow-900 text-white"
+                  firstClass=" font-light bg-yellow-900 text-white text-sm tracking-[0.05em]"
+                  secondClass="font-light bg-yellow-900 text-white text-sm tracking-[0.05em]"
                 />
                 <SwipeButton
                   onClick={() =>
@@ -203,8 +203,8 @@ export default function ExplorePage() {
                   }
                   firstText="Hard"
                   secondText="Hard"
-                  firstClass=" font-light bg-red-900 text-white"
-                  secondClass="font-light bg-red-900 text-white"
+                  firstClass=" font-light bg-red-900 text-white text-sm tracking-[0.05em]"
+                  secondClass="font-light bg-red-900 text-white text-sm tracking-[0.05em]"
                 />
               </div>
               <div className="w-fit mx-4">
