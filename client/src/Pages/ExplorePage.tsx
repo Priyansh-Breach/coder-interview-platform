@@ -242,7 +242,10 @@ export default function ExplorePage() {
                         </PaginationLink>
                       </PaginationItem>
                       {renderPaginationItems()}
-
+                      <div className="bg-secondary tracking-[0.06em] flex gap-2 p-2 rounded-md shadow-sm items-center">
+                        <p>{"Total pages"}</p>
+                        <p>{searchedData?.totalPages}</p>
+                      </div>
                       <PaginationItem className="bg-secondary rounded-md">
                         <PaginationLink onClick={handleNextSet}>
                           <PaginationEllipsis />
@@ -253,10 +256,6 @@ export default function ExplorePage() {
                       </PaginationItem>
                     </PaginationContent>
                   </Pagination>
-                  <div className="bg-secondary flex gap-2 p-2 rounded-md shadow-sm items-center">
-                    <p>{"Total pages"}</p>
-                    <p>{searchedData?.totalPages}</p>
-                  </div>
                 </>
               )}
             </div>
