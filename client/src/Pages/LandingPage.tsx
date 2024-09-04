@@ -108,7 +108,9 @@ export default function LandingPage() {
                   />
                 </div>
               </div>
-              <FeaturesSection />
+              <div className="m-6" >
+                <FeaturesSection />
+              </div>
             </section>
           </div>
         </main>
