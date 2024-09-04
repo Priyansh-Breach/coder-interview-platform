@@ -4,18 +4,19 @@ import { ClockIcon } from "lucide-react";
 import { useAppSelector } from "@/redux/store";
 
 const TimerComponent: React.FC = () => {
-  const remainingTimeSeconds = useAppSelector(
-    (state: any) => state.editor.interviewTimeLeft
-  ) || 0;
-
+  const remainingTimeSeconds =
+    useAppSelector((state: any) => state.editor.interviewTimeLeft) || 0;
+  console.log(remainingTimeSeconds);
   // Convert seconds to milliseconds for initial state
-  const [remainingTime, setRemainingTime] = useState<number>(remainingTimeSeconds * 1000);
+  const [remainingTime, setRemainingTime] = useState<number>(
+    remainingTimeSeconds * 1000
+  );
   const intervalRef = useRef<number | null>(null);
 
   const formatTime = (time: number): string => {
     const minutes = String(Math.floor(time / 60000)).padStart(2, "0");
     const seconds = String(Math.floor((time % 60000) / 1000)).padStart(2, "0");
-    return `${minutes}:${seconds}/45 min`;
+    return `${minutes}:${seconds} minutes left`;
   };
 
   const startTimer = (): void => {
@@ -54,7 +55,7 @@ const TimerComponent: React.FC = () => {
 
   return (
     <Draggable>
-      <div className="flex items-center gap-2 cursor-grab active:cursor-grabbing border bg-muted p-2 rounded-lg mt-4 shadow-md">
+      <div className="flex items-center gap-2 cursor-all-scroll  border bg-muted p-2 rounded-lg mt-4 shadow-md">
         <ClockIcon className="w-4 h-4" />
         <span>{formatTime(remainingTime)}</span>
       </div>

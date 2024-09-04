@@ -242,14 +242,15 @@ const InterviewPage: React.FC = () => {
             </ResizablePanel>
           )}
         </ResizablePanelGroup>
-
-        <div className="bottom-56 fixed p-r-4 right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
-          <FloatingDock
-            desktopClassName="translate-y-10"
-            mobileClassName="translate-y-10"
-            items={links}
-          />
-        </div>
+        {links?.length > 0 && (
+          <div className="bottom-56 fixed p-r-4 right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">
+            <FloatingDock
+              desktopClassName="translate-y-10"
+              mobileClassName="translate-y-10"
+              items={links}
+            />
+          </div>
+        )}
         {remainingTimeSecondsForInterview && (
           <>
             <div className="bottom-28 fixed  right-[-10px] hover:right-0 transition-all duration-300 ease-in-out w-fit z-[800]">

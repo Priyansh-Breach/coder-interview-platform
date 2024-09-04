@@ -72,7 +72,18 @@ export function ExpandableCardStandard({ data, searchLoading }: Card) {
 
   const handleSubmit = async () => {
     try {
-      await startInterview({ id: active?.id, time: "45" }).unwrap();
+      let interviewTime = "60";
+      const difficulty = active?.difficulty?.toLowerCase();
+
+      if (difficulty === "easy") {
+        interviewTime = "30";
+      } else if (difficulty === "medium") {
+        interviewTime = "45";
+      } else if (difficulty === "hard") {
+        interviewTime = "60";
+      }
+
+      await startInterview({ id: active?.id, time: interviewTime }).unwrap();
     } catch (err: any) {
       toast({
         title: "Failed to start interview",
@@ -382,4 +393,3 @@ export const SkeletonRow = ({ className }: any) => (
     </td>
   </tr>
 );
-

@@ -30,7 +30,7 @@ export const generateInterviewTokenMiddleware = async (
   const { id } = req.params;
   const { time } = req.body;
 
-  const interviewDuration = time === 60 ? 60 : 45;
+  const interviewDuration = time;
 
   if (!user || !user._id || !id) {
     return res
