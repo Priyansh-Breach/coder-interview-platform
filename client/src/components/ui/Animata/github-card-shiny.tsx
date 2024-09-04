@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { useCallback, useRef } from "react";
-import { CheckCircle2, Clock } from "lucide-react";
+import { CheckCircle2, Clock, Braces } from "lucide-react";
 import { cn } from "@/lib/utils";
-import SwipeButton from "./swipeButton";
 import { useNavigate } from "react-router-dom";
-import TimerComponent from "@/components/NavbarCodeEditor";
 import { useAppSelector } from "@/redux/store";
 
 export function useMousePosition(
@@ -149,7 +147,12 @@ export default function GithubCardShiny({
             {
               title: "Time left",
               time: formatTime(remainingTime),
-              Icon: Clock ,
+              Icon: Clock,
+            },
+            {
+              title: "difficulty",
+              time: data?.interview?.difficulty,
+              Icon: Braces,
             },
           ].map((step) => {
             return (
