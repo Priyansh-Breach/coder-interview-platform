@@ -3,6 +3,7 @@ import {
   getQuestionData,
   handleCreateInterviewMongo,
   handleLeaveInterviewMongo,
+  handleGetActiveInterview,
 } from "../controllers/interviewController";
 import { isUserAuthenticated } from "../middleware/authMiddleware";
 import {
@@ -33,6 +34,12 @@ router.get(
   isUserAuthenticated,
   validateInterviewTokenMiddleware,
   getQuestionData
+);
+
+router.get(
+  "/getActiveInterview",
+  isUserAuthenticated,
+  handleGetActiveInterview
 );
 
 {

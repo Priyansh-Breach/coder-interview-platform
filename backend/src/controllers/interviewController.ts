@@ -17,6 +17,13 @@ import {
   createInterview,
   leaveInterviewMongo,
 } from "../Utils/Interview MongoDB/interview.utils.mongodb";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import { connectRedis } from "../Database/redisDb";
+
+dotenv.config();
+
+const INTERVIEW_JWT_SECRET = process.env.INTERVIEW_JWT_SECRET || "";
 
 declare global {
   namespace Express {
@@ -26,6 +33,7 @@ declare global {
       userId?: string;
       questionId?: string;
       interViewDuration?: any;
+      tokenRemainingTime?: any;
     }
   }
 }
@@ -103,3 +111,78 @@ export const handleLeaveInterviewMongo = cactchAsyncError(
   }
 );
 
+/**
+ * Get Active Interview Session
+ */
+export const handleGetActiveInterview = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { user } = req;
+
+      if (!user || !user._id) {
+        return res.status(400).json({ message: "User not provided" });
+      }
+
+      const keys = await connectRedis.keys(`${user._id}InterviewToken*`);
+
+      if (!keys || keys.length === 0) {
+        return res.status(404).json({
+          message: "No active interview session!",
+        });
+      }
+
+      let activeInterviews: any[] = [];
+
+      for (const key of keys) {
+        const tokenData: any = await connectRedis.get(key);
+
+        if (tokenData) {
+          const parsedTokenData = JSON.parse(tokenData);
+
+          const ttl: any = await new Promise<number>((resolve, reject) => {
+            connectRedis.ttl(key, (err: any, ttl: any) => {
+              if (err) {
+                return reject(err);
+              }
+              resolve(ttl);
+            });
+          });
+
+          if (ttl > 0) {
+            try {
+              const decoded: any = jwt.verify(
+                parsedTokenData?.token,
+                INTERVIEW_JWT_SECRET
+              );
+
+              const { token, ...interviewWithoutToken } = parsedTokenData;
+
+              activeInterviews.push({
+                interview: interviewWithoutToken,
+                ttl,
+                questionId: decoded?.id,
+              });
+            } catch (err) {
+              continue;
+            }
+          }
+        }
+      }
+
+      if (activeInterviews.length < 1) {
+        return res.status(404).json({
+          message: "No active interview sessions found.",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        activeInterviews,
+      });
+    } catch (error: any) {
+      return next(
+        new ErrorHandler("Error fetching active interview sessions", 500)
+      );
+    }
+  }
+);

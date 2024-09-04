@@ -6,7 +6,7 @@ import { useAppSelector } from "@/redux/store";
 const TimerComponent: React.FC = () => {
   const remainingTimeSeconds =
     useAppSelector((state: any) => state.editor.interviewTimeLeft) || 0;
-  console.log(remainingTimeSeconds);
+  
   // Convert seconds to milliseconds for initial state
   const [remainingTime, setRemainingTime] = useState<number>(
     remainingTimeSeconds * 1000

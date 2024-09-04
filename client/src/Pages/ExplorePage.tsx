@@ -1,20 +1,10 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-import {
-  Bell,
-  BrainCircuit,
-  CalendarIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  Play,
-} from "lucide-react";
+import { Bell, BrainCircuit } from "lucide-react";
 import { PlaceholdersAndVanishInput } from "@/components/ui/Aceternity/placeholders-and-vanish-input";
 import { useSearchContentQuery } from "@/redux/features/Explore/explore";
-import {
-  ExpandableCardStandard,
-  SkeletonRow,
-} from "@/components/ui/Aceternity/expandable-card-standard";
+import { ExpandableCardStandard } from "@/components/ui/Aceternity/expandable-card-standard";
 import {
   Pagination,
   PaginationContent,
@@ -26,17 +16,15 @@ import {
 } from "@/components/ui/pagination";
 import NotFound from "@/components/notFound";
 import { MetaData } from "@/lib/MetaData/metaData";
-import {
-  LeftDownIcon,
-  LoadingIcon,
-  RightDownIcon,
-} from "@/components/ui/Icons/SelectMore";
+import { LoadingIcon } from "@/components/ui/Icons/SelectMore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProfileComponent } from "@/components/ProfileComponent";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SwipeButton from "@/components/ui/Animata/swipeButton";
-
+import { useGetActiveInterviewQuery } from "@/redux/features/Interview/interview";
+import GithubCardShiny from "@/components/ui/Animata/github-card-shiny";
+import { setInterviewTime } from "@/redux/features/Interview/editorSlice";
+import { useAppDispatch } from "@/redux/store";
 const placeholders = [
   "Easy",
   "Hard",
@@ -61,12 +49,14 @@ export default function ExplorePage() {
     parseInt(searchParams.get("page") || "1")
   );
   const [currentSet, setCurrentSet] = useState<number>(0);
-
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const searchQuery = searchParams.get("search") || "";
 
   const { data: searchedData, isLoading: searchLoading } =
     useSearchContentQuery({ search: searchQuery, page: currentPage });
+  const { data: getActiveInterviewData, isLoading: getActiveInterviewLoading } =
+    useGetActiveInterviewQuery({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(e.target.value);
@@ -142,6 +132,14 @@ export default function ExplorePage() {
       </PaginationItem>
     ));
   };
+
+  useEffect(() => {
+    console.log("called");
+
+    dispatch(
+      setInterviewTime(getActiveInterviewData?.activeInterviews[0]?.ttl)
+    );
+  }, [getActiveInterviewLoading]);
 
   return (
     <>
@@ -260,9 +258,40 @@ export default function ExplorePage() {
               )}
             </div>
           </div>
-          <div className="w-1/4 p-6 border-l"></div>
+          <div className="w-1/4 p-6 border-l">
+            {getActiveInterviewLoading ? (
+              <div className="flex  items-center">
+                <LoadingIcon />{" "}
+                <p className="m-2">
+                  {"Checking for active interview sessions.."}
+                </p>
+              </div>
+            ) : (
+              <>
+                {getActiveInterviewData?.activeInterviews?.length > 0 && (
+                  <>
+                    <p className="text-neutral-700 m-4 mx-0 dark:text-neutral-300 text-sm md:text-base max-w-sm">
+                      Active Interview Session
+                    </p>
+                    {getActiveInterviewData?.activeInterviews?.map(
+                      (item: any, index: any) => {
+                        return (
+                          <>
+                            <GithubCardShiny data={item} />
+                          </>
+                        );
+                      }
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </>
   );
+}
+function dispatch(arg0: any) {
+  throw new Error("Function not implemented.");
 }

@@ -4,6 +4,9 @@ import jwt from "jsonwebtoken";
 import { IUser } from "../entities/User";
 import { connectRedis } from "../Database/redisDb";
 import { InterviewModel } from "../entities/interview";
+import { IQuestion } from "../controllers/Socket.io/SocketinterviewController";
+import QuestionData from "../Database/Questions/leetcode-solutions.json";
+
 dotenv.config();
 
 const INTERVIEW_JWT_SECRET = process.env.INTERVIEW_JWT_SECRET || "";
@@ -38,15 +41,24 @@ export const generateInterviewTokenMiddleware = async (
       .json({ message: "User or question ID not provided" });
   }
 
+  // Retrieve question data based on ID
+  const questionData = (QuestionData as IQuestion[]).find(
+    (question) => question.id === id
+  );
+
+  if (!questionData) {
+    return res.status(404).json({ message: "Question not found" });
+  }
+
   const keys = await connectRedis.keys(`${user._id}InterviewToken*`);
 
   if (keys.length > 0) {
-    const existingToken = await connectRedis.get(keys[0]);
-
+    const existingToken: any = await connectRedis.get(keys[0]);
+    const parsedExistingToken: any = JSON.parse(existingToken);
     if (existingToken) {
       try {
         const decoded = jwt.verify(
-          existingToken,
+          parsedExistingToken?.token,
           INTERVIEW_JWT_SECRET
         ) as jwt.JwtPayload;
 
@@ -72,9 +84,17 @@ export const generateInterviewTokenMiddleware = async (
     }
   );
 
+  const tokenData = {
+    token: interviewToken,
+    questionName: questionData?.title,
+    questionId: id,
+    difficulty: questionData?.difficulty,
+    slug:questionData?.slug
+  };
+
   await connectRedis.set(
     redisKey,
-    interviewToken,
+    JSON.stringify(tokenData),
     "EX",
     interviewDuration * 60
   );
@@ -94,7 +114,7 @@ export const validateInterviewTokenMiddleware = async (
 ) => {
   const { user } = req;
   const { id } = req.params;
-
+  let parsedTokenData: any;
   if (!user || !user._id || !id) {
     return res
       .status(400)
@@ -102,13 +122,15 @@ export const validateInterviewTokenMiddleware = async (
   }
 
   const redisKey = `${user._id}InterviewToken${id}`;
-  const token = await connectRedis.get(redisKey);
+  const tokenData: any = await connectRedis.get(redisKey);
 
-  if (!token) {
+  if (!tokenData) {
     return res.status(403).json({
       message:
         "No active interview session found for this question. Please restart the interview process.",
     });
+  } else {
+    parsedTokenData = JSON.parse(tokenData);
   }
 
   const ttl: any = await new Promise<number>((resolve, reject) => {
@@ -120,20 +142,23 @@ export const validateInterviewTokenMiddleware = async (
     });
   });
 
-  jwt.verify(token, INTERVIEW_JWT_SECRET, (err: any, decoded: any) => {
-    if (err || decoded.id !== id) {
-      return res.status(403).json({
-        message:
-          "Invalid or expired token for this question. Please restart the interview process.",
-      });
+  jwt.verify(
+    parsedTokenData?.token,
+    INTERVIEW_JWT_SECRET,
+    (err: any, decoded: any) => {
+      if (err || decoded.id !== id) {
+        return res.status(403).json({
+          message:
+            "Invalid or expired token for this question. Please restart the interview process.",
+        });
+      }
+
+      req.questionId = id;
+      req.tokenRemainingTime = ttl;
+
+      next();
     }
-
-    // Add the remaining time to the request object
-    req.questionId = id;
-    req.tokenRemainingTime = ttl; // Add this line to pass the remaining time to the next route
-
-    next();
-  });
+  );
 };
 
 export const deleteInterviewTokenMiddleware = async (

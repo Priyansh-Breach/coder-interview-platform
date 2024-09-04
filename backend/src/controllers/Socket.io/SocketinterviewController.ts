@@ -18,6 +18,8 @@ export interface IQuestion {
   content: string;
   title: string;
   difficulty?: string;
+  name?: any;
+  slug?: any;
 }
 
 /**
@@ -41,7 +43,7 @@ export const handleAiQuestionContext = async (socket: Socket, data: any) => {
     const redisKey = `${user._id}InterviewToken${questionId}`;
 
     const token: any = await connectRedis.get(redisKey);
-
+    let parsedToken: any;
     if (!token) {
       socket.emit(
         "error",
@@ -51,20 +53,26 @@ export const handleAiQuestionContext = async (socket: Socket, data: any) => {
         }
       );
       return;
+    } else {
+      parsedToken = JSON.parse(token);
     }
 
-    jwt.verify(token, INTERVIEW_JWT_SECRET, (err: any, decoded: any) => {
-      if (err || decoded.id !== questionId) {
-        socket.emit(
-          "error",
-          "Invalid or expired token for this question. Please restart the interview process. :(",
-          {
-            loading: false,
-          }
-        );
-        return;
+    jwt.verify(
+      parsedToken?.token,
+      INTERVIEW_JWT_SECRET,
+      (err: any, decoded: any) => {
+        if (err || decoded.id !== questionId) {
+          socket.emit(
+            "error",
+            "Invalid or expired token for this question. Please restart the interview process. :(",
+            {
+              loading: false,
+            }
+          );
+          return;
+        }
       }
-    });
+    );
 
     const questionData: any = (QuestionData as IQuestion[]).find(
       (question: any) => question.id === questionId
@@ -132,7 +140,7 @@ export const handleAiConversationResponse = async (
     const redisKey = `${user._id}InterviewToken${questionId}`;
 
     const token: any = await connectRedis.get(redisKey);
-
+    let parsedToken: any;
     if (!token) {
       socket.emit(
         "error",
@@ -142,20 +150,26 @@ export const handleAiConversationResponse = async (
         }
       );
       return;
+    } else {
+      parsedToken = JSON.parse(token);
     }
 
-    jwt.verify(token, INTERVIEW_JWT_SECRET, (err: any, decoded: any) => {
-      if (err || decoded.id !== questionId) {
-        socket.emit(
-          "error",
-          "Invalid or expired token for this question. Please restart the interview process. :(",
-          {
-            loading: false,
-          }
-        );
-        return;
+    jwt.verify(
+      parsedToken?.token,
+      INTERVIEW_JWT_SECRET,
+      (err: any, decoded: any) => {
+        if (err || decoded.id !== questionId) {
+          socket.emit(
+            "error",
+            "Invalid or expired token for this question. Please restart the interview process. :(",
+            {
+              loading: false,
+            }
+          );
+          return;
+        }
       }
-    });
+    );
 
     const questionData = (QuestionData as IQuestion[]).find(
       (question) => question.id === questionId

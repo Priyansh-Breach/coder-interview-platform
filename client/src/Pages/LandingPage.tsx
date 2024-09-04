@@ -73,8 +73,8 @@ export default function LandingPage() {
       />
       <div className="flex flex-col min-h-[100dvh]">
         <Navbar />
-        <main className="flex items-center justify-center">
-          <div className="mt-14 h-screen w-full dark:bg-background bg-white  dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative flex items-center justify-center">
+        <main className="flex items-center justify-center flex-grow">
+          <div className="mt-14 min-h-[70vh] w-full dark:bg-background bg-white dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative flex items-center justify-center">
             {/* Radial gradient for the container to give a faded look */}
             <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-background bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
@@ -83,14 +83,14 @@ export default function LandingPage() {
                 <div className="flex flex-col items-center justify-center space-y-4 text-center">
                   <div className="space-y-4 my-12">
                     <div className="inline-block px-3 py-1 text-sm">
-                      <Badge variant="secondary" className="font-light ">
+                      <Badge variant="secondary" className="font-light">
                         Beta access
                       </Badge>
                     </div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
                       Elevate Your Coding Interview Prep
                     </h2>
-                    <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                    <p className="max-w-[900px] text-muted-foreground md:text-lg lg:text-xl">
                       Our AI-powered platform provides personalized guidance and
                       practice to help you ace your next coding interview.
                     </p>
@@ -103,7 +103,7 @@ export default function LandingPage() {
                     }}
                     firstText="Get Started"
                     secondText="Explore"
-                    firstClass=" font-light bg-background"
+                    firstClass="font-light bg-background"
                     secondClass="font-light bg-background"
                   />
                 </div>
@@ -112,13 +112,14 @@ export default function LandingPage() {
             </section>
           </div>
         </main>
+        <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+          <p className="text-xs text-muted-foreground">
+            &copy; {new Date().getFullYear()} AI Coding Interview. All rights
+            reserved.
+          </p>
+          <nav className="sm:ml-auto flex gap-4 sm:gap-6"></nav>
+        </footer>
       </div>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-muted-foreground">
-          &copy; {currentYear} AI Coding Interview. All rights reserved.
-        </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6"></nav>
-      </footer>
     </>
   );
 }
