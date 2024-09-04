@@ -153,11 +153,11 @@ export default function ExplorePage() {
         keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources"
       />
 
-      <div className="flex flex-col min-h-screen bg-background">
+      <div className="flex flex-col  min-h-screen bg-background">
         <header className="flex items-center h-14 px-4 border-b shrink-0 md:px-6">
           <nav className="flex flex-1 items-center space-x-4 lg:space-x-6">
             <BrainCircuit className="h-6 w-6" />
-            <Badge variant={"secondary"}>Beta access</Badge>
+            <Badge variant="secondary">Beta access</Badge>
           </nav>
           <div className="ml-auto flex items-center space-x-4">
             <Button variant="ghost" size="icon">
@@ -167,10 +167,11 @@ export default function ExplorePage() {
             <ProfileComponent />
           </div>
         </header>
-        <div className="flex-1 flex p-4 ">
-          <div className="w-3/4 p-6 flex flex-col overflow-auto">
-            <div className="flex justify-between items-center  mb-6">
-              <div className="flex items-center space-x-4 mb-6">
+
+        <div className="flex-1 flex flex-col-reverse lg:flex-row p-4">
+          <div className="w-full lg:w-3/4 p-6 flex flex-col overflow-auto">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+              <div className="flex flex-wrap items-center space-x-4 mb-6">
                 <SwipeButton
                   onClick={() =>
                     navigate(
@@ -179,7 +180,7 @@ export default function ExplorePage() {
                   }
                   firstText="Easy"
                   secondText="Easy"
-                  firstClass=" font-light bg-green-900 text-white text-sm tracking-[0.05em]"
+                  firstClass="font-light bg-green-900 text-white text-sm tracking-[0.05em]"
                   secondClass="font-light bg-green-900 text-white text-sm tracking-[0.05em]"
                 />
                 <SwipeButton
@@ -190,7 +191,7 @@ export default function ExplorePage() {
                   }
                   firstText="Medium"
                   secondText="Medium"
-                  firstClass=" font-light bg-yellow-900 text-white text-sm tracking-[0.05em]"
+                  firstClass="font-light bg-yellow-900 text-white text-sm tracking-[0.05em]"
                   secondClass="font-light bg-yellow-900 text-white text-sm tracking-[0.05em]"
                 />
                 <SwipeButton
@@ -201,11 +202,11 @@ export default function ExplorePage() {
                   }
                   firstText="Hard"
                   secondText="Hard"
-                  firstClass=" font-light bg-red-900 text-white text-sm tracking-[0.05em]"
+                  firstClass="font-light bg-red-900 text-white text-sm tracking-[0.05em]"
                   secondClass="font-light bg-red-900 text-white text-sm tracking-[0.05em]"
                 />
               </div>
-              <div className="w-fit mx-4">
+              <div className="w-full md:w-fit mx-4">
                 <PlaceholdersAndVanishInput
                   placeholders={placeholders}
                   onChange={handleChange}
@@ -213,6 +214,7 @@ export default function ExplorePage() {
                 />
               </div>
             </div>
+
             <ExpandableCardStandard
               searchLoading={searchLoading}
               data={searchedData?.results}
@@ -221,15 +223,17 @@ export default function ExplorePage() {
             <div className="flex items-center justify-center h-fit">
               {searchLoading && (
                 <>
-                  <LoadingIcon /> <p className="m-2">{"loading questions.."}</p>
+                  <LoadingIcon /> <p className="m-2">loading questions...</p>
                 </>
               )}
             </div>
+
             {searchedData?.results?.length < 1 && <NotFound />}
+
             <div className="flex items-center justify-center h-fit p-3">
               {!searchLoading && (
                 <>
-                  <Pagination className=" rounded-md cursor-pointer w-fit">
+                  <Pagination className="rounded-md cursor-pointer w-fit">
                     <PaginationContent className="flex gap-2">
                       <PaginationItem className="bg-secondary rounded-md">
                         <PaginationPrevious onClick={handlePreviousPage} />
@@ -241,7 +245,7 @@ export default function ExplorePage() {
                       </PaginationItem>
                       {renderPaginationItems()}
                       <div className="bg-secondary tracking-[0.06em] flex gap-2 p-2 rounded-md shadow-sm items-center">
-                        <p>{"Total pages"}</p>
+                        <p>Total pages</p>
                         <p>{searchedData?.totalPages}</p>
                       </div>
                       <PaginationItem className="bg-secondary rounded-md">
@@ -258,13 +262,12 @@ export default function ExplorePage() {
               )}
             </div>
           </div>
-          <div className="w-1/4 p-6 border-l">
+
+          <div className="w-full lg:w-1/4 p-6 border-l">
             {getActiveInterviewLoading ? (
-              <div className="flex  items-center">
-                <LoadingIcon />{" "}
-                <p className="m-2">
-                  {"Checking for active interview sessions.."}
-                </p>
+              <div className="flex items-center">
+                <LoadingIcon />
+                <p className="m-2">Checking for active interview sessions...</p>
               </div>
             ) : (
               <>
@@ -274,13 +277,9 @@ export default function ExplorePage() {
                       Active Interview Session
                     </p>
                     {getActiveInterviewData?.activeInterviews?.map(
-                      (item: any, index: any) => {
-                        return (
-                          <>
-                            <GithubCardShiny data={item} />
-                          </>
-                        );
-                      }
+                      (item: any, index: any) => (
+                        <GithubCardShiny key={index} data={item} />
+                      )
                     )}
                   </>
                 )}
@@ -291,7 +290,4 @@ export default function ExplorePage() {
       </div>
     </>
   );
-}
-function dispatch(arg0: any) {
-  throw new Error("Function not implemented.");
 }
