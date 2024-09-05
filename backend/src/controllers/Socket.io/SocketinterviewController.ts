@@ -88,7 +88,6 @@ export const handleAiQuestionContext = async (socket: Socket, data: any) => {
 
     // simulateStream(100, socket);
   } catch (error) {
-    console.error("Error during streaming:", error);
     socket.emit("error", "Failed to generate question context", {
       loading: false,
     });
@@ -180,12 +179,7 @@ export const handleAiConversationResponse = async (
     if (!questionData) {
       return;
     }
-    console.log(
-      questionData?.content,
-      conversation,
-      userCurrentApproach,
-      userCode
-    );
+  
     await generateResponse(
       questionData?.content,
       conversation,

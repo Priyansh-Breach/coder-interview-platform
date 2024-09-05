@@ -26,7 +26,6 @@ export const socketRoutes = (io: Server) => {
      
         await handleAiConversationResponse(socket, data);
       } catch (error) {
-        console.error("Error during response generation:", error);
         socket.emit("error", "Failed to generate response");
       }
     });
