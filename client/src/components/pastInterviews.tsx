@@ -72,48 +72,51 @@ export const InterviewHistory = () => {
               </select>
             </div>
           </div>
-
-          <ScrollArea className="h-[50em] w-full rounded-md border p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {data.pastInterviews.interviews.map((interview: any) => (
-                <Card
-                  key={interview._id}
-                  className="w-full bg-muted dark:bg-card"
-                >
-                  <CardHeader className="p-4">
-                    <CardTitle className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base truncate">
-                      {interview.questionName}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4">
-                    <div className="flex w-full items-center justify-between gap-2 rounded-md bg-background p-2 border">
-                      <strong className="text-xs font-mono md:text-sm">
-                        Score {interview.totalScore}
-                      </strong>
-                      <span className="text-xs opacity-75">
-                        {interview.name}
-                      </span>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="p-4 flex items-center justify-between">
-                    <Badge
-                      variant={
-                        interview.status === "active"
-                          ? "default"
-                          : interview.status === "Scheduled"
-                          ? "secondary"
-                          : "destructive"
-                      }
-                      className="text-xs"
-                    >
-                      {interview.status}
-                    </Badge>
-                    <span className="text-xs">{interview.difficulty}</span>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </ScrollArea>
+          <div className=" min-h-full w-full dark:bg-background bg-white dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative ">
+            {/* Radial gradient for the container to give a faded look */}
+            <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-background bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+            <ScrollArea className="h-[50em] min-h-fit w-full rounded-md border p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {data.pastInterviews.interviews.map((interview: any) => (
+                  <Card
+                    key={interview._id}
+                    className="w-full bg-muted dark:bg-card z-[100]"
+                  >
+                    <CardHeader className="p-4">
+                      <CardTitle className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base truncate">
+                        {interview.questionName}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4">
+                      <div className="flex w-full items-center justify-between gap-2 rounded-md bg-background p-2 border">
+                        <strong className="text-xs font-mono md:text-sm">
+                          Score {interview.totalScore}
+                        </strong>
+                        <span className="text-xs opacity-75">
+                          {interview.name}
+                        </span>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="p-4 flex items-center justify-between">
+                      <Badge
+                        variant={
+                          interview.status === "active"
+                            ? "default"
+                            : interview.status === "Scheduled"
+                            ? "secondary"
+                            : "destructive"
+                        }
+                        className="text-xs"
+                      >
+                        {interview.status}
+                      </Badge>
+                      <span className="text-xs">{interview.difficulty}</span>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
         </>
       )}
 
