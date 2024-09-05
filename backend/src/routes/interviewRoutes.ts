@@ -4,6 +4,7 @@ import {
   handleCreateInterviewMongo,
   handleLeaveInterviewMongo,
   handleGetActiveInterview,
+  handleGetInterviewHistory_Interviews,
 } from "../controllers/interviewController";
 import { isUserAuthenticated } from "../middleware/authMiddleware";
 import {
@@ -40,6 +41,12 @@ router.get(
   "/getActiveInterview",
   isUserAuthenticated,
   handleGetActiveInterview
+);
+
+router.post(
+  "/getInterviewHistory",
+  isUserAuthenticated,
+  handleGetInterviewHistory_Interviews
 );
 
 {

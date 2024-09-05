@@ -15,6 +15,7 @@ import { InterviewModel } from "../entities/interview";
 import { IUser } from "../entities/User";
 import {
   createInterview,
+  getUserInterviews,
   leaveInterviewMongo,
 } from "../Utils/Interview MongoDB/interview.utils.mongodb";
 import dotenv from "dotenv";
@@ -78,7 +79,19 @@ export const handleCreateInterviewMongo = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { userId, questionId, interViewDuration } = req as any;
-      await createInterview(userId, questionId, interViewDuration);
+      const questionData = (QuestionData as IQuestion[]).find(
+        (question) => question.id === questionId
+      );
+
+      if (!questionData) {
+        return res.status(404).json({ message: "Question not found" });
+      }
+      await createInterview(
+        userId,
+        questionId,
+        interViewDuration,
+        questionData
+      );
       res.status(200).json({
         success: true,
         message: "Interview Activated",
@@ -182,6 +195,29 @@ export const handleGetActiveInterview = cactchAsyncError(
     } catch (error: any) {
       return next(
         new ErrorHandler("Error fetching active interview sessions", 500)
+      );
+    }
+  }
+);
+
+export const handleGetInterviewHistory_Interviews = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { user } = req;
+      const { pageNo, limit } = req.body;
+      if (!user || !user._id) {
+        return res.status(400).json({ message: "User not provided" });
+      }
+
+      const pastInterviews = await getUserInterviews(user._id, pageNo, limit);
+
+      res.status(200).json({
+        success: true,
+        pastInterviews,
+      });
+    } catch (error: any) {
+      return next(
+        new ErrorHandler("Error fetching your past interviews.", 500)
       );
     }
   }

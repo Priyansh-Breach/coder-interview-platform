@@ -25,6 +25,7 @@ import { useGetActiveInterviewQuery } from "@/redux/features/Interview/interview
 import GithubCardShiny from "@/components/ui/Animata/github-card-shiny";
 import { setInterviewTime } from "@/redux/features/Interview/editorSlice";
 import { useAppDispatch } from "@/redux/store";
+import { InterviewHistory } from "@/components/pastInterviews";
 const placeholders = [
   "Easy",
   "Hard",
@@ -296,6 +297,9 @@ export default function ExplorePage() {
                 )}
               </>
             )}
+            <div>
+              <InterviewHistory />
+            </div>
           </div>
         </div>
       </div>

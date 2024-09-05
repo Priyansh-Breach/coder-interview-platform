@@ -3,13 +3,17 @@ import { InterviewModel } from "../../entities/interview";
 export async function createInterview(
   userId: string,
   questionId: string,
-  interViewDuration: any
+  interViewDuration: any,
+  questionData: any
 ) {
   const newInterview = new InterviewModel({
     userId: userId,
     questionId: questionId,
     status: "active",
     duration: interViewDuration,
+    questionName: questionData?.title,
+    slug: questionData?.slug,
+    difficulty: questionData?.difficulty,
   });
 
   await newInterview.save();
@@ -39,4 +43,29 @@ export async function leaveInterviewMongo(
   } catch (error: any) {
     console.log("Error in updating the interview status in MongoDB : ", error);
   }
+}
+
+export async function getUserInterviews(
+  userId: string,
+  page: number,
+  limit: number
+) {
+  const pageNum = Math.max(page, 1);
+  const limitNum = Math.max(limit, 1);
+  const skip = (pageNum - 1) * limitNum;
+
+  const interviews = await InterviewModel.find({ userId })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limitNum);
+
+  const totalResults = await InterviewModel.countDocuments({ userId });
+  const totalPages = Math.ceil(totalResults / limitNum);
+
+  return {
+    interviews,
+    currentPage: pageNum,
+    totalPages,
+    totalResults,
+  };
 }

@@ -47,6 +47,17 @@ export const interviewApi = apiSlice.injectEndpoints({
         credentials: "include" as const,
       }),
     }),
+    getInterviewHistory: builder.mutation({
+      query: ({ pageNo, limit }) => ({
+        url: `interview/getInterviewHistory`,
+        method: "POST",
+        body: {
+          pageNo,
+          limit,
+        },
+        credentials: "include" as const,
+      }),
+    }),
   }),
 });
 
@@ -56,4 +67,5 @@ export const {
   useStartInterviewMutation,
   useTestairesponseMutation,
   useGetActiveInterviewQuery,
+  useGetInterviewHistoryMutation,
 } = interviewApi;

@@ -7,6 +7,9 @@ interface IInterview extends Document {
   startTime: Date;
   duration: number;
   timeLeft: number;
+  questionName: string;
+  slug: string;
+  difficulty: string;
   totalScore: number;
   feedback?: string;
   createdAt?: Date;
@@ -22,6 +25,9 @@ const interviewSchema: Schema = new Schema<IInterview>(
       enum: ["active", "completed", "cancelled"],
       default: "active",
     },
+    questionName: { type: String, required: true },
+    difficulty: { type: String, required: true },
+    slug: { type: String, required: true },
     startTime: { type: Date, default: Date.now },
     timeLeft: { type: Number },
     duration: { type: Number },
