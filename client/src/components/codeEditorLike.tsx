@@ -31,6 +31,7 @@ const CodeEditorLike = ({ code, language }: any) => {
           borderRadius: "0.375rem",
           backgroundColor: `${theme === "light" ? "#fff" : "#1e1e1e"} `,
           height: "auto",
+          width: "auto",
           overflowX: "auto",
         }}
       >
