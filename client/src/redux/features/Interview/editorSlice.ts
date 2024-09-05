@@ -15,6 +15,7 @@ interface EditorState {
   questionData?: QuestionData | null;
   status: string;
   interviewTimeLeft: any;
+  sendCode: boolean;
 }
 
 const initialState: EditorState = {
@@ -24,6 +25,7 @@ const initialState: EditorState = {
   messages: [],
   status: "disconnected",
   interviewTimeLeft: 0,
+  sendCode: true,
 };
 
 const editorSlice = createSlice({
@@ -51,6 +53,9 @@ const editorSlice = createSlice({
     setInterviewTime(state, action: PayloadAction<any>) {
       state.interviewTimeLeft = action.payload;
     },
+    updateSendCode: (state, action: PayloadAction<boolean>) => {
+      state.sendCode = action.payload;
+    },
   },
 });
 
@@ -62,5 +67,6 @@ export const {
   setQuestionData,
   userMessage,
   setInterviewTime,
+  updateSendCode,
 } = editorSlice.actions;
 export default editorSlice.reducer;

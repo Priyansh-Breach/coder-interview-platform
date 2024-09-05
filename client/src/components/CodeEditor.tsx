@@ -13,8 +13,14 @@ import { Button } from "./ui/button";
 import { getLocalStorageValue } from "@/lib/Utils/getLocalStorage";
 import { SelectMore } from "./ui/Icons/SelectMore";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { setCode, setLanguage } from "@/redux/features/Interview/editorSlice";
+import {
+  setCode,
+  setLanguage,
+  updateSendCode,
+} from "@/redux/features/Interview/editorSlice";
 import { debounce } from "lodash";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "./ui/label";
 
 const languages = [
   { label: "C", value: "c" },
@@ -34,15 +40,14 @@ const languages = [
   { label: "Shell", value: "shell" },
 ];
 
-
 const MonacoEditor: React.FC = () => {
   const dispatch = useAppDispatch();
   const code = useAppSelector((state) => state.editor.code);
+  const sendCodeState = useAppSelector((state) => state.editor.sendCode);
   const language = useAppSelector((state) => state.editor.language);
   const [localCode, setLocalCode] = useState(code);
   const [theme, setTheme] = useState<string | null>("dark");
   const [warning, setWarning] = useState<string | null>(null);
-
   useEffect(() => {
     const storedTheme = getLocalStorageValue("vite-ui-theme");
     if (storedTheme) {
@@ -80,6 +85,10 @@ const MonacoEditor: React.FC = () => {
     dispatch(setLanguage(value));
   };
 
+  const handleToggle = () => {
+    dispatch(updateSendCode(!sendCodeState));
+  };
+
   return (
     <div className="flex flex-col w-full h-full border shadow-lg overflow-hidden">
       <div className="flex justify-between items-center bg-card">
@@ -109,6 +118,14 @@ const MonacoEditor: React.FC = () => {
             {warning}
           </div>
         )}
+        <div className="flex items-center mr-16 space-x-2">
+          <Switch
+            id="send-code-mode"
+            checked={sendCodeState}
+            onCheckedChange={handleToggle}
+          />
+          <Label htmlFor="send-code-mode">Send code with chat</Label>
+        </div>
       </div>
       <Editor
         height="100%"

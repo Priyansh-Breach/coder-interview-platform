@@ -11,6 +11,7 @@ const persistConfig: PersistConfig<any> = {
     "questionPanelVisible",
     "code",
     "language",
+    "sendCode",
   ],
 };
 

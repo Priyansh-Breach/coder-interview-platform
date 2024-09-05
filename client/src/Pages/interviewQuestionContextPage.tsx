@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useTestairesponseMutation } from "@/redux/features/Interview/interview";
 import { useAppDispatch } from "@/redux/store";
 import { socket } from "../socket";
 import { useSelector } from "react-redux";
@@ -32,15 +31,8 @@ const InterviewQuestionContextPage: React.FC = () => {
   const language = useSelector((state: any) => state.editor.language);
   const user = useSelector((state: any) => state.auth.user);
   const conversation = useSelector((state: any) => state.conversation.message);
-  const [
-    testAiResponse,
-    {
-      isLoading: testLoading,
-      isSuccess: testSuccess,
-      error: testError,
-      data: testData,
-    },
-  ] = useTestairesponseMutation();
+  const sendCodeState = useSelector((state: any) => state.editor.sendCode);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
   };
@@ -54,27 +46,26 @@ const InterviewQuestionContextPage: React.FC = () => {
         setConversation({
           sender: "user",
           response: userCurrentApproach,
-          code: code,
+          code: sendCodeState ? code : "",
           language: language,
         })
       );
 
       socket.emit("startConversationResponseGeneration", {
         userCurrentApproach: userCurrentApproach,
-        userCode: code,
+        userCode: sendCodeState ? code : "",
         questionId: id,
         language: language,
         conversation: conversation,
         user: user,
       });
     } catch (error: any) {
-      console.log(testError);
+      console.log("testError");
     }
   }
 
   useEffect(() => {
     if (id) {
-      console.log("Called Emit");
       socket.emit("startQuestionContextGeneration", {
         questionId: id,
         user: user,

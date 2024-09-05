@@ -1,9 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppSelector } from "@/redux/store";
 import { Card, CardContent, CardDescription, CardFooter } from "./ui/card";
 import TextToSpeech from "./textToSpeech";
 import LoadingIndicator from "./aiLoadinfComponent";
-
+import CodeEditorLike from "./codeEditorLike";
 export default function Component() {
   const conversation = useAppSelector(
     (state: any) => state.conversation.message
@@ -14,8 +14,8 @@ export default function Component() {
   );
   const error = useAppSelector((state: any) => state.aiResponse.error);
   const currentYear = new Date().getFullYear();
-
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
 
   useEffect(() => {
     if (bottomRef.current) {
@@ -25,7 +25,6 @@ export default function Component() {
 
   return (
     <div className="flex flex-col w-full max-w-3xl h-screen bg-background text-foreground">
-     
       <div>
         {conversation?.map((message: any, index: number) => (
           <div
@@ -45,6 +44,11 @@ export default function Component() {
                 <p className={`whitespace-pre-wrap break-words`}>
                   {message.response}
                 </p>
+                {message?.sender === "user" && message.code !== "" && (
+                  <div className="my-3" >
+                    <CodeEditorLike code={message?.code} language={message.language} />
+                  </div>
+                )}
               </CardContent>
 
               {message?.sender === "ai" && (
