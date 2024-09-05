@@ -11,6 +11,7 @@ import { useGetInterviewHistoryMutation } from "@/redux/features/Interview/inter
 import { LoadingIcon } from "./ui/Icons/SelectMore";
 import { useParams, useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge as CustomBadge } from "./ui/Aceternity/expandable-card-standard";
 
 export const InterviewHistory = () => {
   const { pageNo } = useParams<{ pageNo?: string }>();
@@ -110,7 +111,7 @@ export const InterviewHistory = () => {
                       >
                         {interview.status}
                       </Badge>
-                      <span className="text-xs">{interview.difficulty}</span>
+                      <CustomBadge difficulty={interview.difficulty} />
                     </CardFooter>
                   </Card>
                 ))}

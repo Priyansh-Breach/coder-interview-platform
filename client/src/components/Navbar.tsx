@@ -1,7 +1,6 @@
 import { ProfileComponent } from "./ProfileComponent";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FeedbackForm } from "./Feedback";
 import { BrainCircuit } from "lucide-react";
 import { Badge } from "./ui/badge";
 
@@ -50,7 +49,7 @@ export const Navbar: React.FC = () => {
         <nav className="flex flex-row gap-4 text-lg font-medium items-center md:text-sm md:gap-5 lg:gap-6">
           <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
             <div className="flex space-x-4">
-              <FeedbackForm />
+            
               <ProfileComponent />
             </div>
           </div>

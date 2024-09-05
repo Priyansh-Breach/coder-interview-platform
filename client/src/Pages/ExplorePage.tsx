@@ -26,6 +26,7 @@ import GithubCardShiny from "@/components/ui/Animata/github-card-shiny";
 import { setInterviewTime } from "@/redux/features/Interview/editorSlice";
 import { useAppDispatch } from "@/redux/store";
 import { InterviewHistory } from "@/components/pastInterviews";
+import { FeedbackForm } from "@/components/Feedback";
 const placeholders = [
   "Easy",
   "Hard",
@@ -165,6 +166,7 @@ export default function ExplorePage() {
             <Badge variant="secondary">Beta access</Badge>
           </nav>
           <div className="ml-auto flex items-center space-x-4">
+            <FeedbackForm />
             <Button variant="ghost" size="icon">
               <Bell className="h-4 w-4" />
               <span className="sr-only">Notifications</span>
