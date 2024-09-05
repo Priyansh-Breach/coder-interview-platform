@@ -124,7 +124,7 @@ const MonacoEditor: React.FC = () => {
             checked={sendCodeState}
             onCheckedChange={handleToggle}
           />
-          <Label htmlFor="send-code-mode">Send code with chat</Label>
+          <Label htmlFor="send-code-mode">code editor is {sendCodeState ? "on" : "off"}</Label>
         </div>
       </div>
       <Editor
