@@ -12,6 +12,7 @@ const persistConfig: PersistConfig<any> = {
     "code",
     "language",
     "sendCode",
+    "interviewId",
   ],
 };
 

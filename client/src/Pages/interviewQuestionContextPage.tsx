@@ -32,7 +32,9 @@ const InterviewQuestionContextPage: React.FC = () => {
   const user = useSelector((state: any) => state.auth.user);
   const conversation = useSelector((state: any) => state.conversation.message);
   const sendCodeState = useSelector((state: any) => state.editor.sendCode);
-
+  const interviewId = useSelector(
+    (state: any) => state.conversation.interviewId
+  );
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
   };
@@ -48,6 +50,7 @@ const InterviewQuestionContextPage: React.FC = () => {
           response: userCurrentApproach,
           code: sendCodeState ? code : "",
           language: language,
+          interviewId: interviewId,
         })
       );
 

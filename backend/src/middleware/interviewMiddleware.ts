@@ -6,6 +6,9 @@ import { connectRedis } from "../Database/redisDb";
 import { InterviewModel } from "../entities/interview";
 import { IQuestion } from "../controllers/Socket.io/SocketinterviewController";
 import QuestionData from "../Database/Questions/leetcode-solutions.json";
+import { cactchAsyncError } from "./catchAsyncError";
+import { createInterview } from "../Utils/Interview MongoDB/interview.utils.mongodb";
+import ErrorHandler from "../Utils/Error Handler/errorHandler";
 
 dotenv.config();
 
@@ -20,6 +23,7 @@ declare global {
       questionId?: string;
       tokenRemainingTime?: any;
       interViewDuration?: any;
+      MongoInterviewId?: any;
     }
   }
 }
@@ -29,7 +33,7 @@ export const generateInterviewTokenMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { user } = req;
+  const { user, MongoInterviewId } = req;
   const { id } = req.params;
   const { time } = req.body;
 
@@ -89,7 +93,8 @@ export const generateInterviewTokenMiddleware = async (
     questionName: questionData?.title,
     questionId: id,
     difficulty: questionData?.difficulty,
-    slug:questionData?.slug
+    slug: questionData?.slug,
+    mongoDBInterviewId: MongoInterviewId,
   };
 
   await connectRedis.set(
@@ -155,7 +160,7 @@ export const validateInterviewTokenMiddleware = async (
 
       req.questionId = id;
       req.tokenRemainingTime = ttl;
-
+      req.MongoInterviewId= parsedTokenData?.mongoDBInterviewId;
       next();
     }
   );
@@ -197,3 +202,39 @@ export const deleteInterviewTokenMiddleware = async (
     });
   }
 };
+
+/**
+ * Create interview in MongoDB
+ */
+export const handleCreateInterviewMongo = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { user, interViewDuration } = req as any;
+      const { id } = req.params;
+
+      const questionData = (QuestionData as IQuestion[]).find(
+        (question) => question.id === id
+      );
+
+      if (!questionData) {
+        return res.status(404).json({ message: "Question not found." });
+      }
+      const newInterview: any = await createInterview(
+        user._id,
+        id,
+        interViewDuration,
+        questionData
+      );
+
+      (req as any).MongoInterviewId = newInterview._id;
+      next();
+    } catch (error: any) {
+      return next(
+        new ErrorHandler(
+          `Error in creating the interview in MongoDB ${error}`,
+          400
+        )
+      );
+    }
+  }
+);

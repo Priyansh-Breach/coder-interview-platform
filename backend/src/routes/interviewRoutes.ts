@@ -1,7 +1,6 @@
-import { Router } from "express";
+import { NextFunction, Router, Response, Request } from "express";
 import {
   getQuestionData,
-  handleCreateInterviewMongo,
   handleLeaveInterviewMongo,
   handleGetActiveInterview,
   handleGetInterviewHistory_Interviews,
@@ -11,6 +10,7 @@ import {
   deleteInterviewTokenMiddleware,
   generateInterviewTokenMiddleware,
   validateInterviewTokenMiddleware,
+  handleCreateInterviewMongo,
 } from "../middleware/interviewMiddleware";
 
 const router = Router();
@@ -18,8 +18,14 @@ const router = Router();
 router.post(
   "/start-Interview/:id",
   isUserAuthenticated,
+  handleCreateInterviewMongo,
   generateInterviewTokenMiddleware,
-  handleCreateInterviewMongo
+  (req: Request, res: Response, next: NextFunction) => {
+    return res.status(201).json({
+      message: "Interview Activated",
+      success: true,
+    });
+  }
 );
 
 router.post(

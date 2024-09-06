@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useAppSelector } from "@/redux/store";
 
 export function PlaceholdersAndVanishInput({
   placeholders,
@@ -17,7 +18,9 @@ export function PlaceholdersAndVanishInput({
   const [value, setValue] = useState("");
   const [animating, setAnimating] = useState(false);
   const [warning, setWarning] = useState("");
-
+  const streamLoading = useAppSelector(
+    (state: any) => state.aiResponse.loading
+  );
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -221,6 +224,7 @@ export function PlaceholdersAndVanishInput({
           onKeyDown={handleKeyDown}
           ref={inputRef}
           value={value}
+          disabled={streamLoading?.loading}
           type="text"
           className={cn(
             "w-full relative text-sm sm:text-base z-50 border-none dark:text-white bg-transparent text-black h-full rounded-full focus:outline-none focus:ring-0 pl-4 sm:pl-10 pr-20",

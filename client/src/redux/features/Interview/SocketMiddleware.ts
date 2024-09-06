@@ -9,8 +9,7 @@ import {
 } from "./socketResponseSlice";
 import { setConversation } from "./conversationSlice";
 
-let apnd = false;
-let close = false;
+
 export const socketMiddleware: Middleware = (storeAPI) => {
   socket.on("connect", () => {
     console.log("Connected to Socket.IO server:", socket.id);
@@ -31,7 +30,6 @@ export const socketMiddleware: Middleware = (storeAPI) => {
   });
 
   socket.on("responseStream", (chunk: string, loading: boolean) => {
-    console.log(chunk);
     let jsonObject = JSON.parse(chunk);
     storeAPI.dispatch(setLoading(loading));
     storeAPI.dispatch(appendResponse(jsonObject?.response));
@@ -43,6 +41,7 @@ export const socketMiddleware: Middleware = (storeAPI) => {
           code: storeAPI.getState().aiResponse.code,
           language: storeAPI.getState().aiResponse.language,
           userMessage: storeAPI.getState().aiResponse.userMessage,
+          interviewId: storeAPI.getState().conversation.interviewId
         })
       );
       storeAPI.dispatch(resetResponse());
@@ -52,23 +51,7 @@ export const socketMiddleware: Middleware = (storeAPI) => {
   socket.on("responseStreamConversation", (chunk: string, loading: boolean) => {
     let jsonObject = JSON.parse(chunk)?.response;
     storeAPI.dispatch(setLoading(loading));
-    console.log(chunk, "Handle Response Chunk");
-    console.log(jsonObject, "Json object");
-    console.log(apnd, "Append value");
     storeAPI.dispatch(appendResponse(jsonObject));
-    // if (jsonObject.includes("~") && apnd) {
-    //   apnd = false;
-    //   close = true;
-    // }
-
-    // if (apnd) {
-    //   storeAPI.dispatch(appendResponse(jsonObject));
-    // }
-
-    // if (jsonObject.includes("~") && !apnd && !close) {
-    //   apnd = true;
-    // }
-    // close = false;
     if (JSON.parse(chunk)?.done) {
       storeAPI.dispatch(
         setConversation({
@@ -77,6 +60,7 @@ export const socketMiddleware: Middleware = (storeAPI) => {
           code: storeAPI.getState().aiResponse.code,
           language: storeAPI.getState().aiResponse.language,
           userMessage: storeAPI.getState().aiResponse.userMessage,
+          interviewId: storeAPI.getState().conversation.interviewId,
         })
       );
       storeAPI.dispatch(resetResponse());

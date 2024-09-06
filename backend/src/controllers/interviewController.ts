@@ -51,7 +51,7 @@ export const getQuestionData = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params as unknown as IQuestionId;
-      const { tokenRemainingTime } = req;
+      const { tokenRemainingTime, MongoInterviewId } = req;
 
       const questionData = (QuestionData as IQuestion[]).find(
         (question) => question.id === id
@@ -65,41 +65,10 @@ export const getQuestionData = cactchAsyncError(
         success: true,
         data: questionData,
         timeLeftForInterview: tokenRemainingTime,
+        MongoInterviewId: MongoInterviewId,
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
-    }
-  }
-);
-
-/**
- * Create interview in MongoDB
- */
-export const handleCreateInterviewMongo = cactchAsyncError(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { userId, questionId, interViewDuration } = req as any;
-      const questionData = (QuestionData as IQuestion[]).find(
-        (question) => question.id === questionId
-      );
-
-      if (!questionData) {
-        return res.status(404).json({ message: "Question not found" });
-      }
-      await createInterview(
-        userId,
-        questionId,
-        interViewDuration,
-        questionData
-      );
-      res.status(200).json({
-        success: true,
-        message: "Interview Activated",
-      });
-    } catch (error: any) {
-      return next(
-        new ErrorHandler("Error in creating the interview in MongoDB : ", 400)
-      );
     }
   }
 );

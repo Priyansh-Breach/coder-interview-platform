@@ -7,7 +7,7 @@ import editorReducer from "./features/Interview/editorSlice";
 import { socketMiddleware } from "./features/Interview/SocketMiddleware";
 import aiResponseReducer from "./features/Interview/socketResponseSlice";
 import panelReducer from "./features/Interview/panelSlice";
-import conversationSlice from "./features/Interview/conversationSlice";
+import conversationReducer from "./features/Interview/conversationSlice";
 import { persistStore, persistReducer } from "redux-persist";
 import persistConfig from "./persistConfig";
 import { createLogger } from "redux-logger";
@@ -16,20 +16,25 @@ import { createLogger } from "redux-logger";
 const logger = createLogger({
   collapsed: true,
 });
-// Apply persistReducer to the panel reducer
+
+
 const persistedPanelReducer = persistReducer(persistConfig, panelReducer);
 const editorPersistedPanelReducer = persistReducer(
   persistConfig,
   editorReducer
 );
+const conversationPersistedReducer = persistReducer(
+  persistConfig,
+  conversationReducer
+);
 export const store = configureStore({
   reducer: {
     panel: persistedPanelReducer,
     editor: editorPersistedPanelReducer,
+    conversation: conversationPersistedReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
     auth: authReducer,
     aiResponse: aiResponseReducer,
-    conversation: conversationSlice,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) =>
@@ -43,7 +48,6 @@ export type RootState = ReturnType<typeof store.getState>;
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-// Configure and export the persistor
 export const persistor = persistStore(store);
 
 export const refreshTokenFunc = async () => {
@@ -58,7 +62,7 @@ export const refreshTokenFunc = async () => {
 
 export const initializeApp = async () => {
   try {
-    store.dispatch(setLoading(true)); // Set loading to true before making requests
+    store.dispatch(setLoading(true)); 
     await store.dispatch(
       apiSlice.endpoints.refreshToken.initiate({}, { forceRefetch: true })
     );
@@ -68,7 +72,7 @@ export const initializeApp = async () => {
   } catch (error) {
     console.error("Error refreshing:", error);
   } finally {
-    store.dispatch(setLoading(false)); // Set loading to false after requests are completed
+    store.dispatch(setLoading(false));
   }
 };
 

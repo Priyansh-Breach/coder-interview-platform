@@ -27,8 +27,6 @@ import {
   ChevronsDown,
   ChevronsRight,
   ChevronsUp,
-  CircleCheck,
-  Minimize2,
   SquareArrowOutUpRight,
 } from "lucide-react";
 import { LoadingIcon, TableOfContents } from "@/components/ui/Icons/SelectMore";
@@ -41,7 +39,6 @@ import {
   ModalFooter,
   ModalTrigger,
 } from "@/components/ui/Aceternity/animated-modal";
-import DuolingoButton from "@/components/ui/Animata/duolingo";
 import {
   Card,
   CardContent,
@@ -56,7 +53,8 @@ import {
 import { useAppSelector, useAppDispatch } from "@/redux/store";
 import TimerComponent from "@/components/NavbarCodeEditor";
 import SwipeButton from "@/components/ui/Animata/swipeButton";
-import { deleteLocalStorageKey } from "@/Functions/eleteLocalStorageKey";
+import { deleteLocalStorageKey } from "@/Functions/deleteLocalStorageKey";
+import { setInterviewId } from "@/redux/features/Interview/conversationSlice.tsx";
 
 const InterviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -70,7 +68,6 @@ const InterviewPage: React.FC = () => {
   const consolePanelState = useAppSelector(
     (state) => state.panel.consolePanelVisible
   );
-  const sendCodeState = useAppSelector((state: any) => state.editor.sendCode);
 
   const remainingTimeSecondsForInterview =
     useAppSelector((state: any) => state.editor.interviewTimeLeft) || 0;
@@ -96,6 +93,7 @@ const InterviewPage: React.FC = () => {
 
   useEffect(() => {
     if (question) {
+      dispatch(setInterviewId(question?.MongoInterviewId))
       dispatch(setQuestionData(question));
       dispatch(setInterviewTime(question?.timeLeftForInterview));
     }
