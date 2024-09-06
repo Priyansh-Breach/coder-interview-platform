@@ -6,7 +6,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 export interface IFeedback extends Document {
   userId?: string;
   feedbackText: string;
-  rating: number;
+  rating: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,7 +28,7 @@ const feedbackSchema: Schema<IFeedback> = new mongoose.Schema(
       minlength: [10, "Feedback must be at least 10 characters long."],
     },
     rating: {
-      type: Number,
+      type: String,
       required: [true, "Please provide a rating."],
       min: [1, "Rating must be at least 1."],
       max: [5, "Rating must be at most 5."],

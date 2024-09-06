@@ -313,7 +313,7 @@ export const getUserInformation = cactchAsyncError(
 interface IFeedbackinterface {
   userId?: string;
   feedbackText: string;
-  rating: number;
+  rating: string;
 }
 
 /**
