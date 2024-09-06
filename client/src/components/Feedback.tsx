@@ -108,7 +108,7 @@ export const FeedbackForm = () => {
             </div>
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="m-4 ml-16 border-none ring-1 transition ring-green-900 hover:ring-green-900/20 rounded-xl">
+        <DropdownMenuContent className="m-4 z-[200] ml-16 border-none ring-1 transition ring-green-900 hover:ring-green-900/20 rounded-xl">
           <Card className="w-sm max-w-md p-6 grid gap-6 border-none  ">
             <div className="grid gap-2">
               <CardTitle className="text-xl font-semibold">Feedback</CardTitle>
