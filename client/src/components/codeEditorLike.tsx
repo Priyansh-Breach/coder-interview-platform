@@ -28,7 +28,7 @@ const CodeEditorLike = ({ code, language }: any) => {
         customStyle={{
           padding: "1rem",
           fontSize: "0.875rem",
-          borderRadius: "0.375rem",
+          borderRadius: " 0 0 0.375rem 0.375rem",
           backgroundColor: `${theme === "light" ? "#fff" : "#1e1e1e"} `,
           height: "auto",
           width: "auto",

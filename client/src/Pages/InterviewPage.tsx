@@ -16,6 +16,7 @@ import {
 import {
   setInterviewTime,
   setQuestionData,
+  updateSendCode,
 } from "@/redux/features/Interview/editorSlice";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SolutionScreen } from "@/components/solutionScreen";
@@ -55,6 +56,7 @@ import {
 import { useAppSelector, useAppDispatch } from "@/redux/store";
 import TimerComponent from "@/components/NavbarCodeEditor";
 import SwipeButton from "@/components/ui/Animata/swipeButton";
+import { deleteLocalStorageKey } from "@/Functions/eleteLocalStorageKey";
 
 const InterviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -68,6 +70,8 @@ const InterviewPage: React.FC = () => {
   const consolePanelState = useAppSelector(
     (state) => state.panel.consolePanelVisible
   );
+  const sendCodeState = useAppSelector((state: any) => state.editor.sendCode);
+
   const remainingTimeSecondsForInterview =
     useAppSelector((state: any) => state.editor.interviewTimeLeft) || 0;
   const visiblePanels = [questionPanelState, chatPanelState].filter(
@@ -84,6 +88,7 @@ const InterviewPage: React.FC = () => {
   const [leaveInterview, {}] = useLeaveInterviewMutation();
 
   const handleLeaveInterview = async () => {
+    deleteLocalStorageKey("persist:panel");
     await leaveInterview({
       questionId: id,
     });
@@ -231,6 +236,7 @@ const InterviewPage: React.FC = () => {
               <button
                 onClick={() => {
                   dispatch(setConsolePanel(false));
+                  dispatch(updateSendCode(false));
                 }}
                 className="absolute top-4 right-5 z-10 p-2 rounded"
               >
@@ -269,16 +275,20 @@ const InterviewPage: React.FC = () => {
                         <CardHeader>
                           <div>
                             <h3>
-                              Are you sure you want to leave this interview?
+                              Are you sure you want to complete or leave this
+                              interview?
                             </h3>
                           </div>
                         </CardHeader>
                         <CardContent>
                           <CardDescription>
                             <p>
-                              After leaving, you will lose all your progress,
-                              and this interview cannot be continued in the
-                              future. You will have to create a new one.
+                              If you mark the interview as complete, we'll
+                              assess it and start the rating process. If you
+                              choose to leave, all your progress will be lost,
+                              and no rating or review will be provided. This
+                              interview cannot be resumed, and you'll need to
+                              start a new one.
                             </p>
                           </CardDescription>
                         </CardContent>
@@ -297,8 +307,20 @@ const InterviewPage: React.FC = () => {
                           href="/explore"
                           firstText="Leave"
                           secondText="Leave"
-                          firstClass=" font-light bg-orange-600"
-                          secondClass="font-light bg-orange-600"
+                          firstClass=" font-light bg-orange-600 text-white "
+                          secondClass="font-light bg-orange-600 text-white"
+                        />
+                      </button>
+                      <button
+                        onClick={() => {}}
+                        className="text-sm  rounded-md"
+                      >
+                        <SwipeButton
+                          href="#"
+                          firstText="Complete"
+                          secondText="Complete"
+                          firstClass=" font-light bg-green-500 text-white"
+                          secondClass="font-light bg-green-500 text-white"
                         />
                       </button>
                     </ModalFooter>
