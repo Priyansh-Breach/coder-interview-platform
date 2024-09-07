@@ -53,7 +53,7 @@ import {
 import { useAppSelector, useAppDispatch } from "@/redux/store";
 import TimerComponent from "@/components/NavbarCodeEditor";
 import SwipeButton from "@/components/ui/Animata/swipeButton";
-import { deleteLocalStorageKey } from "@/Functions/deleteLocalStorageKey";
+import { deleteLocalStorageKey } from "@/lib/Utils/deleteLocalStorageKey";
 import { setInterviewId } from "@/redux/features/Interview/conversationSlice.tsx";
 
 const InterviewPage: React.FC = () => {
@@ -91,9 +91,13 @@ const InterviewPage: React.FC = () => {
     });
   };
 
+  const handleCompleteInterview = async () => {
+    //complete interview api
+  };
+
   useEffect(() => {
     if (question) {
-      dispatch(setInterviewId(question?.MongoInterviewId))
+      dispatch(setInterviewId(question?.MongoInterviewId));
       dispatch(setQuestionData(question));
       dispatch(setInterviewTime(question?.timeLeftForInterview));
     }
@@ -310,11 +314,11 @@ const InterviewPage: React.FC = () => {
                         />
                       </button>
                       <button
-                        onClick={() => {}}
+                        onClick={handleCompleteInterview}
                         className="text-sm  rounded-md"
                       >
                         <SwipeButton
-                          href="#"
+                          href={`/interview-feedback/${question?.MongoInterviewId}`}
                           firstText="Complete"
                           secondText="Complete"
                           firstClass=" font-light bg-green-500 text-white"

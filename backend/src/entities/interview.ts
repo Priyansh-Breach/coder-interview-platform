@@ -26,7 +26,7 @@ const interviewSchema: Schema = new Schema<IInterview>(
       default: "active",
     },
     questionName: { type: String, required: true },
-    difficulty: { type: String, required: true },
+    difficulty: { type: String },
     slug: { type: String, required: true },
     startTime: { type: Date, default: Date.now },
     timeLeft: { type: Number },

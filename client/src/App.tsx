@@ -7,13 +7,13 @@ import {
   SignupPage,
   NotFound404Page,
   ExplorePage,
+  ReviewPage,
 } from "./Routes";
 import PrivateRoute from "./components/PrivateRoute";
-import { initializeAppAsync, refreshTokenFunc  } from "@/redux/store";
+import { initializeAppAsync, refreshTokenFunc } from "@/redux/store";
 import { useEffect } from "react";
 
 function App() {
-
   useEffect(() => {
     const initializeApp = async () => {
       try {
@@ -32,8 +32,6 @@ function App() {
 
     return () => clearInterval(refreshToken);
   }, []);
-
-
 
   return (
     <>
@@ -57,7 +55,18 @@ function App() {
                 </PrivateRoute>
               }
             />
-
+            <Route
+              path="/interview-feedback/:id"
+              element={
+                <PrivateRoute
+                  route={"/login"}
+                  allowedRoles={["user", "admin"]}
+                  path={"/interview-feedback/:id"}
+                >
+                  <ReviewPage/>
+                </PrivateRoute>
+              }
+            />
             <Route path="*" element={<NotFound404Page />} />
           </Routes>
         </ErrorBoundary>

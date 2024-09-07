@@ -74,3 +74,33 @@
   background-color:#2baa40; /* Change this color to your desired highlight color */
   color: #fff; /* Change this color to the text color you prefer */
 }
+
+/* Custom Scrollbar styles for light mode (default hidden) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 0px; /* Hide scrollbar by default */
+}
+
+/* Scrollbar styles for dark mode */
+.dark .custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Show scrollbar in dark mode */
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #1a1a1a; /* Dark gray/black background for track */
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #666666; /* Lighter gray thumb */
+  border-radius: 10px;
+  border: 2px solid #fff; /* White border for contrast */
+}
+
+/* Firefox fallback */
+.custom-scrollbar {
+  scrollbar-width: 5px; /* Hide scrollbar in light mode for Firefox */
+}
+
+.dark .custom-scrollbar {
+  scrollbar-width: thin; /* Show thin scrollbar in dark mode */
+  scrollbar-color: #666666 #1a1a1a; /* Gray thumb, dark background */
+}
