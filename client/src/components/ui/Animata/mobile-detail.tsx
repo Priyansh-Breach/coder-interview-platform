@@ -9,7 +9,7 @@ interface ProgressBarData {
 
 const progressBarsData: ProgressBarData[] = [
   {
-    label: "Battery",
+    label: "Technical Skills",
     value: 25,
     max: 100,
     icon: (
@@ -20,25 +20,36 @@ const progressBarsData: ProgressBarData[] = [
     ),
   },
   {
-    label: "Volume",
+    label: "Communication",
     value: 50,
     max: 100,
     icon: (
-      <Volume1 size={10} className="text-zinc-400 transition-colors group-hover:text-zinc-300" />
+      <Volume1
+        size={10}
+        className="text-zinc-400 transition-colors group-hover:text-zinc-300"
+      />
     ),
   },
   {
-    label: "Ram",
+    label: "Problem Solving",
     value: 75,
     max: 100,
-    icon: <Cpu size={10} className="text-zinc-400 transition-colors group-hover:text-zinc-300" />,
+    icon: (
+      <Cpu
+        size={10}
+        className="text-zinc-400 transition-colors group-hover:text-zinc-300"
+      />
+    ),
   },
   {
-    label: "Storage",
+    label: "Efficiancy",
     value: 90,
     max: 100,
     icon: (
-      <Database size={10} className="text-zinc-400 transition-colors group-hover:text-zinc-300" />
+      <Database
+        size={10}
+        className="text-zinc-400 transition-colors group-hover:text-zinc-300"
+      />
     ),
   },
 ];
@@ -54,10 +65,13 @@ export default function MobileDetail() {
             key={`item-${bar.label}`}
             className="group relative flex flex-col-reverse overflow-hidden border rounded-2xl dark:bg-zinc-800 bg-zinc-300"
           >
-            <div className="w-full dark:bg-stone-700 bg-stone-400" style={{ height: `${percentage}%` }} />
+            <div
+              className="w-full dark:bg-stone-700 bg-stone-400"
+              style={{ height: `${percentage}%` }}
+            />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              {bar.icon && <div className="absolute left-2 top-2">{bar.icon}</div>}
-              <p className="text-xs font-bold  dark:text-zinc-400 transition-colors dark:group-hover:text-zinc-300">
+              
+              <p className="text-[10px] m-2 mb-0 font-bold  dark:text-zinc-400 transition-colors dark:group-hover:text-zinc-300">
                 {bar.label}
               </p>
               <p className="text-[10px] font-bold dark:text-zinc-400 transition-colors dark:group-hover:text-zinc-300">
