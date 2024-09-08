@@ -45,7 +45,24 @@ export const generateInterviewTokenMiddleware = async (
       .json({ message: "User or question ID not provided" });
   }
 
-  // Retrieve question data based on ID
+  const reviewTokenKeyPattern = `${user._id}ReviewAndFeedbackToken*`;
+
+  try {
+    const reviewKeys = await connectRedis.keys(reviewTokenKeyPattern);
+
+    if (reviewKeys.length >= 2) {
+      return res.status(403).json({
+        message:
+          "You already have two active interview review sessions. Please wait until those are completed before starting a new interview.",
+      });
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: "Error while checking active review sessions.",
+      error: error.message,
+    });
+  }
+
   const questionData = (QuestionData as IQuestion[]).find(
     (question) => question.id === id
   );
@@ -160,7 +177,7 @@ export const validateInterviewTokenMiddleware = async (
 
       req.questionId = id;
       req.tokenRemainingTime = ttl;
-      req.MongoInterviewId= parsedTokenData?.mongoDBInterviewId;
+      req.MongoInterviewId = parsedTokenData?.mongoDBInterviewId;
       next();
     }
   );
@@ -238,3 +255,100 @@ export const handleCreateInterviewMongo = cactchAsyncError(
     }
   }
 );
+
+/**
+ * Create feedback token in redis
+ */
+export const generateReviewTokenMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user } = req;
+  const { interviewId } = req.body;
+
+  if (!user || !user._id || !interviewId) {
+    return res
+      .status(400)
+      .json({ message: "User ID or Interview ID not provided" });
+  }
+
+  const redisKey = `${user._id}ReviewAndFeedbackToken${interviewId}`;
+
+  const reviewToken = jwt.sign(
+    { userId: user._id, interviewId },
+    INTERVIEW_JWT_SECRET
+  );
+
+  const tokenData = {
+    token: reviewToken,
+    userId: user._id,
+    interviewId,
+  };
+
+  await connectRedis.set(redisKey, JSON.stringify(tokenData));
+
+  req.userId = user._id;
+
+  res.status(200);
+  next();
+};
+
+/**
+ * It checks if the user have more than two interview review session going on
+ */
+export const validateReviewTokenMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user } = req;
+  const { interviewId } = req.body;
+
+  if (!user || !user._id || !interviewId) {
+    return res
+      .status(400)
+      .json({ message: "User ID or Interview ID not provided" });
+  }
+
+  const redisKeyPattern = `${user._id}ReviewAndFeedbackToken*`;
+
+  try {
+    const keys = await connectRedis.keys(redisKeyPattern);
+
+    if (keys.length >= 2) {
+      return res.status(403).json({
+        message:
+          "You have two feedback processes in the pipeline. Wait until those feedback processes complete.",
+      });
+    }
+
+    for (const key of keys) {
+      const tokenData: any = await connectRedis.get(key);
+      const parsedTokenData: any = JSON.parse(tokenData);
+
+      try {
+        const decoded = jwt.verify(
+          parsedTokenData?.token,
+          INTERVIEW_JWT_SECRET
+        ) as jwt.JwtPayload;
+
+        if (decoded && decoded.interviewId === interviewId) {
+          return res.status(403).json({
+            message:
+              "You already have an active review session for this interview.",
+          });
+        }
+      } catch (err) {
+        await connectRedis.del(key);
+      }
+    }
+
+    next();
+  } catch (error: any) {
+    return res.status(500).json({
+      message: "Error while validating review tokens.",
+      error: error.message,
+    });
+  }
+};

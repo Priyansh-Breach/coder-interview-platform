@@ -14,6 +14,7 @@ interface IInterview extends Document {
   feedback?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  completedAt?: Date;
 }
 
 const interviewSchema: Schema = new Schema<IInterview>(
@@ -29,6 +30,7 @@ const interviewSchema: Schema = new Schema<IInterview>(
     difficulty: { type: String },
     slug: { type: String, required: true },
     startTime: { type: Date, default: Date.now },
+    completedAt: { type: Date },
     timeLeft: { type: Number },
     duration: { type: Number },
     totalScore: { type: Number, default: 0 },

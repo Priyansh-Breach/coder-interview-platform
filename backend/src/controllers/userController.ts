@@ -324,8 +324,8 @@ export const giveFeedback = cactchAsyncError(
     try {
       const { feedbackText, rating, userId } = req.body as IFeedbackinterface;
 
-      if (!feedbackText || !rating) {
-        return next(new ErrorHandler("Fill all the fields.", 400));
+      if (!rating) {
+        return next(new ErrorHandler("Please give rating.", 400));
       }
 
       const feedback = await FeedbackModel.create({

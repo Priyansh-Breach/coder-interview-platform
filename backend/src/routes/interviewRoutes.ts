@@ -4,6 +4,7 @@ import {
   handleLeaveInterviewMongo,
   handleGetActiveInterview,
   handleGetInterviewHistory_Interviews,
+  handleCompleteInterviewMongo,
 } from "../controllers/interviewController";
 import { isUserAuthenticated } from "../middleware/authMiddleware";
 import {
@@ -11,6 +12,8 @@ import {
   generateInterviewTokenMiddleware,
   validateInterviewTokenMiddleware,
   handleCreateInterviewMongo,
+  generateReviewTokenMiddleware,
+  validateReviewTokenMiddleware,
 } from "../middleware/interviewMiddleware";
 
 const router = Router();
@@ -54,6 +57,24 @@ router.post(
   isUserAuthenticated,
   handleGetInterviewHistory_Interviews
 );
+
+router.post(
+  "/complete-interview/:id",
+  isUserAuthenticated,
+  validateInterviewTokenMiddleware,
+  validateReviewTokenMiddleware,
+  handleCompleteInterviewMongo,
+  generateReviewTokenMiddleware,
+  deleteInterviewTokenMiddleware,
+  (req: Request, res: Response, next: NextFunction) => {
+    return res.status(201).json({
+      message: "Interview feedback process started.",
+      success: true,
+    });
+  }
+);
+
+
 
 {
   /**These route are Socket Routes now and are in Interview Socket Routes file */

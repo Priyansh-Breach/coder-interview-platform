@@ -33,8 +33,7 @@ const emojis = [
 
 const feedbackSchema = z.object({
   feedbackText: z
-    .string()
-    .min(10, "Feedback must be at least 10 characters long."),
+    .string(),
   rating: z.string(),
   userId: z.string().optional(),
 });
@@ -51,7 +50,7 @@ export const FeedbackForm = () => {
     resolver: zodResolver(feedbackSchema),
     defaultValues: {
       feedbackText: "",
-      rating: "",
+      rating: "Neutral",
       userId: "",
     },
   });
@@ -76,7 +75,7 @@ export const FeedbackForm = () => {
     const feedbackText: string = values.feedbackText;
     const userId: any = user && user?._id;
     const rating: string = values.rating;
-    console.log(values);
+   
     await feedback({ feedbackText, rating, userId });
 
     // Start cooldown and save timestamp

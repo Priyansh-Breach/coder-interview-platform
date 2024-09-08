@@ -21,6 +21,32 @@ export async function createInterview(
   return newInterview;
 }
 
+export async function completeInterviewMongo(userId: any, interviewId: any) {
+  try {
+    const update = {
+      status: "completed",
+      completedAt: new Date(),
+    };
+
+    const result = await InterviewModel.findOneAndUpdate(
+      {
+        userId: userId,
+        _id: interviewId,
+        status: "active",
+      },
+      update,
+      { new: true }
+    );
+
+    return result;
+  } catch (error: any) {
+    console.error(
+      "Error in marking the interview as complete in MongoDB: ",
+      error
+    );
+  }
+}
+
 export async function leaveInterviewMongo(
   userId: any,
   questionId: any,

@@ -10,6 +10,7 @@ import { MetaData } from "@/lib/MetaData/metaData";
 import MonacoEditor from "@/components/CodeEditor";
 import { useParams } from "react-router-dom";
 import {
+  useCompleteInterviewMutation,
   useGetQuestionQuery,
   useLeaveInterviewMutation,
 } from "@/redux/features/Interview/interview";
@@ -55,10 +56,12 @@ import TimerComponent from "@/components/NavbarCodeEditor";
 import SwipeButton from "@/components/ui/Animata/swipeButton";
 import { deleteLocalStorageKey } from "@/lib/Utils/deleteLocalStorageKey";
 import { setInterviewId } from "@/redux/features/Interview/conversationSlice.tsx";
+import { useNavigate } from "react-router-dom";
 
 const InterviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const chatPanelState = useAppSelector(
     (state) => state.panel.chatPanelVisible
   );
@@ -82,7 +85,17 @@ const InterviewPage: React.FC = () => {
   } = useGetQuestionQuery(id!, {
     skip: !id,
   });
-  const [leaveInterview, {}] = useLeaveInterviewMutation();
+  const [
+    leaveInterview,
+    { isLoading: leaveInterviewLoading, isSuccess: leaveInterviewIsSuccess },
+  ] = useLeaveInterviewMutation();
+  const [
+    completeInterview,
+    {
+      isLoading: completeInterviewLoading,
+      isSuccess: completeInterviewIsSuccess,
+    },
+  ] = useCompleteInterviewMutation();
 
   const handleLeaveInterview = async () => {
     deleteLocalStorageKey("persist:panel");
@@ -93,6 +106,10 @@ const InterviewPage: React.FC = () => {
 
   const handleCompleteInterview = async () => {
     //complete interview api
+    await completeInterview({
+      id: id,
+      interviewId: question?.MongoInterviewId,
+    });
   };
 
   useEffect(() => {
@@ -102,6 +119,15 @@ const InterviewPage: React.FC = () => {
       dispatch(setInterviewTime(question?.timeLeftForInterview));
     }
   }, [question]);
+
+  useEffect(() => {
+    if (leaveInterviewIsSuccess) {
+      navigate("/explore");
+    }
+    if (completeInterviewIsSuccess) {
+      navigate(`/interview-feedback/${question?.MongoInterviewId}`);
+    }
+  }, [leaveInterviewIsSuccess, completeInterviewIsSuccess]);
 
   if (!id) {
     return <div>Invalid question ID</div>;
@@ -298,17 +324,18 @@ const InterviewPage: React.FC = () => {
                     </ModalContent>
 
                     <ModalFooter className="gap-4">
-                      <button className="px-2 py-1 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm w-28">
-                        Cancel
-                      </button>
                       <button
                         onClick={handleLeaveInterview}
                         className="text-sm  rounded-md"
                       >
                         <SwipeButton
-                          href="/explore"
-                          firstText="Leave"
-                          secondText="Leave"
+                          // href="/explore"
+                          firstText={`${
+                            !leaveInterviewLoading ? "Leave" : "Loading.."
+                          }`}
+                          secondText={`${
+                            !leaveInterviewLoading ? "Leave" : "Loading.."
+                          }`}
                           firstClass=" font-light bg-orange-600 text-white "
                           secondClass="font-light bg-orange-600 text-white"
                         />
@@ -318,11 +345,14 @@ const InterviewPage: React.FC = () => {
                         className="text-sm  rounded-md"
                       >
                         <SwipeButton
-                          href={`/interview-feedback/${question?.MongoInterviewId}`}
-                          firstText="Complete"
-                          secondText="Complete"
-                          firstClass=" font-light bg-green-500 text-white"
-                          secondClass="font-light bg-green-500 text-white"
+                          firstText={`${
+                            !completeInterviewLoading ? "Complete" : "Loading.."
+                          }`}
+                          secondText={`${
+                            !completeInterviewLoading ? "Complete" : "Loading.."
+                          }`}
+                          firstClass=" font-light bg-green-600 text-white "
+                          secondClass="font-light bg-green-600 text-white"
                         />
                       </button>
                     </ModalFooter>

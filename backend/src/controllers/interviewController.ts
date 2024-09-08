@@ -14,6 +14,7 @@ import { IQuestion } from "./Socket.io/SocketinterviewController";
 import { InterviewModel } from "../entities/interview";
 import { IUser } from "../entities/User";
 import {
+  completeInterviewMongo,
   createInterview,
   getUserInterviews,
   leaveInterviewMongo,
@@ -35,6 +36,7 @@ declare global {
       questionId?: string;
       interViewDuration?: any;
       tokenRemainingTime?: any;
+      MongoInterviewId?: any;
     }
   }
 }
@@ -88,6 +90,40 @@ export const handleLeaveInterviewMongo = cactchAsyncError(
     } catch (error: any) {
       return next(
         new ErrorHandler("Error in canceling the interview in MongoDB : ", 400)
+      );
+    }
+  }
+);
+
+/**
+ * Mark Interveiw status as complete in MongoDB
+ */
+export const handleCompleteInterviewMongo = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { user } = req as any;
+      const { interviewId } = req.body as any;
+
+      const completeInterview = await completeInterviewMongo(
+        user?._id,
+        interviewId
+      );
+
+      if (completeInterview) {
+        return next();
+      }
+
+      return res.status(400).json({
+        message: "Failed to complete interview",
+        error: completeInterview,
+        success: false,
+      });
+    } catch (error: any) {
+      return next(
+        new ErrorHandler(
+          "Error in completing the interview in MongoDB: " + error.message,
+          400
+        )
       );
     }
   }
