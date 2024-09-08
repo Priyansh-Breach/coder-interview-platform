@@ -22,7 +22,7 @@ export const CardStack = ({
   const [cards, setCards] = useState<Card[]>(items);
   const navigate = useNavigate();
   return (
-    <div className="relative flex overflow-hidden grid grid-cols-2 gap-2 pb-6 px-2">
+    <div className="relative flex overflow-hidden grid grid-cols-2 gap-2 pb-6 dark:px-0 px-2">
       {cards.map((card: any, index: any) => {
         return (
           <motion.div

@@ -344,13 +344,7 @@ export default function ExplorePage() {
                     />
                   </>
                 )}
-                {getActiveInterviewIsError && (
-                  <>
-                    <p className="text-neutral-700 border p-4  rounded-md m-4 mx-0 dark:text-neutral-300 text-sm md:text-base max-w-sm">
-                      {getActiveInterviewError?.data?.message}
-                    </p>
-                  </>
-                )}
+                
               </>
             )}
 

@@ -104,7 +104,7 @@ const Dashboard = () => {
       <div className="p-2 md:pt-3 md:p-10  bg-background flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex gap-4">
           <Sidebar open={open} setOpen={setOpen}>
-            <SidebarBody className="justify-between h-full rounded-md  gap-10 border ">
+            <SidebarBody className="justify-between h-full rounded-2xl  gap-10 border ">
               <div>
                 <div className="mt-8 flex flex-col gap-2">
                   {links.map((link, idx) => (
@@ -123,7 +123,7 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
-            <div className="container  h-screen mt-4 bg-muted rounded-md p-4">
+            <div className="container  h-screen mt-4 bg-muted rounded-2xl p-4">
               Chat with reviews and feedback
             </div>
           </div>
