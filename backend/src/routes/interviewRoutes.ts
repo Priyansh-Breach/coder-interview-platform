@@ -2,9 +2,9 @@ import { NextFunction, Router, Response, Request } from "express";
 import {
   getQuestionData,
   handleLeaveInterviewMongo,
-  handleGetActiveInterview,
   handleGetInterviewHistory_Interviews,
   handleCompleteInterviewMongo,
+  handleGetActiveSessions,
 } from "../controllers/interviewController";
 import { isUserAuthenticated } from "../middleware/authMiddleware";
 import {
@@ -46,11 +46,7 @@ router.get(
   getQuestionData
 );
 
-router.get(
-  "/getActiveInterview",
-  isUserAuthenticated,
-  handleGetActiveInterview
-);
+router.get("/getActiveSessions", isUserAuthenticated, handleGetActiveSessions);
 
 router.post(
   "/getInterviewHistory",
@@ -73,8 +69,6 @@ router.post(
     });
   }
 );
-
-
 
 {
   /**These route are Socket Routes now and are in Interview Socket Routes file */

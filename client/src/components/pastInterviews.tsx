@@ -40,7 +40,7 @@ export const InterviewHistory = () => {
     setPage(1);
     // navigate(`/interviews/1`);
   };
-  console.log(error);
+
   return (
     <div className="py-8">
       {isLoading && (

@@ -29,7 +29,7 @@ export const interviewApi = apiSlice.injectEndpoints({
     }),
     getActiveInterview: builder.query({
       query: () => ({
-        url: `interview/getActiveInterview`,
+        url: `interview/getActiveSessions`,
         method: "GET",
         credentials: "include" as const,
       }),

@@ -106,7 +106,8 @@ export const handleCompleteInterviewMongo = cactchAsyncError(
 
       const completeInterview = await completeInterviewMongo(
         user?._id,
-        interviewId
+        interviewId,
+        "Generating Feedback"
       );
 
       if (completeInterview) {
@@ -130,81 +131,8 @@ export const handleCompleteInterviewMongo = cactchAsyncError(
 );
 
 /**
- * Get Active Interview Session
+ * Gives the Past Interviews made by user
  */
-export const handleGetActiveInterview = cactchAsyncError(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { user } = req;
-
-      if (!user || !user._id) {
-        return res.status(400).json({ message: "User not provided" });
-      }
-
-      const keys = await connectRedis.keys(`${user._id}InterviewToken*`);
-
-      if (!keys || keys.length === 0) {
-        return res.status(404).json({
-          message: "No active interview session!",
-        });
-      }
-
-      let activeInterviews: any[] = [];
-
-      for (const key of keys) {
-        const tokenData: any = await connectRedis.get(key);
-
-        if (tokenData) {
-          const parsedTokenData = JSON.parse(tokenData);
-
-          const ttl: any = await new Promise<number>((resolve, reject) => {
-            connectRedis.ttl(key, (err: any, ttl: any) => {
-              if (err) {
-                return reject(err);
-              }
-              resolve(ttl);
-            });
-          });
-
-          if (ttl > 0) {
-            try {
-              const decoded: any = jwt.verify(
-                parsedTokenData?.token,
-                INTERVIEW_JWT_SECRET
-              );
-
-              const { token, ...interviewWithoutToken } = parsedTokenData;
-
-              activeInterviews.push({
-                interview: interviewWithoutToken,
-                ttl,
-                questionId: decoded?.id,
-              });
-            } catch (err) {
-              continue;
-            }
-          }
-        }
-      }
-
-      if (activeInterviews.length < 1) {
-        return res.status(404).json({
-          message: "No active interview sessions found.",
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-        activeInterviews,
-      });
-    } catch (error: any) {
-      return next(
-        new ErrorHandler("Error fetching active interview sessions", 500)
-      );
-    }
-  }
-);
-
 export const handleGetInterviewHistory_Interviews = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -224,6 +152,83 @@ export const handleGetInterviewHistory_Interviews = cactchAsyncError(
       return next(
         new ErrorHandler("Error fetching your past interviews.", 500)
       );
+    }
+  }
+);
+
+/**
+ * Gives the active feedback review sessions
+ */
+export const handleGetActiveSessions = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { user } = req;
+
+      if (!user || !user._id) {
+        return res.status(400).json({ message: "User not provided" });
+      }
+
+      const interviewKeys = await connectRedis.keys(
+        `${user._id}InterviewToken*`
+      );
+      const reviewKeys = await connectRedis.keys(
+        `${user._id}ReviewAndFeedbackToken*`
+      );
+
+      const fetchSessions = async (keys: string[], type: string) => {
+        let sessions: any[] = [];
+
+        for (const key of keys) {
+          const tokenData: any = await connectRedis.get(key);
+
+          if (tokenData) {
+            const parsedTokenData = JSON.parse(tokenData);
+
+            try {
+              const decoded: any = jwt.verify(
+                parsedTokenData?.token,
+                INTERVIEW_JWT_SECRET
+              );
+
+              const { token, ...sessionWithoutToken } = parsedTokenData;
+
+              sessions.push({
+                session: sessionWithoutToken,
+                ...(type === "interview" ? { ttl: await getTTL(key) } : {}),
+                id: decoded?.id || decoded?.interviewId,
+              });
+            } catch (err) {
+              continue;
+            }
+          }
+        }
+
+        return sessions;
+      };
+
+      const getTTL = async (key: string): Promise<number> => {
+        return new Promise<number>((resolve, reject) => {
+          connectRedis.ttl(key, (err: any, ttl: any) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve(ttl);
+          });
+        });
+      };
+
+      const [activeInterviews, activeReviewSessions] = await Promise.all([
+        fetchSessions(interviewKeys, "interview"),
+        fetchSessions(reviewKeys, "review"),
+      ]);
+
+      res.status(200).json({
+        success: true,
+        activeInterviews,
+        activeReviewSessions,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler("Error fetching active sessions", 500));
     }
   }
 );

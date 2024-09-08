@@ -27,6 +27,45 @@ import { setInterviewTime } from "@/redux/features/Interview/editorSlice";
 import { useAppDispatch } from "@/redux/store";
 import { InterviewHistory } from "@/components/pastInterviews";
 import { FeedbackForm } from "@/components/Feedback";
+import { CardStack } from "@/components/ui/Aceternity/card-stack";
+
+const CARDS = [
+  {
+    id: 0,
+    name: "Manu Arora",
+    designation: "Senior Software Engineer",
+    content: (
+      <p>
+        These cards are amazing, I want to use them in my project. Framer motion
+        is a godsend ngl tbh fam 🙏
+      </p>
+    ),
+  },
+  {
+    id: 1,
+    name: "Elon Musk",
+    designation: "Senior Shitposter",
+    content: (
+      <p>
+        I dont like this Twitter thing, deleting it right away because yolo.
+        Instead, I would like to call it .com so that it can easily be confused
+        with adult sites.
+      </p>
+    ),
+  },
+  {
+    id: 2,
+    name: "Tyler Durden",
+    designation: "Manager Project Mayhem",
+    content: (
+      <p>
+        The first rule of Fight Club is that you do not talk about fight club.
+        The second rule of Fight club is that you DO NOT TALK about fight club.
+      </p>
+    ),
+  },
+];
+
 const placeholders = [
   "Easy",
   "Hard",
@@ -63,6 +102,13 @@ export default function ExplorePage() {
     error: getActiveInterviewError,
     isError: getActiveInterviewIsError,
   } = useGetActiveInterviewQuery({});
+
+  // const {
+  //   data: getActiveInterviewFeedbackSessionData,
+  //   isLoading: getActiveInterviewFeedbackSessionLoading,
+  //   error: getActiveInterviewFeedbackSessionError,
+  //   isError: getActiveInterviewFeedbackSessionisError,
+  // } = useGetActiveInterviewFeedbackSessionQuery({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(e.target.value);
@@ -140,8 +186,6 @@ export default function ExplorePage() {
   };
 
   useEffect(() => {
-    console.log("called");
-
     dispatch(
       setInterviewTime(getActiveInterviewData?.activeInterviews[0]?.ttl)
     );
@@ -290,6 +334,16 @@ export default function ExplorePage() {
                     )}
                   </>
                 )}
+                {getActiveInterviewData?.activeReviewSessions?.length > 0 && (
+                  <>
+                    <p className="text-neutral-700 m-4 mx-0 dark:text-neutral-300 text-sm md:text-base max-w-sm">
+                      Interview Feedback in Progress
+                    </p>
+                    <CardStack
+                      items={getActiveInterviewData?.activeReviewSessions}
+                    />
+                  </>
+                )}
                 {getActiveInterviewIsError && (
                   <>
                     <p className="text-neutral-700 border p-4  rounded-md m-4 mx-0 dark:text-neutral-300 text-sm md:text-base max-w-sm">
@@ -299,6 +353,7 @@ export default function ExplorePage() {
                 )}
               </>
             )}
+
             <div>
               <InterviewHistory />
             </div>

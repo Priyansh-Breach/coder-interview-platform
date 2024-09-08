@@ -113,6 +113,7 @@ export default function GithubCardShiny({
       stopTimer();
     };
   }, []);
+  
   return (
     <>
       <div
@@ -121,7 +122,7 @@ export default function GithubCardShiny({
           "group  relative w-96 cursor-pointer min-w-fit max-w-full overflow-hidden rounded-md border border-border bg-zinc-700 p-6 text-zinc-200 shadow-lg",
           className
         )}
-        onClick={() => navigate(`/interview/${data?.interview?.questionId}`)}
+        onClick={() => navigate(`/interview/${data?.session?.questionId}`)}
       >
         <div
           ref={overlayRef}
@@ -133,8 +134,8 @@ export default function GithubCardShiny({
         />
 
         <div className="font-mono text-sm">
-          {data?.interview?.questionName}
-          <div className="text-xs text-zinc-400"> {data?.interview?.slug}</div>
+          {data?.session?.questionName}
+          <div className="text-xs text-zinc-400"> {data?.session?.slug}</div>
         </div>
 
         <div className="z-10 mt-10 flex w-full min-w-fit flex-col gap-2 rounded-md bg-zinc-600 p-4 shadow-2xl">
@@ -151,7 +152,7 @@ export default function GithubCardShiny({
             },
             {
               title: "difficulty",
-              time: data?.interview?.difficulty,
+              time: data?.session?.difficulty,
               Icon: Braces,
             },
           ].map((step) => {

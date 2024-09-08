@@ -21,10 +21,14 @@ export async function createInterview(
   return newInterview;
 }
 
-export async function completeInterviewMongo(userId: any, interviewId: any) {
+export async function completeInterviewMongo(
+  userId: any,
+  interviewId: any,
+  status: any
+) {
   try {
     const update = {
-      status: "completed",
+      status: status,
       completedAt: new Date(),
     };
 
