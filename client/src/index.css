@@ -104,3 +104,16 @@
   scrollbar-width: thin; /* Show thin scrollbar in dark mode */
   scrollbar-color: #666666 #1a1a1a; /* Gray thumb, dark background */
 }
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3; 
+  }
+}
+
+.animate-blink {
+  animation: blink 1.5s ease-in-out infinite;
+}
