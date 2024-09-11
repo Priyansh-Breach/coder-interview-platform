@@ -32,7 +32,7 @@ export const Navbar: React.FC = () => {
         initial={{ maxWidth: "100%" }}
         animate={{ maxWidth: scrolled ? "70%" : "100%" }}
         transition={{ duration: 0.3 }}
-        className={`mx-auto mt-4 backdrop-blur-lg backdrop-filter px-4 sm:px-6 rounded-xl ${
+        className={`mx-auto mt-4 backdrop-blur-lg backdrop-filter px-4 sm:px-6 rounded-full ${
           scrolled ? "shadow-lg dark:border" : ""
         } bg-opacity-50 flex items-center justify-between h-full`}
       >

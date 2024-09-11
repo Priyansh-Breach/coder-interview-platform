@@ -12,6 +12,7 @@ import { MapPin, Search } from "lucide-react";
 import { HoverBorderGradient } from "@/components/ui/Aceternity/container-scroll-animation";
 import { Badge } from "@/components/ui/badge";
 import SwipeButton from "@/components/ui/Animata/swipeButton";
+import { SemiCircle } from "@/components/ui/SemiCircle";
 
 function CardHoverEffect() {
   return (
@@ -72,15 +73,22 @@ export default function LandingPage() {
         keywords="interview platform, coding interview, real-time coding, coding challenges, interview practice, AI-powered education, job preparation, educational resources"
       />
       <div className="flex flex-col min-h-[100dvh]">
+        {/* Navbar Component */}
         <Navbar />
-        <main className="flex items-center justify-center flex-grow">
+
+        {/* Main content section */}
+        <main className="flex flex-col items-center justify-center flex-grow">
+          {/* Outer container with radial gradient */}
           <div className="mt-14 min-h-[70vh] w-full dark:bg-background bg-white dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative flex items-center justify-center">
-            {/* Radial gradient for the container to give a faded look */}
+            {/* Radial gradient applied for faded effect */}
             <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-background bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
-            <section className="w-full max-w-7xl py-12 md:py-24 lg:py-32">
+            {/* Main section content */}
+            <section className="w-full  py-12 md:py-24 lg:py-32 relative z-10">
               <div className="container px-4 md:px-6">
+                {/* Centered content */}
                 <div className="flex flex-col items-center justify-center space-y-4 text-center">
+                  {/* Title and description */}
                   <div className="space-y-4 my-12">
                     <div className="inline-block px-3 py-1 text-sm">
                       <Badge variant="secondary" className="font-light">
@@ -95,6 +103,8 @@ export default function LandingPage() {
                       practice to help you ace your next coding interview.
                     </p>
                   </div>
+
+                  {/* Swipe button */}
                   <SwipeButton
                     onClick={() => {
                       navigate("/explore", {
@@ -108,18 +118,20 @@ export default function LandingPage() {
                   />
                 </div>
               </div>
-              <div className="m-6" >
+              <SemiCircle />
+              {/* Features section */}
+              <div className="m-6">
                 <FeaturesSection />
               </div>
             </section>
           </div>
         </main>
+
         <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
           <p className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} AI Coding Interview. All rights
             reserved.
           </p>
-          <nav className="sm:ml-auto flex gap-4 sm:gap-6"></nav>
         </footer>
       </div>
     </>
