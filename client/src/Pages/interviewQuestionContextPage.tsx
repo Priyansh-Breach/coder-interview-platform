@@ -59,7 +59,6 @@ const InterviewQuestionContextPage: React.FC = () => {
         userCode: sendCodeState ? code : "",
         questionId: id,
         language: language,
-        conversation: conversation,
         user: user,
       });
     } catch (error: any) {
@@ -67,16 +66,7 @@ const InterviewQuestionContextPage: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    if (id) {
-      socket.emit("startQuestionContextGeneration", {
-        questionId: id,
-        user: user,
-      });
-    } else {
-      navigate("/not-found");
-    }
-  }, [id, navigate]);
+ 
 
   return (
     <div className="min-h-screen flex flex-col w-full self-center p-5">

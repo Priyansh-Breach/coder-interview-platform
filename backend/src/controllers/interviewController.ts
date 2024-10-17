@@ -5,11 +5,7 @@ import { synthesizeSpeech } from "../services/textToSpeechService";
 import { NextFunction, Request, Response } from "express";
 import QuestionData from "../Database/Questions/leetcode-solutions.json";
 import ErrorHandler from "../Utils/Error Handler/errorHandler";
-import {
-  generateQuestionContext,
-  generateResponse,
-  simulateStream,
-} from "../services/aiService";
+import { CreateInterviewier, CreateThread } from "../services/aiService";
 import { IQuestion } from "./Socket.io/SocketinterviewController";
 import { InterviewModel } from "../entities/interview";
 import { IUser } from "../entities/User";
@@ -22,6 +18,7 @@ import {
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { connectRedis } from "../Database/redisDb";
+// socketMiddleware.ts
 
 dotenv.config();
 
@@ -37,6 +34,9 @@ declare global {
       interViewDuration?: any;
       tokenRemainingTime?: any;
       MongoInterviewId?: any;
+      assistantId?: any;
+      threadId?: any;
+      assistantFirstMessage?: any;
     }
   }
 }
@@ -229,6 +229,46 @@ export const handleGetActiveSessions = cactchAsyncError(
       });
     } catch (error: any) {
       return next(new ErrorHandler("Error fetching active sessions", 500));
+    }
+  }
+);
+
+/**
+ * Creates the Interviewer for the User
+ */
+export const HandleCreateInterviewier = cactchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { user } = req;
+      const { id } = req.params;
+
+      if (!user || !user._id) {
+        return res.status(400).json({ message: "User not provided" });
+      }
+      const questionData: any = (QuestionData as IQuestion[]).find(
+        (question: any) => question.id === id
+      );
+
+      if (!questionData) {
+        return next(new ErrorHandler("No question found", 404));
+      }
+
+      const assistant = await CreateInterviewier(questionData);
+      if (!assistant) {
+        return next(new ErrorHandler("Error in Creating Assistant.", 500));
+      }
+      const Thread = await CreateThread(
+        assistant?.id,
+        user?.name,
+        questionData
+      );
+
+      req.threadId = Thread?.threadId;
+      req.assistantId = assistant?.id;
+      req.assistantFirstMessage = Thread?.Ai;
+      next();
+    } catch (error: any) {
+      return next(new ErrorHandler("Error creating interview assistant.", 500));
     }
   }
 );

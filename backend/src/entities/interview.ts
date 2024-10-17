@@ -14,6 +14,8 @@ interface IInterview extends Document {
   feedback?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  assistantId: any;
+  threadId: any;
   completedAt?: Date;
 }
 
@@ -35,6 +37,8 @@ const interviewSchema: Schema = new Schema<IInterview>(
     duration: { type: Number },
     totalScore: { type: Number, default: 0 },
     feedback: { type: String },
+    assistantId: { type: String, required: true },
+    threadId: { type: String, required: true },
   },
   {
     timestamps: true,

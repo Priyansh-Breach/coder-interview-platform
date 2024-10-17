@@ -10,6 +10,9 @@ import { LoadingIcon } from "../Icons/SelectMore";
 import { Button } from "../button";
 import { CalendarCheck, FileText, Search } from "lucide-react";
 import SwipeButton from "../Animata/swipeButton";
+import { useAppDispatch } from "@/redux/store";
+import { setConversation } from "@/redux/features/Interview/conversationSlice";
+import { useSelector } from "react-redux";
 
 interface Card {
   data: any;
@@ -44,8 +47,14 @@ export function ExpandableCardStandard({ data, searchLoading }: Card) {
   const [solution, setSolution] = useState<any[number] | boolean | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
-  const [startInterview, { isSuccess, isLoading }] =
-    useStartInterviewMutation();
+  const dispatch = useAppDispatch();
+  const interviewId = useSelector(
+    (state: any) => state.conversation.interviewId
+  );
+  const [
+    startInterview,
+    { isSuccess, isLoading, data: StartInterviewMessage },
+  ] = useStartInterviewMutation();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -91,6 +100,23 @@ export function ExpandableCardStandard({ data, searchLoading }: Card) {
       });
     }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      let parsedMessage = JSON.parse(
+        StartInterviewMessage?.assistantFirstMessage
+      );
+      dispatch(
+        setConversation({
+          sender: "ai",
+          response: parsedMessage?.response,
+          code: "",
+          language: "",
+          interviewId: interviewId,
+        })
+      );
+    }
+  }, [isSuccess, StartInterviewMessage, dispatch, interviewId]);
 
   return (
     <>

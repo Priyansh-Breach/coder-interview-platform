@@ -4,28 +4,70 @@ import { IQuestion } from "../controllers/Socket.io/SocketinterviewController";
 // streamUtils.ts
 import { promises as fs } from "fs";
 import path from "path";
+import dotenv from "dotenv";
+import OpenAI from "openai";
 
-// Set your LLM API URL
-const LLM_API_URL = "http://127.0.0.1:11434/api/generate";
+dotenv.config();
 
-// Utility function to handle Node.js streams
-const handleStream = (
-  stream: Readable,
-  onData: (data: string) => void,
-  onEnd: () => void
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+const LLM_API_URL = "";
+
+//This Create the Assistant
+export const CreateInterviewier = async (question: IQuestion | undefined) => {
+  try {
+    const instructionsPath = path.join(
+      __dirname,
+      "../../../modelfiles/OpenAI.txt"
+    );
+    const instructions = await fs.readFile(instructionsPath, "utf-8");
+    const instructionWithQuestion = `${instructions} ${question?.content?.toString()}`;
+    const assistant = await openai.beta.assistants.create({
+      name: "Interviewer",
+      instructions: instructionWithQuestion,
+      tools: [{ type: "code_interpreter" }],
+      model: "gpt-4o-mini",
+    });
+
+    return assistant;
+  } catch (error: any) {
+    return false;
+  }
+};
+
+//This Create the Conversation Id
+export const CreateThread = async (
+  assistantId: any,
+  UserName: any,
+  question: any
 ) => {
-  stream.on("data", (chunk) => {
-    const text = chunk; // Convert Buffer to string
-    onData(text);
+  const thread = await openai.beta.threads.create();
+  //This Sends the first response from Interviewer
+  const instructionsPath = path.join(
+    __dirname,
+    "../../../modelfiles/OpenAI.txt"
+  );
+  const instructions = await fs.readFile(instructionsPath, "utf-8");
+  const instructionWithQuestion = `${instructions} ${question?.content?.toString()}`;
+  let run = await openai.beta.threads.runs.createAndPoll(thread.id, {
+    assistant_id: assistantId,
+    instructions: `${instructionWithQuestion}. Please address the user as ${UserName} and You may start the conversation by giving the question context to the user. `,
   });
+  let messageComplete: any;
+  if (run.status === "completed") {
+    const messages: any = await openai.beta.threads.messages.list(
+      run.thread_id
+    );
+    for (const message of messages.data.reverse()) {
+      messageComplete = message.content[0].text.value;
+    }
+  } else {
+    return;
+  }
 
-  stream.on("end", () => {
-    onEnd();
-  });
-
-  stream.on("error", (error) => {
-    console.error("Stream error:", error);
-  });
+  return { threadId: thread.id, Ai: messageComplete };
 };
 
 export const generateQuestionContext = async (
@@ -42,106 +84,79 @@ export const generateQuestionContext = async (
     const response = await axios.post(LLM_API_URL, requestBody, {
       responseType: "stream", // Set the response type to stream
     });
-    handleStream(
-      response.data as unknown as Readable,
-      (chunk) => {
-        socket.emit("responseStream", chunk.toString(), { loading: false });
-      },
-      () => {
-        socket.emit("responseComplete");
-      }
-    );
+    // handleStream(
+    //   response.data as unknown as Readable,
+    //   (chunk) => {
+    //     socket.emit("responseStream", chunk.toString(), { loading: false });
+    //   },
+    //   () => {
+    //     socket.emit("responseComplete");
+    //   }
+    // );
   } catch (error) {
-    socket.emit("error", "Failed to generate question context", {
+    socket.emit("error", "Failed to generate question contextxxx", {
       loading: false,
     });
   }
 };
 
 export const generateResponse = async (
-  question: any,
-  conversationLog: any,
   userCurrentApproach: string,
   userCode: any,
+  assistantId: any,
+  threadId: any,
   socket: any
 ) => {
   const prompt = JSON.stringify({
-    question: question,
-    conversation_log: conversationLog,
     user_current_approach: userCurrentApproach,
     user_code: userCode,
   });
-  
-  const requestBody = {
-    model: "phase_2",
-    prompt: prompt,
-  };
+
   try {
-    const response = await axios.post(LLM_API_URL, requestBody, {
-      responseType: "stream",
+    const message = await openai.beta.threads.messages.create(threadId, {
+      role: "user",
+      content: prompt,
     });
-    handleStream(
-      response.data as unknown as Readable,
-      (chunk) => {
-        socket.emit("responseStreamConversation", chunk.toString(), {
+
+    const run = openai.beta.threads.runs
+      .stream(threadId, {
+        assistant_id: assistantId,
+      })
+      .on("textCreated", (text) => socket.emit("loading", { loading: false }))
+      .on("textDelta", (textDelta: any, snapshot) => {
+        socket.emit("responseStream", textDelta.value, { loading: false });
+      })
+      .on("toolCallCreated", (toolCall) => {
+        socket.emit("responseStream", `${toolCall.type}\n\n`, {
           loading: false,
         });
-      },
-      () => {
-        socket.emit("responseComplete");
-      }
-    );
+      })
+      .on("toolCallDelta", (toolCallDelta: any, snapshot: any) => {
+        if (toolCallDelta.type === "code_interpreter") {
+          if (toolCallDelta.code_interpreter.input) {
+            socket.emit(
+              "responseStream",
+              toolCallDelta.code_interpreter.input,
+              {
+                loading: false,
+              }
+            );
+          }
+          if (toolCallDelta.code_interpreter.outputs) {
+            process.stdout.write("\noutput >\n");
+            toolCallDelta.code_interpreter.outputs.forEach((output: any) => {
+              if (output.type === "logs") {
+                socket.emit("responseStream", `\n${output.logs}\n`, {
+                  loading: false,
+                });
+              }
+            });
+          }
+        }
+      });
   } catch (error) {
-    socket.emit("error", "Failed to generate question context", {
+    socket.emit("error", "Something went wrong between our conversation.", {
       loading: false,
     }); // Emit error message to client
-  }
-};
-
-// Define the path to your JSON file
-const filePath = path.resolve(
-  __dirname,
-  "../Database/Questions/leetcode-solutions.json"
-);
-
-// Function to simulate streaming data
-export const simulateStream = async (interval: number, socket: any) => {
-  try {
-    // Read the JSON file
-    const data = await fs.readFile(filePath, "utf-8");
-    const questions = JSON.parse(data);
-
-    let index = 0;
-
-    const sendChunk = () => {
-      if (index < 30) {
-        const question =
-          '{"response": "Just to confirm, your approach is to use a hash map to store the numbers in the nums array and their indices. Is that correct?", "code": 0, "solved": 0}';
-        let q = question.split(" ");
-        socket.emit(
-          "responseStreamConversation",
-          { response: q[index], done: index != 29 ? false : true },
-          { loading: false }
-        ); // Emit the chunk to the frontend
-        index++;
-      } else {
-        socket.emit("responseComplete"); // Signal that streaming is complete
-        clearInterval(streamingInterval);
-      }
-    };
-
-    // Set up an interval to simulate streaming
-    const streamingInterval = setInterval(sendChunk, interval);
-
-    // Optionally, return a promise that resolves when all data is streamed
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        if (index >= questions.length) {
-          resolve();
-        }
-      }, interval * questions.length + 1000); // Allow some time for the last chunk to be sent
-    });
-  } catch (error) {
-    console.error("Error reading or parsing the file:", error);
   }
 };

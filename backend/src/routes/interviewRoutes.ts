@@ -5,6 +5,7 @@ import {
   handleGetInterviewHistory_Interviews,
   handleCompleteInterviewMongo,
   handleGetActiveSessions,
+  HandleCreateInterviewier,
 } from "../controllers/interviewController";
 import { isUserAuthenticated } from "../middleware/authMiddleware";
 import {
@@ -14,6 +15,7 @@ import {
   handleCreateInterviewMongo,
   generateReviewTokenMiddleware,
   validateReviewTokenMiddleware,
+  checkActiveInterviewToken,
 } from "../middleware/interviewMiddleware";
 
 const router = Router();
@@ -21,10 +23,14 @@ const router = Router();
 router.post(
   "/start-Interview/:id",
   isUserAuthenticated,
+  checkActiveInterviewToken,
+  HandleCreateInterviewier,
   handleCreateInterviewMongo,
   generateInterviewTokenMiddleware,
   (req: Request, res: Response, next: NextFunction) => {
+    const { assistantFirstMessage } = req;
     return res.status(201).json({
+      assistantFirstMessage: assistantFirstMessage,
       message: "Interview Activated",
       success: true,
     });

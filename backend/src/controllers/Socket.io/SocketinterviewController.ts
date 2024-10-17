@@ -1,9 +1,7 @@
 // src/controllers/interviewController.ts
 import QuestionData from "../../Database/Questions/leetcode-solutions.json";
 import {
-  generateQuestionContext,
   generateResponse,
-  simulateStream,
 } from "../../services/aiService";
 import dotenv from "dotenv";
 import { Socket } from "socket.io";
@@ -22,77 +20,7 @@ export interface IQuestion {
   slug?: any;
 }
 
-/**
- * Ai Response based on question it gives question context
- */
 
-export const handleAiQuestionContext = async (socket: Socket, data: any) => {
-  const { questionId, user } = data;
-  try {
-    if (!user || !user._id || !questionId) {
-      socket.emit(
-        "error",
-        "Failed to generate question context, User or Question Id not Provided, Try after Login. :(",
-        {
-          loading: false,
-        }
-      );
-      return;
-    }
-
-    const redisKey = `${user._id}InterviewToken${questionId}`;
-
-    const token: any = await connectRedis.get(redisKey);
-    let parsedToken: any;
-    if (!token) {
-      socket.emit(
-        "error",
-        "No active interview session found for this question. Please restart the interview process. :(",
-        {
-          loading: false,
-        }
-      );
-      return;
-    } else {
-      parsedToken = JSON.parse(token);
-    }
-
-    jwt.verify(
-      parsedToken?.token,
-      INTERVIEW_JWT_SECRET,
-      (err: any, decoded: any) => {
-        if (err || decoded.id !== questionId) {
-          socket.emit(
-            "error",
-            "Invalid or expired token for this question. Please restart the interview process. :(",
-            {
-              loading: false,
-            }
-          );
-          return;
-        }
-      }
-    );
-
-    const questionData: any = (QuestionData as IQuestion[]).find(
-      (question: any) => question.id === questionId
-    );
-    if (!questionData) {
-      socket.emit("error", "Question does not exist. :(", {
-        loading: false,
-      });
-      return;
-    }
-
-    await generateQuestionContext(questionData?.content, socket);
-
-    // simulateStream(100, socket);
-  } catch (error) {
-    socket.emit("error", "Failed to generate question context", {
-      loading: false,
-    });
-  }
-};
 
 interface IInterview {
   questionId: string;
@@ -173,22 +101,21 @@ export const handleAiConversationResponse = async (
     const questionData = (QuestionData as IQuestion[]).find(
       (question) => question.id === questionId
     );
-    const conversationLog = "";
-    const conversationArray = [] as IConversation[];
+
     const userCodeandLanguage = `${userCode} is in language ${language}`;
     if (!questionData) {
       return;
     }
-  
+
     await generateResponse(
-      questionData?.content,
-      conversation,
       userCurrentApproach,
-      userCode,
+      userCodeandLanguage,
+      parsedToken?.assistantId,
+      parsedToken?.threadId,
       socket
     );
 
-    // simulateStream(100, socket);
+
   } catch (error) {
     console.error("Error handling interview:", error);
   }

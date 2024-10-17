@@ -24,6 +24,8 @@ declare global {
       tokenRemainingTime?: any;
       interViewDuration?: any;
       MongoInterviewId?: any;
+      threadId?: any;
+      assistantId?: any;
     }
   }
 }
@@ -33,7 +35,7 @@ export const generateInterviewTokenMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { user, MongoInterviewId } = req;
+  const { user, MongoInterviewId, assistantId, threadId } = req;
   const { id } = req.params;
   const { time } = req.body;
 
@@ -112,6 +114,8 @@ export const generateInterviewTokenMiddleware = async (
     difficulty: questionData?.difficulty,
     slug: questionData?.slug,
     mongoDBInterviewId: MongoInterviewId,
+    assistantId: assistantId,
+    threadId: threadId,
   };
 
   await connectRedis.set(
@@ -226,7 +230,7 @@ export const deleteInterviewTokenMiddleware = async (
 export const handleCreateInterviewMongo = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { user, interViewDuration } = req as any;
+      const { user, interViewDuration, assistantId, threadId } = req as any;
       const { id } = req.params;
 
       const questionData = (QuestionData as IQuestion[]).find(
@@ -240,7 +244,9 @@ export const handleCreateInterviewMongo = cactchAsyncError(
         user._id,
         id,
         interViewDuration,
-        questionData
+        questionData,
+        assistantId,
+        threadId
       );
 
       (req as any).MongoInterviewId = newInterview._id;
@@ -350,5 +356,42 @@ export const validateReviewTokenMiddleware = async (
       message: "Error while validating review tokens.",
       error: error.message,
     });
+  }
+};
+
+
+// Middleware to check for active interview token
+export const checkActiveInterviewToken = async (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user; // Assuming user info is attached to req.user
+  if (!user || !user._id) {
+    return res.status(400).json({ message: "User not provided" });
+  }
+
+  try {
+    const keys = await connectRedis.keys(`${user._id}InterviewToken*`);
+
+    if (keys.length > 0) {
+      const existingToken: any = await connectRedis.get(keys[0]);
+      const parsedExistingToken: any = JSON.parse(existingToken);
+
+      if (parsedExistingToken) {
+        try {
+          const decoded = jwt.verify(parsedExistingToken?.token, INTERVIEW_JWT_SECRET) as jwt.JwtPayload;
+
+          // Check if token is valid and not expired
+          if (decoded && Date.now() / 1000 < decoded.exp!) {
+            return res.status(403).json({
+              message: "You already have an active interview session. Please either leave the interview or complete the session before starting a new one.",
+            });
+          }
+        } catch (err) {
+          await connectRedis.del(keys[0]); // Delete the token if verification fails
+        }
+      }
+    }
+    // Proceed to the next middleware or route handler
+    next();
+  } catch (error:any) {
+    return res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };

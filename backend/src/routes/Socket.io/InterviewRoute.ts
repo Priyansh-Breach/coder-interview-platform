@@ -1,32 +1,17 @@
 import { Server, Socket } from "socket.io";
-import {
-  generateQuestionContext,
-  generateResponse,
-  simulateStream,
-} from "../../services/aiService";
-import {
-  handleAiConversationResponse,
-  handleAiQuestionContext,
-} from "../../controllers/Socket.io/SocketinterviewController";
+import { handleAiConversationResponse } from "../../controllers/Socket.io/SocketinterviewController";
+import { attachSocket } from "../../controllers/interviewController";
 
 export const socketRoutes = (io: Server) => {
   io.on("connection", (socket: Socket) => {
-    socket.on("startQuestionContextGeneration", (data) => {
-      try {
-        socket.emit("loading", { loading: true });
-        handleAiQuestionContext(socket, data);
-      } catch (error: any) {
-        socket.emit("error", { loading: false });
-      }
-    });
-
+    
     socket.on("startConversationResponseGeneration", async (data) => {
       try {
         socket.emit("loading", { loading: true });
-     
+
         await handleAiConversationResponse(socket, data);
       } catch (error) {
-        socket.emit("error", "Failed to generate response");
+        socket.emit("error", "Failed to generate response.");
       }
     });
 

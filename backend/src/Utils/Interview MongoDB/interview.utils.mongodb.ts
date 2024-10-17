@@ -4,7 +4,9 @@ export async function createInterview(
   userId: string,
   questionId: string,
   interViewDuration: any,
-  questionData: any
+  questionData: any,
+  assitantId: any,
+  threadId: any
 ) {
   const newInterview = new InterviewModel({
     userId: userId,
@@ -14,6 +16,8 @@ export async function createInterview(
     questionName: questionData?.title,
     slug: questionData?.slug,
     difficulty: questionData?.difficulty,
+    assistantId: assitantId,
+    threadId: threadId,
   });
 
   await newInterview.save();

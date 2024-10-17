@@ -9,13 +9,13 @@ export default function Component() {
     (state: any) => state.conversation.message
   );
   const response = useAppSelector((state: any) => state.aiResponse.response);
+  
   const streamLoading = useAppSelector(
     (state: any) => state.aiResponse.loading
   );
   const error = useAppSelector((state: any) => state.aiResponse.error);
   const currentYear = new Date().getFullYear();
   const bottomRef = useRef<HTMLDivElement | null>(null);
-
 
   useEffect(() => {
     if (bottomRef.current) {
@@ -45,8 +45,11 @@ export default function Component() {
                   {message.response}
                 </p>
                 {message?.sender === "user" && message.code !== "" && (
-                  <div className="my-3" >
-                    <CodeEditorLike code={message?.code} language={message.language} />
+                  <div className="my-3">
+                    <CodeEditorLike
+                      code={message?.code}
+                      language={message.language}
+                    />
                   </div>
                 )}
               </CardContent>
