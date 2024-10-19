@@ -4,24 +4,49 @@ import { Card, CardContent, CardDescription, CardFooter } from "./ui/card";
 import TextToSpeech from "./textToSpeech";
 import LoadingIndicator from "./aiLoadinfComponent";
 import CodeEditorLike from "./codeEditorLike";
+import { socket } from "@/socket";
+import { useParams } from "react-router-dom";
+import { useAppDispatch } from "@/redux/store";
+import { setFetchConversationLoading } from "@/redux/features/Interview/conversationSlice";
+import { LoadingIcon } from "./ui/Icons/SelectMore";
+
 export default function Component() {
+  const dispatch = useAppDispatch();
   const conversation = useAppSelector(
     (state: any) => state.conversation.message
   );
   const response = useAppSelector((state: any) => state.aiResponse.response);
-  
+
   const streamLoading = useAppSelector(
     (state: any) => state.aiResponse.loading
   );
   const error = useAppSelector((state: any) => state.aiResponse.error);
   const currentYear = new Date().getFullYear();
   const bottomRef = useRef<HTMLDivElement | null>(null);
-
+  const { id } = useParams<{ id: string }>();
+  const user = useAppSelector((state: any) => state.auth.user);
+  const fetchConversationLoading = useAppSelector(
+    (state: any) => state.conversation.fetchConversationLoading
+  );
+  const threadId = useAppSelector((state: any) => state.conversation.threadId);
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [conversation]);
+
+  useEffect(() => {
+    try {
+      if (threadId) {
+        dispatch(setFetchConversationLoading(true));
+        socket.emit("getConversationFromOpenAi", {
+          threadId: threadId,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   return (
     <div className="flex flex-col w-full max-w-3xl h-screen bg-background text-foreground">
@@ -69,7 +94,14 @@ export default function Component() {
             <div ref={bottomRef} />
           </div>
         ))}
-
+        <div>
+          {fetchConversationLoading && (
+            <div className="flex gap-2 h-screen w-full justify-center items-center" >
+              <LoadingIcon />
+              <p className="text-md">fetching old messages..</p>
+            </div>
+          )}
+        </div>
         <div className="flex justify-center ">
           <Card className="rounded-lg max-w-3xl px-14 mb-24 w-full text-start bg-[none] break-words self-center shadow-none border-none overflow-hidden">
             <CardContent className="p-4">

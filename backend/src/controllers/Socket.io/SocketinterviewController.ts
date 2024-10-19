@@ -1,8 +1,6 @@
 // src/controllers/interviewController.ts
 import QuestionData from "../../Database/Questions/leetcode-solutions.json";
-import {
-  generateResponse,
-} from "../../services/aiService";
+import { generateResponse } from "../../services/aiService";
 import dotenv from "dotenv";
 import { Socket } from "socket.io";
 import jwt from "jsonwebtoken";
@@ -19,8 +17,6 @@ export interface IQuestion {
   name?: any;
   slug?: any;
 }
-
-
 
 interface IInterview {
   questionId: string;
@@ -56,7 +52,7 @@ export const handleAiConversationResponse = async (
     if (!user || !user._id || !questionId) {
       socket.emit(
         "error",
-        "Failed to generate question context, User or Question Id not Provided, Try after Login. :(",
+        "User or Question Id not Provided, Try after Login. :(",
         {
           loading: false,
         }
@@ -102,7 +98,7 @@ export const handleAiConversationResponse = async (
       (question) => question.id === questionId
     );
 
-    const userCodeandLanguage = `${userCode} is in language ${language}`;
+    const userCodeandLanguage = `${userCode} is in language, language:${language}`;
     if (!questionData) {
       return;
     }
@@ -114,9 +110,10 @@ export const handleAiConversationResponse = async (
       parsedToken?.threadId,
       socket
     );
-
-
   } catch (error) {
     console.error("Error handling interview:", error);
   }
 };
+
+
+

@@ -94,7 +94,7 @@ export const generateQuestionContext = async (
     //   }
     // );
   } catch (error) {
-    socket.emit("error", "Failed to generate question contextxxx", {
+    socket.emit("error", "Failed to generate question context", {
       loading: false,
     });
   }

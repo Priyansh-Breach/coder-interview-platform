@@ -30,11 +30,16 @@ const InterviewQuestionContextPage: React.FC = () => {
   const code = useSelector((state: any) => state.editor.code);
   const language = useSelector((state: any) => state.editor.language);
   const user = useSelector((state: any) => state.auth.user);
-  const conversation = useSelector((state: any) => state.conversation.message);
   const sendCodeState = useSelector((state: any) => state.editor.sendCode);
   const interviewId = useSelector(
     (state: any) => state.conversation.interviewId
   );
+  const assistantId = useSelector(
+    (state: any) => state.conversation.assistantId
+  );
+  const threadId = useSelector((state: any) => state.conversation.threadId);
+  const conversation = useSelector((state: any) => state.conversation.message);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setUserCurrentApproach(e.target.value);
   };
@@ -61,16 +66,16 @@ const InterviewQuestionContextPage: React.FC = () => {
         language: language,
         user: user,
       });
+
+     
     } catch (error: any) {
       console.log("testError");
     }
   }
 
- 
-
   return (
     <div className="min-h-screen flex flex-col w-full self-center p-5">
-      <div className="flex justify-center">
+      <div className="flex justify-center ">
         <ChatComponent />
       </div>
       <div className="bottom-6 fixed h-fit left-0 w-full z-[900] ">

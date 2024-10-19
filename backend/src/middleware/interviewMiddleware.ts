@@ -182,6 +182,8 @@ export const validateInterviewTokenMiddleware = async (
       req.questionId = id;
       req.tokenRemainingTime = ttl;
       req.MongoInterviewId = parsedTokenData?.mongoDBInterviewId;
+      req.assistantId = parsedTokenData?.assistantId;
+      req.threadId = parsedTokenData?.threadId;
       next();
     }
   );
@@ -270,7 +272,7 @@ export const generateReviewTokenMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { user } = req;
+  const { user, assistantId, threadId } = req;
   const { interviewId } = req.body;
 
   if (!user || !user._id || !interviewId) {
@@ -289,7 +291,9 @@ export const generateReviewTokenMiddleware = async (
   const tokenData = {
     token: reviewToken,
     userId: user._id,
-    interviewId,
+    interviewId: interviewId,
+    assistantId: assistantId,
+    threadId: threadId,
   };
 
   await connectRedis.set(redisKey, JSON.stringify(tokenData));
@@ -359,9 +363,12 @@ export const validateReviewTokenMiddleware = async (
   }
 };
 
-
 // Middleware to check for active interview token
-export const checkActiveInterviewToken = async (req: Request, res: Response, next: NextFunction) => {
+export const checkActiveInterviewToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const user = req.user; // Assuming user info is attached to req.user
   if (!user || !user._id) {
     return res.status(400).json({ message: "User not provided" });
@@ -376,12 +383,16 @@ export const checkActiveInterviewToken = async (req: Request, res: Response, nex
 
       if (parsedExistingToken) {
         try {
-          const decoded = jwt.verify(parsedExistingToken?.token, INTERVIEW_JWT_SECRET) as jwt.JwtPayload;
+          const decoded = jwt.verify(
+            parsedExistingToken?.token,
+            INTERVIEW_JWT_SECRET
+          ) as jwt.JwtPayload;
 
           // Check if token is valid and not expired
           if (decoded && Date.now() / 1000 < decoded.exp!) {
             return res.status(403).json({
-              message: "You already have an active interview session. Please either leave the interview or complete the session before starting a new one.",
+              message:
+                "You already have an active interview session. Please either leave the interview or complete the session before starting a new one.",
             });
           }
         } catch (err) {
@@ -391,7 +402,9 @@ export const checkActiveInterviewToken = async (req: Request, res: Response, nex
     }
     // Proceed to the next middleware or route handler
     next();
-  } catch (error:any) {
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };

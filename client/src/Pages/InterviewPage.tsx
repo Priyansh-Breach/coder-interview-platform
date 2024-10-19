@@ -55,8 +55,14 @@ import { useAppSelector, useAppDispatch } from "@/redux/store";
 import TimerComponent from "@/components/NavbarCodeEditor";
 import SwipeButton from "@/components/ui/Animata/swipeButton";
 import { deleteLocalStorageKey } from "@/lib/Utils/deleteLocalStorageKey";
-import { setInterviewId } from "@/redux/features/Interview/conversationSlice.tsx";
+import {
+  setAssistantId,
+  setInterviewId,
+  setThreadId,
+  setquestionId,
+} from "@/redux/features/Interview/conversationSlice.tsx";
 import { useNavigate } from "react-router-dom";
+import { socket } from "@/socket";
 
 const InterviewPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -105,6 +111,7 @@ const InterviewPage: React.FC = () => {
   };
 
   const handleCompleteInterview = async () => {
+    deleteLocalStorageKey("persist:panel");
     //complete interview api
     await completeInterview({
       id: id,
@@ -117,6 +124,9 @@ const InterviewPage: React.FC = () => {
       dispatch(setInterviewId(question?.MongoInterviewId));
       dispatch(setQuestionData(question));
       dispatch(setInterviewTime(question?.timeLeftForInterview));
+      dispatch(setAssistantId(question?.assistantId));
+      dispatch(setThreadId(question?.threadId));
+      dispatch(setquestionId(id));
     }
   }, [question]);
 
@@ -174,6 +184,15 @@ const InterviewPage: React.FC = () => {
       },
     },
   ].filter(Boolean);
+
+  // const handleLoadOlderMessages = () => {
+  //   // If at the top and not already loading more messages
+
+  //   socket.emit("loadMoreMessages", {
+  //     threadId: threadId,
+  //     cursor: 0, //conversation?.[0]?.id,
+  //   }); // Send request with the cursor
+  // };
 
   return (
     <div>
@@ -245,7 +264,10 @@ const InterviewPage: React.FC = () => {
                       <ChevronsDown className="h-6 w-6" />
                     </button>
                   )}
-                  <ScrollArea className="h-full w-full rounded-md border">
+                  <ScrollArea
+                    onScrollTop={() => {}}
+                    className="h-full w-full rounded-md border"
+                  >
                     <div className="flex item-center justify-center w-full p-2 pt-8">
                       <InterviewQuestionContextPage />
                     </div>

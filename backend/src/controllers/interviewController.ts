@@ -19,10 +19,13 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { connectRedis } from "../Database/redisDb";
 // socketMiddleware.ts
+import OpenAI from "openai";
 
 dotenv.config();
 
 const INTERVIEW_JWT_SECRET = process.env.INTERVIEW_JWT_SECRET || "";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
 declare global {
   namespace Express {
@@ -53,7 +56,8 @@ export const getQuestionData = cactchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params as unknown as IQuestionId;
-      const { tokenRemainingTime, MongoInterviewId } = req;
+      const { tokenRemainingTime, MongoInterviewId, assistantId, threadId } =
+        req;
 
       const questionData = (QuestionData as IQuestion[]).find(
         (question) => question.id === id
@@ -68,6 +72,8 @@ export const getQuestionData = cactchAsyncError(
         data: questionData,
         timeLeftForInterview: tokenRemainingTime,
         MongoInterviewId: MongoInterviewId,
+        assistantId: assistantId,
+        threadId: threadId,
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
@@ -272,3 +278,24 @@ export const HandleCreateInterviewier = cactchAsyncError(
     }
   }
 );
+
+export const getAllMessages = async (threadId: string) => {
+  let messages: any[] = [];
+
+  // Fetch the first page of messages
+  let messagesPage: any = await openai.beta.threads.messages.list(threadId);
+  messages = messagesPage?.body?.data || [];
+
+  // Keep fetching more pages as long as there's a next page
+  while (messagesPage.hasNextPage()) {
+    messagesPage = await messagesPage.getNextPage();
+    messages = messages.concat(messagesPage?.body?.data || []);
+  }
+
+  // Return all the messages in the conversation
+  return {
+    messages, // Entire message list
+    totalMessages: messages.length, // Total number of messages fetched
+  };
+};
+
