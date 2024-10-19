@@ -13,6 +13,7 @@ import { HoverBorderGradient } from "@/components/ui/Aceternity/container-scroll
 import { Badge } from "@/components/ui/badge";
 import SwipeButton from "@/components/ui/Animata/swipeButton";
 import { SemiCircle } from "@/components/ui/SemiCircle";
+import { BackgroundLines } from "@/components/ui/Aceternity/background-lines";
 
 function CardHoverEffect() {
   return (
@@ -89,33 +90,35 @@ export default function LandingPage() {
                 {/* Centered content */}
                 <div className="flex flex-col items-center justify-center space-y-4 text-center">
                   {/* Title and description */}
-                  <div className="space-y-4 my-12">
-                    <div className="inline-block px-3 py-1 text-sm">
-                      <Badge variant="secondary" className="font-light">
-                        Beta access
-                      </Badge>
+                  <BackgroundLines className="flex items-center justify-center space-y-4  w-full flex-col ">
+                    <div className="space-y-4 ">
+                      <div className="inline-block px-3 py-1 text-sm">
+                        <Badge variant="secondary" className="font-light">
+                          Beta access
+                        </Badge>
+                      </div>
+                      <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                        Elevate Your Coding Interview Prep
+                      </h2>
+                      <p className="max-w-[900px] text-muted-foreground md:text-lg lg:text-xl">
+                        Our AI-powered platform provides personalized guidance
+                        and practice to help you ace your next coding interview.
+                      </p>
                     </div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                      Elevate Your Coding Interview Prep
-                    </h2>
-                    <p className="max-w-[900px] text-muted-foreground md:text-lg lg:text-xl">
-                      Our AI-powered platform provides personalized guidance and
-                      practice to help you ace your next coding interview.
-                    </p>
-                  </div>
 
-                  {/* Swipe button */}
-                  <SwipeButton
-                    onClick={() => {
-                      navigate("/explore", {
-                        state: { Key: "/explore" },
-                      });
-                    }}
-                    firstText="Get Started"
-                    secondText="Explore"
-                    firstClass="font-light bg-background"
-                    secondClass="font-light bg-background"
-                  />
+                    {/* Swipe button */}
+                    <SwipeButton
+                      onClick={() => {
+                        navigate("/explore", {
+                          state: { Key: "/explore" },
+                        });
+                      }}
+                      firstText="Get Started"
+                      secondText="Explore"
+                      firstClass="font-light bg-background"
+                      secondClass="font-light bg-background"
+                    />
+                  </BackgroundLines>
                 </div>
               </div>
               <SemiCircle />

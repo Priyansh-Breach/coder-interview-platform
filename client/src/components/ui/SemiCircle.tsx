@@ -2,7 +2,7 @@ export const SemiCircle = () => {
   return (
     <>
       <div
-        className="!max-w-none [&>*]:max-w-none  w-full shadow-4xl -mt-72 -mb-[300px] mask-radial-faded pointer-events-none z-[-900] relative z-[-1] h-[700px] overflow-hidden [--color:#7877C6] before:absolute before:inset-0 before:bg-radial-faded before:opacity-[0.4] after:absolute after:top-1/2 after:-left-1/2 after:h-[142.8%] after:w-[200%] after:rounded-[50%] after:border-t after:border-[rgba(198,119,119,0.4)] after:bg-background rotate-180
+        className="!max-w-none [&>*]:max-w-none   w-full shadow-4xl -mt-72 -mb-[300px] mask-radial-faded pointer-events-none z-[-900] relative z-[-1] h-[700px] overflow-hidden [--color:#7877C6] before:absolute before:inset-0 before:bg-radial-faded before:opacity-[0.4] after:absolute after:top-1/2 after:-left-1/2 after:h-[142.8%] after:w-[200%] after:rounded-[50%] after:border-t after:border-[rgba(198,119,119,0.4)] after:bg-background rotate-180
   before:bg-gradient-to-b before:from-transparent before:via-[rgba(34,197,94,0.7)] before:to-[rgba(0,0,0,0.8)] after:shadow-[0px_30px_60px_rgba(34,197,94,0.7)]"
       >
         <svg
