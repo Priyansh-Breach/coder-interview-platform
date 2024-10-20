@@ -7,7 +7,11 @@ import CodeEditorLike from "./codeEditorLike";
 import { socket } from "@/socket";
 import { useParams } from "react-router-dom";
 import { useAppDispatch } from "@/redux/store";
-import { setFetchConversationLoading } from "@/redux/features/Interview/conversationSlice";
+import {
+  resetConversation,
+  setFetchConversationLoading,
+  setThreadId,
+} from "@/redux/features/Interview/conversationSlice";
 import { LoadingIcon } from "./ui/Icons/SelectMore";
 
 export default function Component() {
@@ -28,8 +32,8 @@ export default function Component() {
   const fetchConversationLoading = useAppSelector(
     (state: any) => state.conversation.fetchConversationLoading
   );
-  console.log(fetchConversationLoading);
   const threadId = useAppSelector((state: any) => state.conversation.threadId);
+
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -39,6 +43,7 @@ export default function Component() {
   useEffect(() => {
     try {
       if (threadId) {
+        dispatch(resetConversation());
         dispatch(setFetchConversationLoading(true));
         socket.emit("getConversationFromOpenAi", {
           threadId: threadId,
@@ -97,7 +102,7 @@ export default function Component() {
         ))}
         <div>
           {fetchConversationLoading && (
-            <div className="flex gap-2 h-screen w-full justify-center items-center">
+            <div className="flex gap-2  w-full justify-center items-center">
               <LoadingIcon />
               <p className="text-md">fetching old messages..</p>
             </div>

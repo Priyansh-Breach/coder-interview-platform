@@ -66,7 +66,7 @@ export const socketMiddleware: Middleware = (storeAPI) => {
   // Listen for the loaded messages
   socket.on("messages", (data: any, loading: any) => {
     const newMessages = data?.messages?.messages;
-
+    storeAPI.dispatch(resetConversation());
     extractContentFromMessages(newMessages, storeAPI);
     storeAPI.dispatch(setFetchConversationLoading(loading?.loading));
   });

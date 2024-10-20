@@ -98,7 +98,8 @@ export const handleAiConversationResponse = async (
       (question) => question.id === questionId
     );
 
-    const userCodeandLanguage = `${userCode} is in language, language:${language}`;
+    const userCodeandLanguage =
+      userCode !== "" ? `${userCode} language:${language}` : `${userCode}`;
     if (!questionData) {
       return;
     }
@@ -114,6 +115,3 @@ export const handleAiConversationResponse = async (
     console.error("Error handling interview:", error);
   }
 };
-
-
-
