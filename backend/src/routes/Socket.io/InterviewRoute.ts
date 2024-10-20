@@ -16,11 +16,13 @@ export const socketRoutes = (io: Server) => {
     // Listening for requests to load more messages
     socket.on("getConversationFromOpenAi", async ({ threadId, cursor }) => {
       try {
+        console.log(threadId);
         if (!threadId) {
           socket.emit("error", "Refresh to sync messages.", { loading: false });
           return;
         }
-        const messages = await getAllMessages(threadId);
+        const messages: any = await getAllMessages(threadId);
+        
         socket.emit("messages", { messages }, { loading: false });
       } catch (error) {
         socket.emit("error", "Failed to fetch messages.");

@@ -5,7 +5,7 @@ import { synthesizeSpeech } from "../services/textToSpeechService";
 import { NextFunction, Request, Response } from "express";
 import QuestionData from "../Database/Questions/leetcode-solutions.json";
 import ErrorHandler from "../Utils/Error Handler/errorHandler";
-import { CreateInterviewier, CreateThread } from "../services/aiService";
+import { CreateThread } from "../services/aiService";
 import { IQuestion } from "./Socket.io/SocketinterviewController";
 import { InterviewModel } from "../entities/interview";
 import { IUser } from "../entities/User";
@@ -259,18 +259,15 @@ export const HandleCreateInterviewier = cactchAsyncError(
         return next(new ErrorHandler("No question found", 404));
       }
 
-      const assistant = await CreateInterviewier(questionData);
-      if (!assistant) {
-        return next(new ErrorHandler("Error in Creating Assistant.", 500));
-      }
-      const Thread = await CreateThread(
-        assistant?.id,
-        user?.name,
-        questionData
-      );
-
+      // const assistant = await CreateInterviewier(questionData);
+      // if (!assistant) {
+      //   return next(new ErrorHandler("Error in Creating Assistant.", 500));
+      // }
+      const assistant = process.env.Assistant_ID;
+      const Thread = await CreateThread(assistant, user?.name, questionData);
+      
       req.threadId = Thread?.threadId;
-      req.assistantId = assistant?.id;
+      req.assistantId = assistant;
       req.assistantFirstMessage = Thread?.Ai;
       next();
     } catch (error: any) {
@@ -298,4 +295,3 @@ export const getAllMessages = async (threadId: string) => {
     totalMessages: messages.length, // Total number of messages fetched
   };
 };
-

@@ -28,6 +28,7 @@ export default function Component() {
   const fetchConversationLoading = useAppSelector(
     (state: any) => state.conversation.fetchConversationLoading
   );
+  console.log(fetchConversationLoading);
   const threadId = useAppSelector((state: any) => state.conversation.threadId);
   useEffect(() => {
     if (bottomRef.current) {
@@ -46,7 +47,7 @@ export default function Component() {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [threadId]);
 
   return (
     <div className="flex flex-col w-full max-w-3xl h-screen bg-background text-foreground">
@@ -96,7 +97,7 @@ export default function Component() {
         ))}
         <div>
           {fetchConversationLoading && (
-            <div className="flex gap-2 h-screen w-full justify-center items-center" >
+            <div className="flex gap-2 h-screen w-full justify-center items-center">
               <LoadingIcon />
               <p className="text-md">fetching old messages..</p>
             </div>

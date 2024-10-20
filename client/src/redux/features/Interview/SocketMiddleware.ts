@@ -61,8 +61,6 @@ export const socketMiddleware: Middleware = (storeAPI) => {
   socket.on("conversationFromRedis", (conversation: any) => {
     storeAPI.dispatch(resetConversation());
     storeAPI.dispatch(setConversation(conversation[0]));
-
-    console.log(conversation[0]);
   });
 
   // Listen for the loaded messages
@@ -91,9 +89,12 @@ export const socketMiddleware: Middleware = (storeAPI) => {
 const extractContentFromMessages = (messages: any[], storeAPI: any) => {
   const contentArray: any[] = [];
   messages = messages.reverse();
-  messages.forEach((message) => {
-    if (message?.role === "user") {
-      const jsonObject = JSON.parse(message?.content[0]?.text?.value);
+
+  messages.forEach((message, index) => {
+    if (message?.role === "user" && index !== 0) {
+      const jsonObject = JSON.parse(
+        message?.content[0]?.text?.value?.replace()
+      );
       storeAPI.dispatch(
         setConversation({
           sender: "user",

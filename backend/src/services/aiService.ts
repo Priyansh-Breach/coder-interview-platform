@@ -16,26 +16,26 @@ const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 const LLM_API_URL = "";
 
 //This Create the Assistant
-export const CreateInterviewier = async (question: IQuestion | undefined) => {
-  try {
-    const instructionsPath = path.join(
-      __dirname,
-      "../../../modelfiles/OpenAI.txt"
-    );
-    const instructions = await fs.readFile(instructionsPath, "utf-8");
-    const instructionWithQuestion = `${instructions} ${question?.content?.toString()}`;
-    const assistant = await openai.beta.assistants.create({
-      name: "Interviewer",
-      instructions: instructionWithQuestion,
-      tools: [{ type: "code_interpreter" }],
-      model: "gpt-4o-mini",
-    });
+// export const CreateInterviewier = async (question: IQuestion | undefined) => {
+//   try {
+//     const instructionsPath = path.join(
+//       __dirname,
+//       "../../../modelfiles/OpenAI.txt"
+//     );
+//     const instructions = await fs.readFile(instructionsPath, "utf-8");
+//     const instructionWithQuestion = `${instructions} ${question?.content?.toString()}`;
+//     const assistant = await openai.beta.assistants.create({
+//       name: "Interviewer",
+//       instructions: instructionWithQuestion,
+//       tools: [{ type: "code_interpreter" }],
+//       model: "gpt-4o-mini",
+//     });
 
-    return assistant;
-  } catch (error: any) {
-    return false;
-  }
-};
+//     return assistant;
+//   } catch (error: any) {
+//     return false;
+//   }
+// };
 
 //This Create the Conversation Id
 export const CreateThread = async (
@@ -49,12 +49,19 @@ export const CreateThread = async (
     __dirname,
     "../../../modelfiles/OpenAI.txt"
   );
+
   const instructions = await fs.readFile(instructionsPath, "utf-8");
-  const instructionWithQuestion = `${instructions} ${question?.content?.toString()}`;
+  const instructionWithQuestion = `${question?.content?.toString()}`;
+
+  const message = await openai.beta.threads.messages.create(thread.id, {
+    role: "user",
+    content: `{"question":"${instructionWithQuestion}","userName":"${UserName}"}`,
+  });
+
   let run = await openai.beta.threads.runs.createAndPoll(thread.id, {
     assistant_id: assistantId,
-    instructions: `${instructionWithQuestion}. Please address the user as ${UserName} and You may start the conversation by giving the question context to the user. `,
   });
+
   let messageComplete: any;
   if (run.status === "completed") {
     const messages: any = await openai.beta.threads.messages.list(

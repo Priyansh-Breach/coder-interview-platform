@@ -52,7 +52,7 @@ import {
   setChatPanel,
 } from "@/redux/features/Interview/panelSlice";
 import { useAppSelector, useAppDispatch } from "@/redux/store";
-import TimerComponent from "@/components/NavbarCodeEditor";
+import TimerComponent from "@/components/timerComponent";
 import SwipeButton from "@/components/ui/Animata/swipeButton";
 import { deleteLocalStorageKey } from "@/lib/Utils/deleteLocalStorageKey";
 import {
@@ -121,11 +121,12 @@ const InterviewPage: React.FC = () => {
 
   useEffect(() => {
     if (question) {
+      console.log(question?.threadId);
+      dispatch(setThreadId(question?.threadId));
       dispatch(setInterviewId(question?.MongoInterviewId));
       dispatch(setQuestionData(question));
       dispatch(setInterviewTime(question?.timeLeftForInterview));
       dispatch(setAssistantId(question?.assistantId));
-      dispatch(setThreadId(question?.threadId));
       dispatch(setquestionId(id));
     }
   }, [question]);
